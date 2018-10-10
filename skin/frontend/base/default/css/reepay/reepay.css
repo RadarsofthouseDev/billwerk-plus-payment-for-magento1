@@ -1,0 +1,47 @@
+.reepay-instructions{
+ margin-bottom: 15px;
+}
+.reepay-payment-icons img{
+ display: inline-block;
+ margin-right: 2px;
+ height: 25px;
+ margin-bottom: 10px;
+ width: auto;
+}
+.reepay-standard-redirect .main-container{
+ max-width: 100%;
+ max-width: 100%;
+}
+.reepay-payment-layout .logo-wrapper{
+ width: 100%;
+ text-align: center;
+ margin-bottom: 30px;
+}
+.reepay-payment-layout .logo-wrapper .logo{
+ float: none;
+ display: inline-block;
+ width: auto;
+ height: auto;
+}
+.reepay-payment-layout .title{
+ margin-bottom: 0;
+}
+.reepay-overlay{
+ width: 500px;
+ max-width: 100%;
+ margin: 0 auto 30px;
+}
+.reepay-overlay .pay-btn{
+ width: 150px;
+}
+.reepay-embedded{
+ width: 500px;
+ max-width: 100%;
+ margin: 0 auto 30px;
+}
+.reepay-embedded #rp_container{
+ width: 500px;
+ height: 730px;
+ max-width: 100%;
+ margin: 0 auto;
+}

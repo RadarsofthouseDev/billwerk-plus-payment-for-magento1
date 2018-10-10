@@ -1,0 +1,12 @@
+<?php 
+	$session = Mage::getSingleton('checkout/session');
+	$order = Mage::getModel('sales/order')->loadByIncrementId($session->getReepayOrderIncrementId());
+?>
+<div class="reepay-payment-layout">
+	<div class="logo-wrapper">
+		<img class="logo" src="<?php echo $this->getSkinUrl(Mage::getStoreConfig('design/header/logo_src')); ?>">
+	</div>
+
+	<h1><?php echo $this->__("Display not support."); ?></h1>
+	
+</div>

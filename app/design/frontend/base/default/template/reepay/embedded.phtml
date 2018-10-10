@@ -1,0 +1,65 @@
+<?php
+    $session = Mage::getSingleton('checkout/session');
+    $order = Mage::getModel('sales/order')->loadByIncrementId($session->getReepayOrderIncrementId());
+?>
+<div class="reepay-payment-layout">
+	<div class="logo-wrapper">
+		<img class="logo" src="<?php echo $this->getSkinUrl(Mage::getStoreConfig('design/header/logo_src')); ?>">
+	</div>
+
+	<div class="reepay-embedded">
+		<div class="order-section">
+			<div class="page-title reepay-title">
+			    <h1><?php echo $this->__('Reepay payment'); ?></h1>
+			</div>
+        	<div class="order-info">
+				<p><?php echo $this->__('Order ID :'); ?> <?php  echo $session->getReepayOrderIncrementId(); ?></p>
+				<p><?php echo $this->__('Total :'); ?> <?php  echo Mage::helper('core')->currency($order->getGrandTotal(), true, false); ?></p>
+        	</div>
+        </div>
+        <div id="rp_container"></div>
+	</div>
+	
+	<script type="text/javascript">
+		var rp = new Reepay.EmbeddedCheckout("<?php echo $this->getPaymentSessionId(); ?>" , 'rp_container');
+
+		rp.addEventHandler(Reepay.Event.Accept, function(data) {
+			data._isAjax = 1;
+			if( data.error == undefined && data.invoice ){
+				jQuery.ajax({
+	                url: '<?php echo Mage::getUrl('reepay/standard/accept'); ?>',
+	                method: 'GET',
+					data: data,
+	            }).done(function(data){
+					if( data.status == 'success' ){
+						window.location = data.redirect_url;
+					}
+	            }).fail(function(err){
+	            	console.log("Ajax error");
+	                console.log(err);
+	            });
+			}
+		});
+
+		rp.addEventHandler(Reepay.Event.Error, function(data) {
+			// log error
+			jQuery.ajax({
+				url: '<?php echo Mage::getUrl('reepay/standard/error'); ?>',
+				method: 'GET',
+				data: data,
+			}).done(function(data){
+				if( data.status == 'success' ){
+					window.location = data.redirect_url;
+				}
+			}).fail(function(err){
+				console.log("Ajax error");
+	            console.log(err);
+			});
+		});
+
+		rp.addEventHandler(Reepay.Event.Close, function(data) {
+			// not do anything for overlay close
+		});
+	</script>
+	
+</div>

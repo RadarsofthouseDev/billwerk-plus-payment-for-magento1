@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<config>
+	<sections>
+		<payment>
+			<groups>
+				<reepay translate="label" module="reepay">
+					<label>Reepay</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>1</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+						<version translate="label">
+							<label>Version</label>
+							<frontend_type>label</frontend_type>
+							<frontend_model>reepay/system_config_form_field_version</frontend_model>
+							<sort_order>0</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</version>
+						<active translate="label">
+							<label>Enabled</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>1</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</active>
+						<title translate="label">
+							<label>Title</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>2</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<validate>validate-length maximum-length-100</validate>
+						</title>
+						<instructions translate="label">
+							<label>Instructions</label>
+							<frontend_type>textarea</frontend_type>
+							<sort_order>3</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</instructions>
+						<api_key translate="label">
+							<label>Public API Key</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>6</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<comment><![CDATA[you can find at <a href="https://admin.reepay.com" target="_blank">https://admin.reepay.com</a> under "Developers" > "API Credentials".]]></comment>
+						</api_key>
+						<private_key translate="label">
+							<label>Private API Key</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>7</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<comment><![CDATA[you can find at <a href="https://admin.reepay.com" target="_blank">https://admin.reepay.com</a> under "Developers" > "API Credentials".]]></comment>
+						</private_key>
+						<api_key_test translate="label">
+							<label>Public API Key For Test</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>4</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<comment><![CDATA[you can find at <a href="https://admin.reepay.com" target="_blank">https://admin.reepay.com</a> under "Developers" > "API Credentials".]]></comment>
+						</api_key_test>
+						<private_key_test translate="label">
+							<label>Private API Key For Test</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>5</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<comment><![CDATA[you can find at <a href="https://admin.reepay.com" target="_blank">https://admin.reepay.com</a> under "Developers" > "API Credentials".]]></comment>
+						</private_key_test>
+						<api_key_type translate="label">
+							<label>API Key Type</label>
+							<frontend_type>select</frontend_type>
+							<source_model>reepay/system_config_source_dropdown_keytype</source_model>
+							<sort_order>8</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<comment>To switch account between test account and live account.</comment>
+						</api_key_type>
+						<display_type translate="label">
+							<label>Display type</label>
+							<frontend_type>select</frontend_type>
+							<source_model>reepay/system_config_source_dropdown_displaytype</source_model>
+							<sort_order>9</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</display_type>
+						<auto_capture translate="label">
+							<label>Auto capture</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</auto_capture>
+						<send_email_after_payment translate="label">
+							<label>Send order confirmation email when the payment is made</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>11</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</send_email_after_payment>
+						<order_status_before_payment translate="label">
+							<label>Order status before the payment is made</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status</source_model>
+							<sort_order>14</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_status_before_payment>
+						<order_status_after_payment translate="label">
+							<label>Order status when the payment is made</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status</source_model>
+							<sort_order>15</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</order_status_after_payment>
+						<allowspecific translate="label">
+							<label>Payment from Applicable Countries</label>
+							<frontend_type>allowspecific</frontend_type>
+							<sort_order>16</sort_order>
+							<source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</allowspecific>
+						<specificcountry translate="label">
+							<label>Payment from Specific Countries</label>
+							<frontend_type>multiselect</frontend_type>
+							<sort_order>17</sort_order>
+							<source_model>adminhtml/system_config_source_country</source_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</specificcountry>
+						<allowwed_payment translate="label">
+							<label>Allowed payments</label>
+							<frontend_type>multiselect</frontend_type>
+							<source_model>reepay/system_config_source_dropdown_allowwedpayment</source_model>
+							<sort_order>18</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</allowwed_payment>
+						<payment_icons translate="label">
+							<label>Payment icons</label>
+							<frontend_type>multiselect</frontend_type>
+							<source_model>reepay/system_config_source_dropdown_paymenticons</source_model>
+							<sort_order>19</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<can_be_empty>1</can_be_empty>
+							<comment>Payment icons which show on the checkout page.</comment>
+						</payment_icons>
+						<log translate="label">
+							<label>Reepay log</label>
+							<frontend_type>select</frontend_type>
+							<source_model>reepay/system_config_source_dropdown_log</source_model>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+							<comment>To enable Reepay log. Please make sure Magento log have been enabled.</comment>
+						</log>
+						<!--<test_mode translate="label">
+							<label>Test mode</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>21</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</test_mode>-->
+						<sort_order translate="label">
+							<label>Sort order</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>22</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</sort_order>
+					</fields>
+				</reepay>
+			</groups>
+		</payment>
+	</sections>
+</config>

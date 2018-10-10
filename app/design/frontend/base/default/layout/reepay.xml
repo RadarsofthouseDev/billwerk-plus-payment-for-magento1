@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+	<reepay_standard_redirect>
+		<reference name="head">
+			<block type="core/text" name="reepay_js">
+				<action method="setText">
+					<text>
+						<![CDATA[<script src="https://checkout.reepay.com/checkout.js"></script>]]>
+					</text>
+				</action>
+			</block>
+			<block type="core/template" name="custom_jquery" template="reepay/head/custom-jquery.phtml"/>
+			<action method="addItem">
+				<type>skin_css</type>
+				<name>css/reepay/reepay.css</name>
+			</action>
+		</reference>
+		<reference name="root">   
+			<action method="setTemplate">
+				<template>page/1column.phtml</template>
+			</action>
+			<remove name="header"/>
+			<remove name="footer"/> 
+		</reference>   
+		<reference name="content">   
+			<block type="reepay/index" name="reepay_index" template="reepay/default.phtml"/>   
+		</reference>   
+	</reepay_standard_redirect> 
+
+	<checkout_multishipping_shipping>
+		<reference name="head">
+			<action method="addItem">
+				<type>skin_css</type>
+				<name>css/reepay/reepay.css</name>
+			</action>
+		</reference>
+	</checkout_multishipping_shipping>
+
+	<checkout_onepage_index>
+		<reference name="head">
+			<action method="addItem">
+				<type>skin_css</type>
+				<name>css/reepay/reepay.css</name>
+			</action>
+		</reference>
+	</checkout_onepage_index>
+
+	<onepagecheckout_index_index>
+		<reference name="head">
+			<action method="addItem">
+				<type>skin_css</type>
+				<name>css/reepay/reepay.css</name>
+			</action>
+		</reference>
+	</onepagecheckout_index_index>
+
+	<opc_index_index>
+		<reference name="head">
+			<action method="addItem">
+				<type>skin_css</type>
+				<name>css/reepay/reepay.css</name>
+			</action>
+		</reference>
+	</opc_index_index>
+
+	<onestepcheckout_index_index>
+		<reference name="head">
+			<action method="addItem">
+				<type>skin_css</type>
+				<name>css/reepay/reepay.css</name>
+			</action>
+		</reference>
+	</onestepcheckout_index_index>
+</layout>
