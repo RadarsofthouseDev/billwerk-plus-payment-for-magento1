@@ -10,6 +10,9 @@
  *
  */
  
+
+/****** Fixed issue for Magento which has database prefix ******/
+
 $installer = $this;
 $installer->startSetup();
 
@@ -24,7 +27,9 @@ CREATE TABLE IF NOT EXISTS {$this->getTable('reepay_order_status')}(
 	token 			varchar(64) default NULL,
 	masked_card_number 			varchar(32) default NULL,
 	fingerprint 		varchar(64) default NULL,
-	card_type 		varchar(64) default NULL,
+    card_type 		varchar(64) default NULL,
+    error           varchar(128) default NULL,
+    error_state     varchar(128) default NULL,
 	PRIMARY KEY  (id),
 	KEY order_id (order_id)
 );

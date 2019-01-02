@@ -219,7 +219,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         if ((int)$total != $orderGrandTotal) {
             $line = array();
             $line['ordertext'] = $this->__('etc.');
-            ;
             $line['amount'] = (int)($orderGrandTotal - $total);
             $line['quantity'] = 1;
             $orderLines[] = $line;
@@ -367,7 +366,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $data = array(
             'order_id' => $orderId,
             'first_name' => $order->getBillingAddress()->getFirstname(),
-            'last_name' => $order->getBillingAddress()->getFirstname(),
+            'last_name' => $order->getBillingAddress()->getLastname(),
             'email' => $order->getCustomerEmail(),
             'token' => $params['id'],
             'masked_card_number' => $charge['source']['masked_card'],
