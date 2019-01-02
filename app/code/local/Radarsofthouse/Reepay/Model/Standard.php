@@ -54,6 +54,26 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
     }
     
     /**
+     * override getConfigData()
+     *
+     */
+    public function getConfigData($field, $storeId = null)
+    {
+        // set specific config path
+        if (null === $storeId) {
+            $storeId = $this->getStore();
+        }
+        $path = 'payment/'.$this->getCode().'/'.$field;
+        
+        // set golbal config path
+        if (Mage::getStoreConfig($path, $storeId) === null) {
+            $path = 'payment/reepay/'.$field;
+        }
+
+        return Mage::getStoreConfig($path, $storeId);
+    }
+
+    /**
      * Capture payment online
      *
      * @param Varien_Object $payment

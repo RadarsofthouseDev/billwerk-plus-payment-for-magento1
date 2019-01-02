@@ -116,7 +116,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $billingAddress = $this->getOrderBillingAddress($order);
         $shippingAddress = $this->getOrderShippingAddress($order);
         $orderLines = $this->getOrderLines($order);
-        $order = array(
+        $orderData = array(
             'handle' => $order->getIncrementId(),
             'currency' => $order->getOrderCurrencyCode(),
             'order_lines' => $orderLines,
@@ -124,7 +124,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             'shipping_address' => $shippingAddress,
         );
 
-        $paymentMethods = $this->getPaymentMethods();
+        $paymentMethods = $this->getPaymentMethods($order);
 
         $settle = false;
         if (Mage::helper('reepay')->getConfig('auto_capture') == 1) {
@@ -138,14 +138,14 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         );
 
         Mage::helper('reepay')->log($customer);
-        Mage::helper('reepay')->log($order);
+        Mage::helper('reepay')->log($orderData);
         Mage::helper('reepay')->log($paymentMethods);
         Mage::helper('reepay')->log($options);
 
         $res = Mage::helper('reepay/session')->chargeCreateWithNewCustomer(
             $apiKey,
             $customer,
-            $order,
+            $orderData,
             $paymentMethods,
             $settle,
             $options
@@ -186,7 +186,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $taxAmount = ($order->getTaxAmount() * 100);
         if ($taxAmount != 0) {
             $line = array();
-            $line['ordertext'] = 'Tax.';
+            $line['ordertext'] = $this->__('Tax.');
             $line['amount'] = (int)$taxAmount;
             $line['quantity'] = 1;
             $orderLines[] = $line;
@@ -218,7 +218,8 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         // other
         if ((int)$total != $orderGrandTotal) {
             $line = array();
-            $line['ordertext'] = 'Other';
+            $line['ordertext'] = $this->__('etc.');
+            ;
             $line['amount'] = (int)($orderGrandTotal - $total);
             $line['quantity'] = 1;
             $orderLines[] = $line;
@@ -585,10 +586,18 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
      *
      * @return array $_paymentMethods
      */
-    public function getPaymentMethods()
+    public function getPaymentMethods($order)
     {
-        $paymentMethods = Mage::helper('reepay')->getConfig('allowwed_payment');
-        $_paymentMethods = explode(',', $paymentMethods);
+        $_paymentMethods = array();
+
+        if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill') {
+            $_paymentMethods[] = 'viabill';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_mobilepay') {
+            $_paymentMethods[] = 'mobilepay';
+        } else {
+            $paymentMethods = Mage::helper('reepay')->getConfig('allowwed_payment');
+            $_paymentMethods = explode(',', $paymentMethods);
+        }
 
         return $_paymentMethods;
     }
