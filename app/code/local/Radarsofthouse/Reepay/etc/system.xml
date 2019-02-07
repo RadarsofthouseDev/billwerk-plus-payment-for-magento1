@@ -46,15 +46,6 @@
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</instructions>
-						<api_key translate="label">
-							<label>Public API Key</label>
-							<frontend_type>text</frontend_type>
-							<sort_order>6</sort_order>
-							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
-							<show_in_store>1</show_in_store>
-							<comment><![CDATA[you can find at <a href="https://admin.reepay.com" target="_blank">https://admin.reepay.com</a> under "Developers" >> "API Credentials".]]></comment>
-						</api_key>
 						<private_key translate="label">
 							<label>Private API Key</label>
 							<frontend_type>text</frontend_type>
@@ -64,15 +55,6 @@
 							<show_in_store>1</show_in_store>
 							<comment><![CDATA[you can find at <a href="https://admin.reepay.com" target="_blank">https://admin.reepay.com</a> under "Developers" >> "API Credentials".]]></comment>
 						</private_key>
-						<api_key_test translate="label">
-							<label>Public API Key For Test</label>
-							<frontend_type>text</frontend_type>
-							<sort_order>4</sort_order>
-							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
-							<show_in_store>1</show_in_store>
-							<comment><![CDATA[you can find at <a href="https://admin.reepay.com" target="_blank">https://admin.reepay.com</a> under "Developers" >> "API Credentials".]]></comment>
-						</api_key_test>
 						<private_key_test translate="label">
 							<label>Private API Key For Test</label>
 							<frontend_type>text</frontend_type>

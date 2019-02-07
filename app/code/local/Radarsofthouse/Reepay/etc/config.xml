@@ -96,9 +96,7 @@
 				<active>0</active>
 				<title>Reepay payment</title>
 				<instructions>The best payments in Europe.</instructions>
-				<api_key_test/>
 				<private_key_test/>
-				<api_key/>
 				<private_key/>
 				<api_key_type>0</api_key_type>
 				<order_status_before_payment>pending</order_status_before_payment>
