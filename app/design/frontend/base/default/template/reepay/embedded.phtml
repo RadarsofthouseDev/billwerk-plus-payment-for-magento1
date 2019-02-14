@@ -24,18 +24,26 @@
 		var rp = new Reepay.EmbeddedCheckout("<?php echo $this->getPaymentSessionId(); ?>" , 'rp_container');
 
 		rp.addEventHandler(Reepay.Event.Accept, function(data) {
+			console.log('Reepay.Event.Accept');
+            console.log(data);
+
 			data._isAjax = 1;
-			if( data.error == undefined && data.invoice ){
+			if( (data.error == undefined || data.error == "error.session.INVOICE_ALREADY_PAID" || data.error == "invoice_already_settled" ) && data.invoice ){
+				console.log('Save data');
+
 				jQuery.ajax({
 	                url: '<?php echo Mage::getUrl('reepay/standard/accept'); ?>',
-	                method: 'GET',
+	                method: 'POST',
 					data: data,
 	            }).done(function(data){
+					console.log('Ajax: done');
+                    console.log(data);
+
 					if( data.status == 'success' ){
 						window.location = data.redirect_url;
 					}
 	            }).fail(function(err){
-	            	console.log("Ajax error");
+	            	console.log("Ajax: error");
 	                console.log(err);
 	            });
 			}
@@ -45,7 +53,7 @@
 			// log error
 			jQuery.ajax({
 				url: '<?php echo Mage::getUrl('reepay/standard/error'); ?>',
-				method: 'GET',
+				method: 'POST',
 				data: data,
 			}).done(function(data){
 				if( data.status == 'success' ){

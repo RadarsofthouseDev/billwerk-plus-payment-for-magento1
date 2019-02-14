@@ -60,12 +60,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $this->getLayout()->getBlock('head')->setTitle($this->__('Reepay payment'));
         
         $sessionId = null;
-        if ($session->getReepaySessionID() && $session->getReepaySessionOrder()
-            && $session->getReepaySessionOrder() == $quote->getReservedOrderId()) {
-            // have Reepay session
-            Mage::helper('reepay')->log('have Reepay session');
-            $sessionId = $session->getReepaySessionID();
-        } else {
             // create new Reepay session
             $sessionId = $this->createReepaySession($order);
 
@@ -82,7 +76,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
                 );
                 $order->save();
             }
-        }
 
         if (Mage::helper('reepay')->getConfig('display_type') == SELF::DISPLAY_EMBEDDED) {
             $this->getLayout()->getBlock('reepay_index')
