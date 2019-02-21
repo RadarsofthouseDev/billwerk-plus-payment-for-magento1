@@ -67,7 +67,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             $session->setReepaySessionID($sessionId);
 
             if (!empty(Mage::helper('reepay')->getConfig('order_status_before_payment'))) {
-                $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
                 $order->setState(
                     Mage::helper('reepay')->getConfig('order_status_before_payment'),
                     true,
@@ -76,8 +75,14 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
                 );
                 $order->save();
             }
-
-        if (Mage::helper('reepay')->getConfig('display_type') == SELF::DISPLAY_EMBEDDED) {
+		
+		
+		if($order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill'){
+			// force viabill into payment window always
+			$this->getLayout()->getBlock('reepay_index')
+                ->setPaymentSessionId($sessionId)
+                ->setTemplate('reepay/window.phtml');
+		} elseif (Mage::helper('reepay')->getConfig('display_type') == SELF::DISPLAY_EMBEDDED) {
             $this->getLayout()->getBlock('reepay_index')
                 ->setPaymentSessionId($sessionId)
                 ->setTemplate('reepay/embedded.phtml');
@@ -124,11 +129,44 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             $settle = true;
         }
 
-        $options = array(
-            'accept_url' => Mage::getUrl('reepay/standard/accept'),
-            'cancel_url' => Mage::getUrl('reepay/standard/cancel'),
-            'locale' => Mage::app()->getLocale()->getLocaleCode(),
+        $localMapping = array(
+            'da_DK' => 'da_DK',
+            'sv_SE' => 'sv_SE',
+            'nb_NO' => 'no_NO',
+            'nn_NO' => 'no_NO',
+            'en_AU' => 'en_GB',
+            'en_CA' => 'en_GB',
+            'en_IE' => 'en_GB',
+            'en_NZ' => 'en_GB',
+            'en_GB' => 'en_GB',
+            'en_US' => 'en_GB',
+            'de_AT' => 'de_DE',
+            'de_DE' => 'de_DE',
+            'de_CH' => 'de_DE',
+            'fr_CA' => 'fr_FR',
+            'fr_FR' => 'fr_FR',
+            'es_AR' => 'es_ES',
+            'es_CL' => 'es_ES',
+            'es_CO' => 'es_ES',
+            'es_CR' => 'es_ES',
+            'es_MX' => 'es_ES',
+            'es_PA' => 'es_ES',
+            'es_PE' => 'es_ES',
+            'es_ES' => 'es_ES',
+            'es_VE' => 'es_ES',
+            'nl_NL' => 'nl_NL',
+            'pl_PL' => 'pl_PL',
         );
+
+        $options = array();
+        
+        if (!empty($localMapping[Mage::app()->getLocale()->getLocaleCode()])) {
+            $options['locale'] = $localMapping[Mage::app()->getLocale()->getLocaleCode()];
+        }
+
+        $options['accept_url'] = Mage::getUrl('reepay/standard/accept');
+        $options['cancel_url'] = Mage::getUrl('reepay/standard/cancel');
+
 
         Mage::helper('reepay')->log($customer);
         Mage::helper('reepay')->log($orderData);
