@@ -1,0 +1,10 @@
+<div class="reepay-payment-layout reepay-payment-success">
+	<div class="page-title">
+		<h1><?php echo $this->__('Your order has been received.') ?></h1>
+	</div>
+	<h2 class="sub-title"><?php echo $this->__('Thank you for your purchase!') ?></h2>
+	<p><?php echo $this->__('You will receive an order confirmation email with details of your order and a link to track its progress.') ?></p>
+	<div class="buttons-set">
+		<button type="button" class="button" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Continue Shopping')) ?>" onclick="window.location='<?php echo $this->getUrl() ?>'"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+	</div>
+</div>

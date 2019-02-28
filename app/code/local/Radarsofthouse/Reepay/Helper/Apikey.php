@@ -16,9 +16,12 @@ class Radarsofthouse_Reepay_Helper_Apikey extends Mage_Core_Helper_Abstract
      *
      * @return void
      */
-    public function getPrivateKey()
+    public function getPrivateKey($store = null)
     {
-        $store = Mage::app()->getStore();
+        if ($store === null) {
+            $store = Mage::app()->getStore()->getId();
+        }
+        
         $apiKeyType = Mage::getStoreConfig('payment/reepay/api_key_type', $store);
         if ($apiKeyType) {
             return Mage::getStoreConfig('payment/reepay/private_key', $store);
@@ -32,9 +35,12 @@ class Radarsofthouse_Reepay_Helper_Apikey extends Mage_Core_Helper_Abstract
      *
      * @return void
      */
-    public function getPublicKey()
+    public function getPublicKey($store = null)
     {
-        $store = Mage::app()->getStore();
+        if ($store === null) {
+            $store = Mage::app()->getStore()->getId();
+        }
+
         $apiKeyType = Mage::getStoreConfig('payment/reepay/api_key_type', $store);
         if ($apiKeyType) {
             return Mage::getStoreConfig('payment/reepay/api_key', $store);

@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.4</version>
+			<version>1.0.5</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -30,6 +30,15 @@
 				<class>Radarsofthouse_Reepay_Block</class>
 			</reepay>
 		</blocks>
+		<template>
+			<email>
+				<reepay_payment translate="label">
+					<label>Reepay payment</label>
+					<file>reepay_payment.html</file>
+					<type>html</type>
+				</reepay_payment>
+			</email>
+		</template>
 		<resources>
 			<reepay_setup>
 				<setup>
@@ -89,6 +98,19 @@
 			</modules>
 		</translate>
 	</frontend>
+	<adminhtml>
+		<events>
+			<checkout_submit_all_after>
+				<observers>
+					<Radarsofthouse_Reepay>
+						<type>singleton</type>
+						<class>Radarsofthouse_Reepay_Model_Observer</class>
+						<method>checkoutSubmitAllAfter</method>
+					</Radarsofthouse_Reepay>
+				</observers>
+			</checkout_submit_all_after>
+		</events>
+	</adminhtml>
 	<default>
 		<payment>
 			<reepay>

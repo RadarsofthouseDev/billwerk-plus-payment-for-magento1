@@ -27,6 +27,23 @@
 		</reference>   
 	</reepay_standard_redirect> 
 
+	<reepay_standard_success>
+		<reference name="head">
+			<action method="addItem">
+				<type>skin_css</type>
+				<name>css/reepay/reepay.css</name>
+			</action>
+		</reference>
+		<reference name="root">
+			<action method="setTemplate">
+				<template>page/1column.phtml</template>
+			</action>
+		</reference>
+		<reference name="content">
+			<block type="reepay/success" name="reepay_success" template="reepay/success.phtml"/>
+		</reference>
+	</reepay_standard_success> 
+
 	<checkout_multishipping_shipping>
 		<reference name="head">
 			<action method="addItem">

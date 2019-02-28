@@ -58,6 +58,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 } else {
                     return 1;
                 }
+
                 break;
             case 'sort_order':
                 return Mage::getStoreConfig('payment/reepay/sort_order', $store);
@@ -137,5 +138,268 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             // log only API
             Mage::log($val, $logType, 'reepay_debug.log');
         }
+    }
+
+    /**
+     * Create payment sesion on Reepay (for window payment)
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @return string $sessionId
+     */
+    public function createReepaySession($order)
+    {
+        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+        
+        $customer = $this->getCustomerData($order);
+
+        $billingAddress = $this->getOrderBillingAddress($order);
+        $shippingAddress = $this->getOrderShippingAddress($order);
+        $orderLines = $this->getOrderLines($order);
+        $orderData = array(
+            'handle' => $order->getIncrementId(),
+            'currency' => $order->getOrderCurrencyCode(),
+            'order_lines' => $orderLines,
+            'billing_address' => $billingAddress,
+            'shipping_address' => $shippingAddress,
+        );
+
+        $paymentMethods = $this->getPaymentMethods($order);
+
+        $settle = false;
+        if ($this->getConfig('auto_capture') == 1) {
+            $settle = true;
+        }
+
+        $localMapping = array(
+            'da_DK' => 'da_DK',
+            'sv_SE' => 'sv_SE',
+            'nb_NO' => 'no_NO',
+            'nn_NO' => 'no_NO',
+            'en_AU' => 'en_GB',
+            'en_CA' => 'en_GB',
+            'en_IE' => 'en_GB',
+            'en_NZ' => 'en_GB',
+            'en_GB' => 'en_GB',
+            'en_US' => 'en_GB',
+            'de_AT' => 'de_DE',
+            'de_DE' => 'de_DE',
+            'de_CH' => 'de_DE',
+            'fr_CA' => 'fr_FR',
+            'fr_FR' => 'fr_FR',
+            'es_AR' => 'es_ES',
+            'es_CL' => 'es_ES',
+            'es_CO' => 'es_ES',
+            'es_CR' => 'es_ES',
+            'es_MX' => 'es_ES',
+            'es_PA' => 'es_ES',
+            'es_PE' => 'es_ES',
+            'es_ES' => 'es_ES',
+            'es_VE' => 'es_ES',
+            'nl_NL' => 'nl_NL',
+            'pl_PL' => 'pl_PL',
+        );
+
+        $options = array();
+        
+        if (!empty($localMapping[Mage::app()->getLocale()->getLocaleCode()])) {
+            $options['locale'] = $localMapping[Mage::app()->getLocale()->getLocaleCode()];
+        }
+
+        $options['accept_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl().'reepay/standard/accept/';
+        $options['cancel_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl().'reepay/standard/cancel/';
+
+
+        $this->log($customer);
+        $this->log($orderData);
+        $this->log($paymentMethods);
+        $this->log($options);
+
+        $res = Mage::helper('reepay/session')->chargeCreateWithNewCustomer(
+            $apiKey,
+            $customer,
+            $orderData,
+            $paymentMethods,
+            $settle,
+            $options
+        );
+        $this->log('reepay/session : chargeCreateWithNewCustomer response');
+        $this->log($res);
+
+        $sessionId = $res['id'];
+
+        return $sessionId;
+    }
+
+    /**
+     * Prepare cuatomer data from order.
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @return array
+     */
+    public function getCustomerData($order)
+    {
+        $testMode = false;
+        if ($this->getConfig('test_mode') == 1) {
+            $testMode = true;
+        }
+
+        return array(
+            'handle' => $order->getBillingAddress()->getEmail(),
+            'email' => $order->getBillingAddress()->getEmail(),
+            'first_name' => $order->getBillingAddress()->getFirstname(),
+            'last_name' => $order->getBillingAddress()->getLastname(),
+            'address' => $order->getBillingAddress()->getStreet(1),
+            'address2' => $order->getBillingAddress()->getStreet(2),
+            'city' => $order->getBillingAddress()->getCity(),
+            'country' => $order->getBillingAddress()->getCountryId(),
+            'phone' => $order->getBillingAddress()->getTelephone(),
+            'company' => $order->getBillingAddress()->getCompany(),
+            'postal_code' => $order->getBillingAddress()->getPostcode(),
+            'vat' => $order->getBillingAddress()->getVatId(),
+            'test' => $testMode,
+            'generate_handle' => false,
+        );
+    }
+
+    /**
+     * Prepare billing address from order.
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @return array
+     */
+    public function getOrderBillingAddress($order)
+    {
+        return array(
+            'company' => $order->getBillingAddress()->getCompany(),
+            'vat' => $order->getBillingAddress()->getVatId(),
+            'attention' => '',
+            'address' => $order->getBillingAddress()->getStreet(1),
+            'address2' => $order->getBillingAddress()->getStreet(2),
+            'city' => $order->getBillingAddress()->getCity(),
+            'country' => $order->getBillingAddress()->getCountryId(),
+            'email' => $order->getBillingAddress()->getEmail(),
+            'phone' => $order->getBillingAddress()->getTelephone(),
+            'first_name' => $order->getBillingAddress()->getFirstname(),
+            'last_name' => $order->getBillingAddress()->getLastname(),
+            'postal_code' => $order->getBillingAddress()->getPostcode(),
+            'state_or_province' => $order->getBillingAddress()->getRegion(),
+        );
+    }
+
+    /**
+     * Prepare shipping address from order.
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @return array
+     */
+    public function getOrderShippingAddress($order)
+    {
+        return array(
+            'company' => $order->getShippingAddress()->getCompany(),
+            'vat' => $order->getShippingAddress()->getVatId(),
+            'attention' => '',
+            'address' => $order->getShippingAddress()->getStreet(1),
+            'address2' => $order->getShippingAddress()->getStreet(2),
+            'city' => $order->getShippingAddress()->getCity(),
+            'country' => $order->getShippingAddress()->getCountryId(),
+            'email' => $order->getShippingAddress()->getEmail(),
+            'phone' => $order->getShippingAddress()->getTelephone(),
+            'first_name' => $order->getShippingAddress()->getFirstname(),
+            'last_name' => $order->getShippingAddress()->getLastname(),
+            'postal_code' => $order->getShippingAddress()->getPostcode(),
+            'state_or_province' => $order->getShippingAddress()->getRegion(),
+        );
+    }
+
+    /**
+    * Prepare order_lines for payment gateway
+    *
+    * @param Mage_Sales_Model_Order $order
+    * @return array $orderLines
+    */
+    public function getOrderLines($order)
+    {
+        $orderGrandTotal = (int)($order->getGrandTotal() * 100);
+        $total = 0;
+        $orderLines = array();
+
+        // products
+        $orderitems = $order->getAllVisibleItems();
+        foreach ($orderitems as $orderitem) {
+            $amount = ($orderitem->getRowTotal() * 100) / $orderitem->getQtyOrdered();
+            $line = array();
+            $line['ordertext'] = $orderitem->getProduct()->getName();
+            $line['amount'] = (int)$amount;
+            $line['quantity'] = (int)$orderitem->getQtyOrdered();
+            $orderLines[] = $line;
+            $total = $total + ($orderitem->getRowTotal() * 100);
+        }
+        
+        // tax
+        $taxAmount = ($order->getTaxAmount() * 100);
+        if ($taxAmount != 0) {
+            $line = array();
+            $line['ordertext'] = $this->__('Tax.');
+            $line['amount'] = (int)$taxAmount;
+            $line['quantity'] = 1;
+            $orderLines[] = $line;
+            $total = $total + $taxAmount;
+        }
+
+        // shipping
+        $shippingAmount = ($order->getShippingAmount() * 100);
+        if ($shippingAmount != 0) {
+            $line = array();
+            $line['ordertext'] = $order->getShippingDescription();
+            $line['amount'] = (int)$shippingAmount;
+            $line['quantity'] = 1;
+            $orderLines[] = $line;
+            $total = $total + $shippingAmount;
+        }
+
+        // discount
+        $discountAmount = ($order->getDiscountAmount() * 100);
+        if ($discountAmount != 0) {
+            $line = array();
+            $line['ordertext'] = $order->getDiscountDescription();
+            $line['amount'] = (int)$discountAmount;
+            $line['quantity'] = 1;
+            $orderLines[] = $line;
+            $total = $total + $discountAmount;
+        }
+
+        // other
+        if ((int)$total != $orderGrandTotal) {
+            $line = array();
+            $line['ordertext'] = $this->__('etc.');
+            $line['amount'] = (int)($orderGrandTotal - $total);
+            $line['quantity'] = 1;
+            $orderLines[] = $line;
+        }
+
+        $this->log($orderLines);
+
+        return $orderLines;
+    }
+
+    /**
+     * Get allowwed payments from configuration
+     *
+     * @return array $_paymentMethods
+     */
+    public function getPaymentMethods($order)
+    {
+        $_paymentMethods = array();
+
+        if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill') {
+            $_paymentMethods[] = 'viabill';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_mobilepay') {
+            $_paymentMethods[] = 'mobilepay';
+        } else {
+            $paymentMethods = $this->getConfig('allowwed_payment');
+            $_paymentMethods = explode(',', $paymentMethods);
+        }
+
+        return $_paymentMethods;
     }
 }

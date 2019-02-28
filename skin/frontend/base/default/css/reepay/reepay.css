@@ -45,3 +45,12 @@
  max-width: 100%;
  margin: 0 auto;
 }
+.reepay-payment-success{
+ text-align: center;
+}
+.reepay-payment-success .buttons-set{
+ text-align: center;
+}
+.reepay-payment-success .buttons-set button.button{
+ float: none;
+}

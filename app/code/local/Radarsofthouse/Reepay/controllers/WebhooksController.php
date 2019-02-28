@@ -123,7 +123,8 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
      */
     protected function getInvoice($handle)
     {
-        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey();
+        $order = Mage::getModel('sales/order')->loadByIncrementId($handle);
+        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
         $invoice = Mage::helper('reepay/invoice')->get($apiKey, $handle);
         if (!$invoice) {
             Mage::throwException("Invoice {$handle} not found in {$apiKey}");

@@ -14,7 +14,7 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
     protected $_code = 'reepay';
      
     protected $_isInitializeNeeded = true;
-    protected $_canUseInternal = false;
+    protected $_canUseInternal = true;
     protected $_canUseForMultishipping = false;
     protected $_canCapture = true;
     protected $_canRefund = true;
@@ -87,7 +87,7 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
 
         Mage::helper('reepay')->log('capture : '.$order->getIncrementId());
 
-        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey();
+        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
         $charge = Mage::helper('reepay/charge')->settle($apiKey, $order->getIncrementId());
         if (!empty($charge)) {
             if ($charge['state'] == 'settled') {
@@ -115,7 +115,7 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
 
         Mage::helper('reepay')->log('refund : '.$order->getIncrementId());
 
-        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey();
+        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
         $refund = Mage::helper('reepay/refund')->create($apiKey, array('invoice' => $order->getIncrementId()));
         if (!empty($refund)) {
             if ($refund['state'] == 'refunded') {
