@@ -48,49 +48,54 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
         Mage::helper('reepay')->log('Admin created order : '.$orderId);
 
-        try {
-            $sessionId = Mage::helper('reepay')->createReepaySession($order);
+        if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_mobilepay' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill'
+        ) {
+            try {
+                $sessionId = Mage::helper('reepay')->createReepaySession($order);
 
-            if (empty($sessionId)) {
-                Mage::log('Cannot create Reepay payment session', null, 'reepay-observer.log');
-                Mage::throwException('Cannot create Reepay payment session');
+                if (empty($sessionId)) {
+                    Mage::log('Cannot create Reepay payment session', null, 'reepay-observer.log');
+                    Mage::throwException('Cannot create Reepay payment session');
 
-                return;
-            }
+                    return;
+                }
 
-            $mailTemplate = Mage::getModel('core/email_template');
-            $vars = array(
-                'increment_id' => $order->getIncrementId(),
-                'payment_url' => 'https://checkout.reepay.com/#/'.$sessionId,
-            );
-            $mailTemplate->setDesignConfig(array(
-                'area' => 'frontend',
-                'store' => $order->getStoreId(),
-            ));
-            $mailTemplate->sendTransactional(
-                'reepay_payment',
-                'sales',
-                $order->getBillingAddress()->getEmail(),
-                $order->getBillingAddress()->getFirstname() . ' ' . $order->getBillingAddress()->getLastname(),
-                $vars,
-                $order->getStoreId()
-            );
-
-
-            if (!empty(Mage::helper('reepay')->getConfig('order_status_before_payment'))) {
-                $order->setState(
-                    Mage::helper('reepay')->getConfig('order_status_before_payment'),
-                    true,
-                    'Reepay : Order status before the payment is made',
-                    null
+                $mailTemplate = Mage::getModel('core/email_template');
+                $vars = array(
+                    'increment_id' => $order->getIncrementId(),
+                    'payment_url' => 'https://checkout.reepay.com/#/'.$sessionId,
+                );
+                $mailTemplate->setDesignConfig(array(
+                    'area' => 'frontend',
+                    'store' => $order->getStoreId(),
+                ));
+                $mailTemplate->sendTransactional(
+                    'reepay_payment',
+                    'sales',
+                    $order->getBillingAddress()->getEmail(),
+                    $order->getBillingAddress()->getFirstname() . ' ' . $order->getBillingAddress()->getLastname(),
+                    $vars,
+                    $order->getStoreId()
                         );
-                $order->save();
+
+
+                if (!empty(Mage::helper('reepay')->getConfig('order_status_before_payment'))) {
+                    $order->setState(
+                        Mage::helper('reepay')->getConfig('order_status_before_payment'),
+                        true,
+                        'Reepay : Order status before the payment is made',
+                        null
+                                    );
+                    $order->save();
+                }
+                        
+                Mage::log('onCheckoutSubmitAllAfter', null, 'reepay-observer.log');
+            } catch (Exception $e) {
+                Mage::log('onCheckoutSubmitAllAfter() exception: '.$e->getMessage(), null, 'reepay-observer.log');
+                Mage::throwException('Error: '.$e->getMessage());
             }
-            
-            Mage::log('onCheckoutSubmitAllAfter', null, 'reepay-observer.log');
-        } catch (Exception $e) {
-            Mage::log('onCheckoutSubmitAllAfter() exception: '.$e->getMessage(), null, 'reepay-observer.log');
-            Mage::throwException('Error: '.$e->getMessage());
         }
     }
 }
