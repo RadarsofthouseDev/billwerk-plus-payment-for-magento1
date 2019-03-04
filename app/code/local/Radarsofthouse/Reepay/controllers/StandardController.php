@@ -65,17 +65,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
 
         $session->setReepaySessionOrder($quote->getReservedOrderId());
         $session->setReepaySessionID($sessionId);
-
-        if (!empty(Mage::helper('reepay')->getConfig('order_status_before_payment'))) {
-            $order->setState(
-                Mage::helper('reepay')->getConfig('order_status_before_payment'),
-                true,
-                'Reepay : Order status before the payment is made',
-                null
-            );
-            $order->save();
-        }
-        
         
         if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill') {
             // force viabill into payment window always

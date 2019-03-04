@@ -101,7 +101,7 @@
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</send_email_after_payment>
-						<order_status_before_payment translate="label">
+						<order_status translate="label">
 							<label>Order status before the payment is made</label>
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_order_status</source_model>
@@ -109,7 +109,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
-						</order_status_before_payment>
+						</order_status>
 						<order_status_after_payment translate="label">
 							<label>Order status when the payment is made</label>
 							<frontend_type>select</frontend_type>

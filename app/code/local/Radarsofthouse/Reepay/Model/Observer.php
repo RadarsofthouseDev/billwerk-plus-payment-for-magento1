@@ -79,17 +79,6 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
                     $vars,
                     $order->getStoreId()
                         );
-
-
-                if (!empty(Mage::helper('reepay')->getConfig('order_status_before_payment'))) {
-                    $order->setState(
-                        Mage::helper('reepay')->getConfig('order_status_before_payment'),
-                        true,
-                        'Reepay : Order status before the payment is made',
-                        null
-                                    );
-                    $order->save();
-                }
                         
                 Mage::log('onCheckoutSubmitAllAfter', null, 'reepay-observer.log');
             } catch (Exception $e) {

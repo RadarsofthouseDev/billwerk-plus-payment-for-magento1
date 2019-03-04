@@ -39,8 +39,6 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 return Mage::getStoreConfig('payment/reepay/auto_capture', $store);
             case 'send_email_after_payment':
                 return Mage::getStoreConfig('payment/reepay/send_email_after_payment', $store);
-            case 'order_status_before_payment':
-                return $this->getOrderState(Mage::getStoreConfig('payment/reepay/order_status_before_payment', $store));
             case 'order_status_after_payment':
                 return $this->getOrderState(Mage::getStoreConfig('payment/reepay/order_status_after_payment', $store));
             case 'allowspecific':
