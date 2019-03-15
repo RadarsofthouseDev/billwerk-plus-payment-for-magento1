@@ -1,0 +1,21 @@
+<!--@subject Reepay Payment link for # {{var increment_id}} @-->
+<!--@vars
+{"var increment_id":"Order Id",
+"var payment_url":"Reepay Payment Url",}
+@-->
+<!--@styles
+@-->
+
+{{template config_path="design/email/header"}}
+
+<table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td class="action-content">
+            <h1>Payment for order {{var increment_id}}</h1>
+            <p>A new order has been created for you</p>
+            <p><a href="{{var payment_url}}">Click here to make payment</a>.</p>
+        </td>
+    </tr>
+</table>
+
+{{template config_path="design/email/footer"}}

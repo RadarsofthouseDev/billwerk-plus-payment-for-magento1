@@ -74,7 +74,7 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
                 $mailTemplate->sendTransactional(
                     'reepay_payment',
                     'sales',
-                    $order->getBillingAddress()->getEmail(),
+                    $order->getCustomerEmail(),
                     $order->getBillingAddress()->getFirstname() . ' ' . $order->getBillingAddress()->getLastname(),
                     $vars,
                     $order->getStoreId()
