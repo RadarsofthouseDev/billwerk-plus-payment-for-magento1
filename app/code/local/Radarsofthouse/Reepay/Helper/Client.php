@@ -188,7 +188,11 @@ class Radarsofthouse_Reepay_Helper_Client extends Mage_Core_Helper_Abstract
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
         curl_setopt($ch, CURLOPT_ENCODING, '');
-        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
+
+        if(  phpversion() < 7 ){
+            curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
+        }
+        
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
         switch ($verb) {

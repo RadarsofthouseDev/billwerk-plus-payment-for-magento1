@@ -43,11 +43,11 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                         } else {
                             $invoice = $this->getInvoice($data['invoice']);
 
-                            $this->refund($data['invoice']);
+                            // $this->refund($data['invoice']);
 
                             $response = array(
                                 'invoice' => $invoice,
-                                'message' => 'This request is invoice_refund event.',
+                                'message' => 'This request is invoice_refund event. (blocked by Magento)',
                             );
                         }
 

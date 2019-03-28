@@ -109,11 +109,21 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function setReepayPaymentState($payment, $state)
     {
-        $_additionalData = unserialize($payment->getAdditionalData());
+        $_additionalData = array();
+        if( !empty( $payment->getAdditionalData() ) ){
+            $_additionalData = unserialize($payment->getAdditionalData());
+        }
         $_additionalData['state'] = $state;
         $payment->setAdditionalData(serialize($_additionalData));
 
-        $_additionalInfo = unserialize($payment->getAdditionalInformation());
+        $_additionalInfo = array();
+        if( !empty($payment->getAdditionalInformation()) ){
+            if( is_array($payment->getAdditionalInformation()) ){
+                $_additionalInfo = $payment->getAdditionalInformation();
+            }else{
+                $_additionalInfo = unserialize($payment->getAdditionalInformation());
+            }
+        }
         $_additionalInfo['raw_details_info']['state'] = $state;
         $payment->setAdditionalInformation(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $_additionalInfo);
         
