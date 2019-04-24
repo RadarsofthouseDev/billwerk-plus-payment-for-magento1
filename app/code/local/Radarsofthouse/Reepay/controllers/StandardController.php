@@ -52,9 +52,10 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
 
         $session->setReepayOrderIncrementId($quote->getReservedOrderId());
         Mage::helper('reepay')->log('reepay/standard/redirect : '.$quote->getReservedOrderId());
-        Mage::helper('reepay')->log('Display type : '.Mage::helper('reepay')->getConfig('display_type'));
 
         $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
+
+        Mage::helper('reepay')->log('Display type : '.Mage::helper('reepay')->getConfig('display_type', $order->getStoreId()));
 
         $this->loadLayout();
         $this->getLayout()->getBlock('head')->setTitle($this->__('Reepay payment'));
@@ -71,15 +72,15 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             $this->getLayout()->getBlock('reepay_index')
                 ->setPaymentSessionId($sessionId)
                 ->setTemplate('reepay/window.phtml');
-        } elseif (Mage::helper('reepay')->getConfig('display_type') == SELF::DISPLAY_EMBEDDED) {
+        } elseif (Mage::helper('reepay')->getConfig('display_type', $order->getStoreId()) == SELF::DISPLAY_EMBEDDED) {
             $this->getLayout()->getBlock('reepay_index')
                 ->setPaymentSessionId($sessionId)
                 ->setTemplate('reepay/embedded.phtml');
-        } elseif (Mage::helper('reepay')->getConfig('display_type') == SELF::DISPLAY_OVERLAY) {
+        } elseif (Mage::helper('reepay')->getConfig('display_type', $order->getStoreId()) == SELF::DISPLAY_OVERLAY) {
             $this->getLayout()->getBlock('reepay_index')
                 ->setPaymentSessionId($sessionId)
                 ->setTemplate('reepay/overlay.phtml');
-        } elseif (Mage::helper('reepay')->getConfig('display_type') == SELF::DISPLAY_WINDOW) {
+        } elseif (Mage::helper('reepay')->getConfig('display_type', $order->getStoreId()) == SELF::DISPLAY_WINDOW) {
             $this->getLayout()->getBlock('reepay_index')
                 ->setPaymentSessionId($sessionId)
                 ->setTemplate('reepay/window.phtml');
@@ -133,7 +134,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             $grandTotal = Mage::helper('core')->currency($order->getGrandTotal(), true, false);
 
             $order->setState(
-                Mage::helper('reepay')->getConfig('order_status_after_payment'),
+                Mage::helper('reepay')->getConfig('order_status_after_payment', $order->getStoreId()),
                 true,
                 __('Reepay : The authorized amount is %s.', $grandTotal),
                 false
@@ -266,7 +267,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             $session->unsReepaySessionOrder();
         }
 
-        $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment');
+        $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment', $order->getStoreId());
         if ($sendEmailAfterPayment) {
             $order->setEmailSent(true);
             $order->sendNewOrderEmail();

@@ -15,11 +15,15 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
      * get extension configuration by key
      *
      * @param string $key
+     * @param int $store
      * @return string|boolean
      */
-    public function getConfig($key)
+    public function getConfig($key, $store = null )
     {
-        $store = Mage::app()->getStore();
+        if ($store === null) {
+            $store = Mage::app()->getStore()->getId();
+        }
+        
         switch ($key) {
             case 'version':
                 return Mage::getStoreConfig('payment/reepay/version', $store);
@@ -174,7 +178,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $paymentMethods = $this->getPaymentMethods($order);
 
         $settle = false;
-        if ($this->getConfig('auto_capture') == 1) {
+        if ($this->getConfig('auto_capture', $order->getStoreId()) == 1) {
             $settle = true;
         }
 
@@ -247,7 +251,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
     public function getCustomerData($order)
     {
         $testMode = false;
-        if ($this->getConfig('test_mode') == 1) {
+        if ($this->getConfig('test_mode', $order->getStoreId()) == 1) {
             $testMode = true;
         }
 
