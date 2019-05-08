@@ -132,6 +132,17 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $payment->setAdditionalInformation(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $_additionalInfo);
         
         $payment->save();
+
+        $order = $payment->getOrder();
+        $reepayStatus = Mage::getModel('reepay/status')->getCollection()->addFieldToFilter('order_id', $order->getIncrementId());
+        if(count($reepayStatus) > 0){
+            foreach ($reepayStatus as $reepayStatusItem) {
+                $reepayStatusItem->setStatus($state);
+                $reepayStatusItem->save();
+            }
+        }
+
+
     }
 
     /**
@@ -338,15 +349,17 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         // products
         $orderitems = $order->getAllVisibleItems();
         foreach ($orderitems as $orderitem) {
-            $amount = ($orderitem->getRowTotal() * 100) / $orderitem->getQtyOrdered();
+            $amount = $orderitem->getPriceInclTax() * 100;
             $line = array();
             $line['ordertext'] = $orderitem->getProduct()->getName();
-            $line['amount'] = (int)$amount;
+            $line['amount'] = (int)round($amount);
             $line['quantity'] = (int)$orderitem->getQtyOrdered();
+            $line['vat'] = $orderitem->getTaxPercent()/100;
+            $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
             $total = $total + ($orderitem->getRowTotal() * 100);
         }
-        
+        /*
         // tax
         $taxAmount = ($order->getTaxAmount() * 100);
         if ($taxAmount != 0) {
@@ -357,14 +370,23 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $orderLines[] = $line;
             $total = $total + $taxAmount;
         }
+        */
 
         // shipping
-        $shippingAmount = ($order->getShippingAmount() * 100);
+        $shippingAmount = ($order->getShippingInclTax() * 100);
         if ($shippingAmount != 0) {
             $line = array();
             $line['ordertext'] = $order->getShippingDescription();
-            $line['amount'] = (int)$shippingAmount;
             $line['quantity'] = 1;
+            $line['amount'] = (int)$shippingAmount;
+            if( $order->getShippingTaxAmount() > 0 ){
+                $line['vat'] = $order->getShippingTaxAmount()/$order->getShippingAmount();
+                $line['amount_incl_vat'] = "true";
+            }else{
+                $line['vat'] = 0;
+                $line['amount_incl_vat'] = "true";
+            }
+
             $orderLines[] = $line;
             $total = $total + $shippingAmount;
         }
@@ -376,19 +398,24 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $line['ordertext'] = $order->getDiscountDescription();
             $line['amount'] = (int)$discountAmount;
             $line['quantity'] = 1;
+            $line['vat'] = 0;
+            $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
             $total = $total + $discountAmount;
         }
 
+        /*
         // other
         if ((int)$total != $orderGrandTotal) {
             $line = array();
             $line['ordertext'] = $this->__('etc.');
             $line['amount'] = (int)($orderGrandTotal - $total);
             $line['quantity'] = 1;
+            $line['vat'] = 0;
+            $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
         }
-
+        */
         $this->log($orderLines);
 
         return $orderLines;
@@ -413,5 +440,97 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return $_paymentMethods;
+    }
+
+    /**
+     * Prepare payment data from charge response
+     *
+     * @param array $paymentData
+     * @return array $paymentData
+     */
+    public function preparePaymentData($paymentData)
+    {
+        if (isset($paymentData['order_lines'])) {
+            unset($paymentData['order_lines']);
+        }
+
+        if (isset($paymentData['billing_address'])) {
+            unset($paymentData['billing_address']);
+        }
+
+        if (isset($paymentData['shipping_address'])) {
+            unset($paymentData['shipping_address']);
+        }
+
+        if (isset($paymentData['source'])) {
+            $_source = $paymentData['source'];
+            unset($paymentData['source']);
+            $paymentData['source_type'] = $_source['type'];
+            $paymentData['source_fingerprint'] = $_source['fingerprint'];
+            $paymentData['source_card_type'] = $_source['card_type'];
+            $paymentData['source_exp_date'] = $_source['exp_date'];
+            $paymentData['source_masked_card'] = $_source['masked_card'];
+        }
+
+        return $paymentData;
+    }
+    
+    /**
+     * Create payment transaction
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @param array $paymentData
+     * @return int Transaction ID
+     */
+    public function addTransactionToOrder($order, $paymentData = array())
+    {
+        try {
+            // prepare transaction data
+            $paymentData = $this->preparePaymentData($paymentData);
+
+            $payment = $order->getPayment();
+            $payment->setTransactionId($paymentData['transaction']);
+            $payment->setAdditionalData(serialize($paymentData));
+            $payment->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                (array) $paymentData
+            );
+            $payment->setParentTransactionId(null);
+            $payment->save();
+
+            $state = '';
+            $isClosed = 0;
+            if ($paymentData['state'] == 'authorized') {
+                $state = Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH;
+                $isClosed = 0;
+            } elseif ($paymentData['state'] == 'settled') {
+                $state = Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE;
+                $isClosed = 1;
+            }
+
+            $transaction = $payment->addTransaction($state);
+            $transaction->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                (array) $paymentData
+            );
+            $transaction->setTxnId($paymentData['transaction']);
+            $transaction->setIsClosed($isClosed);
+            $transaction->save();
+
+            $grandTotal = Mage::helper('core')->currency($order->getGrandTotal(), true, false);
+
+            $order->setState(
+                Mage::helper('reepay')->getConfig('order_status_after_payment', $order->getStoreId()),
+                true,
+                __('Reepay : The authorized amount is %s.', $grandTotal),
+                false
+            );
+            $order->save();
+ 
+            return  $transaction->getTransactionId();
+        } catch (Exception $e) {
+            Mage::helper('reepay')->log('ERROR : addTransactionToOrder()');
+            Mage::helper('reepay')->log($e->getMessage());
+        }
     }
 }

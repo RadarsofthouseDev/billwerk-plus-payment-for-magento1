@@ -1,0 +1,32 @@
+<?php
+    $instructions = $this->getInstructions();
+	$paymenticons = $this->getPaymentIcons();
+	$oDesign = Mage::getDesign()->setArea('frontend');
+?>
+<?php if ($instructions || $paymenticons): ?>
+    <ul class="form-list checkout-agreements" id="payment_form_<?php echo $this->getMethodCode() ?>" style="display:none;">
+        <li>
+        	<div class="<?php echo $this->getMethodCode() ?>-instructions-content agreement-content">
+	        	<?php if ($instructions): ?>
+		            <div class="reepay-instructions">
+		            	<?php echo nl2br($instructions) ?>
+		            </div>
+	            <?php endif; ?>
+	            <?php if ($paymenticons): ?>
+		            <div class="reepay-payment-icons">
+		        		<?php
+                            $_paymenticons = explode(',', $paymenticons);
+                        ?>
+		        		<?php foreach ($_paymenticons as $icon): ?>
+		        			<img height="25px" src="<?php echo $oDesign->getSkinUrl('images/reepay/icons/'.$icon.'.png'); ?>"> 
+		        		<?php endforeach; ?>
+		        	</div>
+	            <?php endif; ?>
+            </div>
+        </li>
+    </ul>
+<?php endif; ?>
+
+<?php 
+	$oDesign = Mage::getDesign()->setArea('adminhtml');
+?>

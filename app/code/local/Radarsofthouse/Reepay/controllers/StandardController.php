@@ -90,98 +90,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
     }
 
     /**
-     * Create payment transaction
-     *
-     * @param Mage_Sales_Model_Order $order
-     * @param array $paymentData
-     * @return int Transaction ID
-     */
-    public function addTransactionToOrder($order, $paymentData = array())
-    {
-        try {
-            // prepare transaction data
-            $paymentData = $this->preparePaymentData($paymentData);
-
-            $payment = $order->getPayment();
-            $payment->setTransactionId($paymentData['transaction']);
-            $payment->setAdditionalData(serialize($paymentData));
-            $payment->setAdditionalInformation(
-                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
-                (array) $paymentData
-            );
-            $payment->setParentTransactionId(null);
-            $payment->save();
-
-            $state = '';
-            $isClosed = 0;
-            if ($paymentData['state'] == 'authorized') {
-                $state = Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH;
-                $isClosed = 0;
-            } elseif ($paymentData['state'] == 'settled') {
-                $state = Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE;
-                $isClosed = 1;
-            }
-
-            $transaction = $payment->addTransaction($state);
-            $transaction->setAdditionalInformation(
-                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
-                (array) $paymentData
-            );
-            $transaction->setTxnId($paymentData['transaction']);
-            $transaction->setIsClosed($isClosed);
-            $transaction->save();
-
-            $grandTotal = Mage::helper('core')->currency($order->getGrandTotal(), true, false);
-
-            $order->setState(
-                Mage::helper('reepay')->getConfig('order_status_after_payment', $order->getStoreId()),
-                true,
-                __('Reepay : The authorized amount is %s.', $grandTotal),
-                false
-            );
-            $order->save();
- 
-            return  $transaction->getTransactionId();
-        } catch (Exception $e) {
-            Mage::helper('reepay')->log('ERROR : addTransactionToOrder()');
-            Mage::helper('reepay')->log($e->getMessage());
-        }
-    }
-
-    /**
-     * Prepare payment data from charge response
-     *
-     * @param array $paymentData
-     * @return array $paymentData
-     */
-    public function preparePaymentData($paymentData)
-    {
-        if (isset($paymentData['order_lines'])) {
-            unset($paymentData['order_lines']);
-        }
-
-        if (isset($paymentData['billing_address'])) {
-            unset($paymentData['billing_address']);
-        }
-
-        if (isset($paymentData['shipping_address'])) {
-            unset($paymentData['shipping_address']);
-        }
-
-        if (isset($paymentData['source'])) {
-            $_source = $paymentData['source'];
-            unset($paymentData['source']);
-            $paymentData['source_type'] = $_source['type'];
-            $paymentData['source_fingerprint'] = $_source['fingerprint'];
-            $paymentData['source_card_type'] = $_source['card_type'];
-            $paymentData['source_exp_date'] = $_source['exp_date'];
-            $paymentData['source_masked_card'] = $_source['masked_card'];
-        }
-
-        return $paymentData;
-    }
-
-    /**
      * Accept from window payment
      */
     public function acceptAction()
@@ -198,17 +106,42 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         }
         
         $orderId = $params['invoice'];
-        $id = $params['id'];
+        $id = "";
+        if( !empty($params['id']) ){
+            $id = $params['id'];
+        }
+        
         $_isAjax = $params['_isAjax'];
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 
         $reepayStatus = Mage::getModel('reepay/status')->getCollection()->addFieldToFilter('order_id', $orderId);
 
-
+        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
         
 
         if ($reepayStatus->getSize() > 0) {
             Mage::helper('reepay')->log('order : '.$orderId.' have been accepted already');
+
+            // delete reepay session
+            if( !empty($id) ){
+                // set token to 'reepay/status' model
+                foreach ($reepayStatus as $reepayStatusItem) {
+                    $reepayStatusItem->setToken($id);
+                    $reepayStatusItem->save();
+                }
+
+                $res = Mage::helper('reepay/session')->delete($apiKey, $id);
+                Mage::helper('reepay')->log('delete reepay session : '.$id);
+            }
+
+            // unset reepay session id on checkout session
+            if (!empty($session->getReepaySessionID())) {
+                $session->unsReepaySessionID();
+            }
+            if (!empty($session->getReepaySessionOrder())) {
+                $session->unsReepaySessionOrder();
+            }
+
             if ($_isAjax == 1) {
                 $result = array();
                 $result['status'] = 'success';
@@ -235,7 +168,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             return;
         }
 
-        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+        
         $charge = Mage::helper('reepay/charge')->get($apiKey, $orderId);
 
         $data = array(
@@ -243,7 +176,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             'first_name' => $order->getBillingAddress()->getFirstname(),
             'last_name' => $order->getBillingAddress()->getLastname(),
             'email' => $order->getCustomerEmail(),
-            'token' => $params['id'],
+            'token' => $id,
             'masked_card_number' => $charge['source']['masked_card'],
             'fingerprint' => $charge['source']['fingerprint'],
             'card_type' => $charge['source']['card_type'],
@@ -255,15 +188,19 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $reepayOrderStatus->save();
         Mage::helper('reepay')->log('save Model:reepay/status');
 
-        $this->addTransactionToOrder($order, $charge);
+        Mage::helper('reepay')->addTransactionToOrder($order, $charge);
 
         // delete reepay session
-        $res = Mage::helper('reepay/session')->delete($apiKey, $id);
-        Mage::helper('reepay')->log('delete reepay session : '.$id);
+        if( !empty($id) ){
+            $res = Mage::helper('reepay/session')->delete($apiKey, $id);
+            Mage::helper('reepay')->log('delete reepay session : '.$id);
+        }
 
         // unset reepay session id on checkout session
-        if ($session->getReepaySessionID() && $session->getReepaySessionOrder()) {
+        if (!empty($session->getReepaySessionID())) {
             $session->unsReepaySessionID();
+        }
+        if (!empty($session->getReepaySessionOrder())) {
             $session->unsReepaySessionOrder();
         }
 

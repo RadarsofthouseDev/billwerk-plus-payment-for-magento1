@@ -92,8 +92,22 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                         $log['response'] = $response;
 
                         break;
+                    case 'invoice_authorized':
+                        if (array_key_exists('subscription', $data)) {
+                            $response = array(
+                                'message' => 'This request is not authorize.',
+                            );
+                        } else {
+                            $invoice = $this->getInvoice($data['invoice']);
+                            
+                            $response = $this->authorize($data);
+                        }
+
+                        $log['response'] = $response;
+
+                        break;
                     default:
-                        $response = array('message' => 'This request is not invoice_settled or invoice_refund event.');
+                        $response = array('message' => 'The '.$data['event_type'].' event has been ignored by Magento.');
                         $log['response'] = $response;
 
                         break;
@@ -231,5 +245,85 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 Mage::logException($e);
             }
         }
+    }
+
+    /**
+     * Create authorize transaction if have no the transaction
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function authorize($data)
+    {
+        $orderId = $data['invoice'];
+        $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
+        Mage::helper('reepay')->log('webhook authorize : '.$orderId);
+
+        try {
+            // check if has reepay status row for the order, That means the order has been authorized
+            $reepayStatus = Mage::getModel('reepay/status')->getCollection()->addFieldToFilter('order_id', $orderId);
+            if ($reepayStatus->getSize() > 0) {
+                Mage::helper('reepay')->log('order : '.$orderId.' has been authorized already');
+                return array(
+                    'invoice' => $orderId,
+                    'message' => 'order : '.$orderId.' has been authorized already',
+                );
+            }
+
+            $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+            $charge = Mage::helper('reepay/charge')->get($apiKey, $orderId);
+
+            $data = array(
+                'order_id' => $orderId,
+                'first_name' => $order->getBillingAddress()->getFirstname(),
+                'last_name' => $order->getBillingAddress()->getLastname(),
+                'email' => $order->getCustomerEmail(),
+                // 'token' => $params['id'],
+                'token' => "",
+                'masked_card_number' => $charge['source']['masked_card'],
+                'fingerprint' => $charge['source']['fingerprint'],
+                'card_type' => $charge['source']['card_type'],
+                'status' => $charge['state'],
+            );
+
+            $reepayOrderStatus = Mage::getModel('reepay/status');
+            $reepayOrderStatus->setData($data);
+            $reepayOrderStatus->save();
+            Mage::helper('reepay')->log('save Model:reepay/status');
+
+            Mage::helper('reepay')->addTransactionToOrder($order, $charge);
+
+            // delete reepay session
+
+            // have no token id form invoice_authorized webhook
+            // $res = Mage::helper('reepay/session')->delete($apiKey, $id);
+            // Mage::helper('reepay')->log('delete reepay session : '.$id);
+
+            $order->getStatusHistoryCollection(true);
+            $order->addStatusHistoryComment('Reepay : order has been authorized by Reepay webhook');
+            $order->save();
+
+            $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment', $order->getStoreId());
+            if ($sendEmailAfterPayment) {
+                $order->setEmailSent(true);
+                $order->sendNewOrderEmail();
+                $order->save();
+                Mage::helper('reepay')->log('send_email_after_payment');
+            }
+
+            return array(
+                'invoice' => $orderId,
+                'message' => 'order : '.$orderId.' has been authorized by Reepay webhook',
+            );
+
+        } catch (Exception $e) {
+            Mage::helper('reepay')->log('webhook authorize exception : '.$e->getMessage());
+            Mage::logException($e);
+            return array(
+                'invoice' => $orderId,
+                'message' => 'webhook authorize error : '.$e->getMessage(),
+            );
+        }
+        
     }
 }
