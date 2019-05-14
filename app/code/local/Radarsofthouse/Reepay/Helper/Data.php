@@ -18,7 +18,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
      * @param int $store
      * @return string|boolean
      */
-    public function getConfig($key, $store = null )
+    public function getConfig($key, $store = null)
     {
         if ($store === null) {
             $store = Mage::app()->getStore()->getId();
@@ -114,17 +114,17 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
     public function setReepayPaymentState($payment, $state)
     {
         $_additionalData = array();
-        if( !empty( $payment->getAdditionalData() ) ){
+        if (!empty($payment->getAdditionalData())) {
             $_additionalData = unserialize($payment->getAdditionalData());
         }
         $_additionalData['state'] = $state;
         $payment->setAdditionalData(serialize($_additionalData));
 
         $_additionalInfo = array();
-        if( !empty($payment->getAdditionalInformation()) ){
-            if( is_array($payment->getAdditionalInformation()) ){
+        if (!empty($payment->getAdditionalInformation())) {
+            if (is_array($payment->getAdditionalInformation())) {
                 $_additionalInfo = $payment->getAdditionalInformation();
-            }else{
+            } else {
                 $_additionalInfo = unserialize($payment->getAdditionalInformation());
             }
         }
@@ -135,14 +135,12 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
 
         $order = $payment->getOrder();
         $reepayStatus = Mage::getModel('reepay/status')->getCollection()->addFieldToFilter('order_id', $order->getIncrementId());
-        if(count($reepayStatus) > 0){
+        if (count($reepayStatus) > 0) {
             foreach ($reepayStatus as $reepayStatusItem) {
                 $reepayStatusItem->setStatus($state);
                 $reepayStatusItem->save();
             }
         }
-
-
     }
 
     /**
@@ -174,7 +172,6 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
         
         $customer = $this->getCustomerData($order);
-
         $billingAddress = $this->getOrderBillingAddress($order);
         $shippingAddress = $this->getOrderShippingAddress($order);
         $orderLines = $this->getOrderLines($order);
@@ -230,12 +227,6 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
 
         $options['accept_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl().'reepay/standard/accept/';
         $options['cancel_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl().'reepay/standard/cancel/';
-
-
-        $this->log($customer);
-        $this->log($orderData);
-        $this->log($paymentMethods);
-        $this->log($options);
 
         $res = Mage::helper('reepay/session')->chargeCreateWithNewCustomer(
             $apiKey,
@@ -379,10 +370,10 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $line['ordertext'] = $order->getShippingDescription();
             $line['quantity'] = 1;
             $line['amount'] = (int)$shippingAmount;
-            if( $order->getShippingTaxAmount() > 0 ){
+            if ($order->getShippingTaxAmount() > 0) {
                 $line['vat'] = $order->getShippingTaxAmount()/$order->getShippingAmount();
                 $line['amount_incl_vat'] = "true";
-            }else{
+            } else {
                 $line['vat'] = 0;
                 $line['amount_incl_vat'] = "true";
             }
@@ -416,7 +407,6 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $orderLines[] = $line;
         }
         */
-        $this->log($orderLines);
 
         return $orderLines;
     }
@@ -450,6 +440,18 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function preparePaymentData($paymentData)
     {
+        if (isset($paymentData['amount'])) {
+            $paymentData['amount'] = $this->convertAmount($paymentData['amount']);
+        }
+
+        if (isset($paymentData['authorized_amount'])) {
+            $paymentData['authorized_amount'] = $this->convertAmount($paymentData['authorized_amount']);
+        }
+
+        if (isset($paymentData['refunded_amount'])) {
+            $paymentData['refunded_amount'] = $this->convertAmount($paymentData['refunded_amount']);
+        }
+
         if (isset($paymentData['order_lines'])) {
             unset($paymentData['order_lines']);
         }
@@ -480,7 +482,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @param Mage_Sales_Model_Order $order
      * @param array $paymentData
-     * @return int Transaction ID
+     * @return int (Magento Transaction ID)
      */
     public function addTransactionToOrder($order, $paymentData = array())
     {
@@ -517,7 +519,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $transaction->setIsClosed($isClosed);
             $transaction->save();
 
-            $grandTotal = Mage::helper('core')->currency($order->getGrandTotal(), true, false);
+            $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
+            $grandTotal = Mage::helper('core')->currencyByStore($order->getGrandTotal(), $orderStore, true, false);
 
             $order->setState(
                 Mage::helper('reepay')->getConfig('order_status_after_payment', $order->getStoreId()),
@@ -532,5 +535,139 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             Mage::helper('reepay')->log('ERROR : addTransactionToOrder()');
             Mage::helper('reepay')->log($e->getMessage());
         }
+    }
+
+    /**
+     * Prepare capture transaction data
+     *
+     * @param array $transactionData
+     * @return array $transactionData
+     */
+    public function prepareCaptureTransactionData($transactionData)
+    {
+        if (isset($transactionData['amount'])) {
+            $transactionData['amount'] = $this->convertAmount($transactionData['amount']);
+        }
+
+        if (isset($transactionData['card_transaction'])) {
+            $cardTransaction = $transactionData['card_transaction'];
+            unset($transactionData['card_transaction']);
+            $transactionData['card_transaction_ref_transaction'] = $cardTransaction['ref_transaction'];
+            $transactionData['card_transaction_fingerprint'] = $cardTransaction['fingerprint'];
+            $transactionData['card_transaction_card_type'] = $cardTransaction['card_type'];
+            $transactionData['card_transaction_exp_date'] = $cardTransaction['exp_date'];
+            $transactionData['card_transaction_masked_card'] = $cardTransaction['masked_card'];
+        }
+
+        return $transactionData;
+    }
+
+    /**
+     * Create capture transaction
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @param array $transactionData
+     * @return int (Magento Transaction ID)
+     */
+    public function addCaptureTransactionToOrder($order, $transactionData = array())
+    {
+        try {
+            // prepare transaction data
+            $transactionData = $this->prepareCaptureTransactionData($transactionData);
+
+            $payment = $order->getPayment();
+            $payment->setTransactionId($transactionData['id']);
+            $payment->setAdditionalData(serialize($transactionData));
+            $payment->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                (array) $transactionData
+            );
+            $payment->setParentTransactionId($transactionData['card_transaction_ref_transaction']);
+            $payment->save();
+
+            $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
+            $transaction->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                (array) $transactionData
+            );
+            $transaction->setTxnId($transactionData['id']);
+            $transaction->setIsClosed(0);
+            $transaction->save();
+            return  $transaction->getTransactionId();
+        } catch (Exception $e) {
+            Mage::helper('reepay')->log('ERROR : addTransactionToOrder()');
+            Mage::helper('reepay')->log($e->getMessage());
+        }
+    }
+
+    /**
+     * Prepare refund transaction data
+     *
+     * @param array $transactionData
+     * @return array $transactionData
+     */
+    public function prepareRefundTransactionData($transactionData)
+    {
+        if (isset($transactionData['amount'])) {
+            $transactionData['amount'] = $this->convertAmount($transactionData['amount']);
+        }
+
+        if (isset($transactionData['card_transaction'])) {
+            $cardTransaction = $transactionData['card_transaction'];
+            unset($transactionData['card_transaction']);
+            $transactionData['card_transaction_ref_transaction'] = $cardTransaction['ref_transaction'];
+        }
+
+        return $transactionData;
+    }
+
+    /**
+     * Create refund transaction
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @param array $transactionData
+     * @return int (Magento Transaction ID)
+     */
+    public function addRefundTransactionToOrder($order, $transactionData = array())
+    {
+        try {
+            // prepare transaction data
+            $transactionData = $this->prepareRefundTransactionData($transactionData);
+
+            $payment = $order->getPayment();
+            $payment->setTransactionId($transactionData['id']);
+            $payment->setAdditionalData(serialize($transactionData));
+            $payment->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                (array) $transactionData
+            );
+            $payment->setParentTransactionId($transactionData['card_transaction_ref_transaction']);
+            $payment->save();
+
+            $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_REFUND);
+            $transaction->setAdditionalInformation(
+                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                (array) $transactionData
+            );
+            $transaction->setTxnId($transactionData['id']);
+            $transaction->setIsClosed(0);
+            $transaction->save();
+ 
+            return  $transaction->getTransactionId();
+        } catch (Exception $e) {
+            Mage::helper('reepay')->log('ERROR : addTransactionToOrder()');
+            Mage::helper('reepay')->log($e->getMessage());
+        }
+    }
+
+    /**
+     * Convert integer amount to 2 decimal places
+     *
+     * @param int $amount
+     * @return float
+     */
+    public function convertAmount($amount)
+    {
+        return number_format((float)($amount/100), 2, '.', '');
     }
 }

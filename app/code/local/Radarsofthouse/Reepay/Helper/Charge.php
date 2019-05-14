@@ -238,6 +238,10 @@ class Radarsofthouse_Reepay_Helper_Charge extends Mage_Core_Helper_Abstract
             'apiKey' => $apiKey,
             'param' => array('handle' => $handle, 'settle' => $settle),
         );
+
+        Mage::helper('reepay')->log("ADMIN settle", Zend_Log::INFO, true);
+        Mage::helper('reepay')->log($settle, Zend_Log::INFO, true);
+
         $response = Mage::helper('reepay/client')->post($apiKey, self::ENDPOINT . "/{$handle}/settle", $settle);
         if (Mage::helper('reepay/client')->success()) {
             $log['response'] = $response;

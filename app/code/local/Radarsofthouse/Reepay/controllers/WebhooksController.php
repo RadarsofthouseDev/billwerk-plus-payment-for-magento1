@@ -41,14 +41,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                                 'message' => 'This request is not charge invoice.',
                             );
                         } else {
-                            $invoice = $this->getInvoice($data['invoice']);
-
-                            // $this->refund($data['invoice']);
-
-                            $response = array(
-                                'invoice' => $invoice,
-                                'message' => 'This request is invoice_refund event. (blocked by Magento)',
-                            );
+                            $response = $this->refund($data);
                         }
 
                         $log['response'] = $response;
@@ -60,14 +53,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                                 'message' => 'This request is not charge refund.',
                             );
                         } else {
-                            $invoice = $this->getInvoice($data['invoice']);
-
-                            $this->settled($data['invoice']);
-
-                            $response = array(
-                                'invoice' => $invoice,
-                                'message' => 'This request is invoice_settled event.',
-                            );
+                            $response = $this->settled($data);
                         }
 
                         $log['response'] = $response;
@@ -79,14 +65,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                                 'message' => 'This request is not charge cancel.',
                             );
                         } else {
-                            $invoice = $this->getInvoice($data['invoice']);
-                            
-                            $this->cancel($data['invoice']);
-
-                            $response = array(
-                                'invoice' => $invoice,
-                                'message' => 'This request is invoice_cancelled event.',
-                            );
+                            $response = $this->cancel($data['invoice']);
                         }
 
                         $log['response'] = $response;
@@ -98,8 +77,6 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                                 'message' => 'This request is not authorize.',
                             );
                         } else {
-                            $invoice = $this->getInvoice($data['invoice']);
-                            
                             $response = $this->authorize($data);
                         }
 
@@ -150,70 +127,129 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     /**
      * Capture from Reepay
      *
-     * @param string $orderId (order increment ID)
+     * @param array $data
      * @return void
      */
-    protected function settled($orderId)
+    protected function settled($data)
     {
+        $orderId = $data['invoice'];
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-
         Mage::helper('reepay')->log('webhook settled : '.$orderId);
 
         try {
-            if (!$order->canInvoice()) {
-                Mage::helper('reepay')->log('Cannot create an invoice.');
-                Mage::throwException(Mage::helper('core')->__('Cannot create an invoice.'));
+            $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+            $reepayTransactionData = Mage::helper('reepay/invoice')->getTransaction($apiKey, $orderId, $data['transaction']);
+
+            if (!empty($reepayTransactionData['id']) && $reepayTransactionData['type'] == "settle") {
+                
+                // check the transaction has been created
+                $magentoTransaction = Mage::getModel('sales/order_payment_transaction')->getCollection()
+                    ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
+                    ->addAttributeToFilter('txn_id', array('eq' => $reepayTransactionData['id'] ));
+                if (count($magentoTransaction) > 0) {
+                    Mage::helper('reepay')->log("Magento have created the transaction '".$reepayTransactionData['id']."' already.");
+
+                    return array(
+                        'invoice' => $orderId,
+                        'message' => "Magento have created the transaction '".$reepayTransactionData['id']."' already.",
+                    );
+                }
+
+                // create refund transaction
+                $settledAmount = Mage::helper('reepay')->convertAmount($reepayTransactionData['amount']);
+                $transactionID = Mage::helper('reepay')->addCaptureTransactionToOrder($order, $reepayTransactionData);
+
+                // add order history
+                $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
+                $settledAmountFormat = Mage::helper('core')->currencyByStore($settledAmount, $orderStore, true, false);
+                $order->getStatusHistoryCollection(true);
+                $order->addStatusHistoryComment('Reepay : Captured amount of '.$settledAmountFormat.' by Reepay webhook. Transaction ID: "'.$reepayTransactionData['id'].'". ');
+                $order->save();
+
+                Mage::helper('reepay')->log('Settled order #'.$orderId." , transaction ID : ".$transactionID." , Settled amount : ".$settledAmount);
+
+                return array(
+                    'invoice' => $orderId,
+                    'message' => 'Settled order #'.$orderId." , transaction ID : ".$transactionID." , Settled amount : ".$settledAmount,
+                );
+            } else {
+                Mage::helper('reepay')->log('Cannot get transaction data from Reepay : transaction ID = '.$data['transaction']);
+
+                return array(
+                    'invoice' => $orderId,
+                    'message' => 'Cannot get transaction data from Reepay : transaction ID = '.$data['transaction'],
+                );
             }
-
-            $invoice = $order->prepareInvoice();
-            $invoice->register();
-            $transaction = Mage::getModel('core/resource_transaction')
-                ->addObject($invoice)
-                ->addObject($invoice->getOrder());
-            $transaction->save();
-            
-            $invoice->capture();
-            $invoice->save();
-
-            $order->addStatusToHistory($order->getStatus(), 'Reepay : Transaction has been captured.');
-            $order->save();
-
-            $_payment = $order->getPayment();
-            Mage::helper('reepay')->setReepayPaymentState($_payment, 'settled');
-            $order->save();
-            
-            Mage::helper('reepay')->log('create invoice and capture');
         } catch (Mage_Core_Exception $e) {
-            Mage::helper('reepay')->log('webhook settled exception : '.$e->getMessage());
+            Mage::helper('reepay')->log('webhook settled exception : '.$e->getMessage(), Zend_Log::ERR);
+
+            return array(
+                'invoice' => $orderId,
+                'message' => 'webhook settled exception : '.$e->getMessage(),
+            );
         }
     }
 
     /**
      * Refund from Reepay
      *
-     * @param string $orderId (order increment ID)
-     * @return void
+     * @param array $data
+     * @return array
      */
-    protected function refund($orderId)
+    protected function refund($data)
     {
+        $orderId = $data['invoice'];
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
         Mage::helper('reepay')->log('webhook refund : '.$orderId);
-
+        
         try {
-            $invoiceCollection = $order->getInvoiceCollection();
-            foreach ($invoiceCollection as $invoice) {
-                $service = Mage::getModel('sales/service_order', $order);
-                $creditmemo = $service->prepareInvoiceCreditmemo($invoice);
-                $creditmemo->register();
-                $creditmemo->save();
-                Mage::helper('reepay')->log('creditmemo : '.$invoice->getIncrementId());
-            }
+            $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+            $refundData = Mage::helper('reepay/invoice')->getTransaction($apiKey, $orderId, $data['transaction']);
 
-            $_payment = $order->getPayment();
-            Mage::helper('reepay')->setReepayPaymentState($_payment, 'refunded');
-            $order->save();
+            if (!empty($refundData['id']) && $refundData['state'] == "refunded") {
+                // check the transaction has been created
+                $magentoTransaction = Mage::getModel('sales/order_payment_transaction')->getCollection()
+                    ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
+                    ->addAttributeToFilter('txn_id', array('eq' => $refundData['id'] ));
+                if (count($magentoTransaction) > 0) {
+                    Mage::helper('reepay')->log("Magento have created the transaction '".$refundData['id']."' already.");
+
+                    return array(
+                        'invoice' => $orderId,
+                        'message' => "Magento have created the transaction '".$refundData['id']."' already.",
+                    );
+                }
+
+                // create refund transaction
+                $refundAmount = Mage::helper('reepay')->convertAmount($refundData['amount']);
+                $transactionID = Mage::helper('reepay')->addRefundTransactionToOrder($order, $refundData);
+
+                // add order history
+                $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
+                $refundAmountFormat = Mage::helper('core')->currencyByStore($refundAmount, $orderStore, true, false);
+                $order->getStatusHistoryCollection(true);
+                $order->addStatusHistoryComment('Reepay : Refunded amount of '.$refundAmountFormat.' by Reepay webhook. Transaction ID: "'.$refundData['id'].'". ');
+                $order->save();
+
+                return array(
+                    'invoice' => $orderId,
+                    'message' => 'Refunded order #'.$orderId." , transaction ID : ".$transactionID." , amount : ".$refundAmount,
+                );
+            } else {
+                Mage::helper('reepay')->log('Cannot get refund transaction data from Reepay : transaction ID = '.$data['transaction']);
+
+                return array(
+                    'invoice' => $orderId,
+                    'message' => 'Cannot get refund transaction data from Reepay : transaction ID = '.$data['transaction'],
+                );
+            }
         } catch (Mage_Core_Exception $e) {
-            Mage::helper('reepay')->log('webhook refund exception : '.$e->getMessage());
+            Mage::helper('reepay')->log('webhook refund exception : '.$e->getMessage(), Zend_Log::ERR);
+
+            return array(
+                'invoice' => $orderId,
+                'message' => 'webhook refund exception : '.$e->getMessage(),
+            );
         }
     }
 
@@ -221,7 +257,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
      * Cancel from Reepay
      *
      * @param string $orderId (order increment ID)
-     * @return void
+     * @return array
      */
     protected function cancel($orderId)
     {
@@ -239,11 +275,24 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 Mage::helper('reepay')->setReepayPaymentState($_payment, 'cancelled');
                 $order->save();
 
-                Mage::helper('reepay')->log('cancel order');
+                Mage::helper('reepay')->log('canceled order #'.$orderId);
+                return array(
+                    'invoice' => $orderId,
+                    'message' => 'canceled order #'.$orderId,
+                );
             } catch (Exception $e) {
-                Mage::helper('reepay')->log('webhook cancel exception : '.$e->getMessage());
-                Mage::logException($e);
+                Mage::helper('reepay')->log('webhook cancel exception : '.$e->getMessage(), Zend_Log::ERR);
+                return array(
+                    'invoice' => $orderId,
+                    'message' => 'Cannot cancel order #'.$orderId.' : '.$e->getMessage(),
+                );
             }
+        } else {
+            Mage::helper('reepay')->log('Cannot cancel order #'.$orderId);
+            return array(
+                'invoice' => $orderId,
+                'message' => 'Cannot cancel order #'.$orderId,
+            );
         }
     }
 
@@ -263,10 +312,10 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
             // check if has reepay status row for the order, That means the order has been authorized
             $reepayStatus = Mage::getModel('reepay/status')->getCollection()->addFieldToFilter('order_id', $orderId);
             if ($reepayStatus->getSize() > 0) {
-                Mage::helper('reepay')->log('order : '.$orderId.' has been authorized already');
+                Mage::helper('reepay')->log('order #'.$orderId.' has been authorized already');
                 return array(
                     'invoice' => $orderId,
-                    'message' => 'order : '.$orderId.' has been authorized already',
+                    'message' => 'order #'.$orderId.' has been authorized already',
                 );
             }
 
@@ -311,19 +360,19 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 Mage::helper('reepay')->log('send_email_after_payment');
             }
 
+            Mage::helper('reepay')->log('order #'.$orderId.' has been authorized by Reepay webhook');
+
             return array(
                 'invoice' => $orderId,
-                'message' => 'order : '.$orderId.' has been authorized by Reepay webhook',
+                'message' => 'order #'.$orderId.' has been authorized by Reepay webhook',
             );
-
         } catch (Exception $e) {
-            Mage::helper('reepay')->log('webhook authorize exception : '.$e->getMessage());
+            Mage::helper('reepay')->log('webhook authorize exception : '.$e->getMessage(), Zend_Log::ERR);
             Mage::logException($e);
             return array(
                 'invoice' => $orderId,
                 'message' => 'webhook authorize error : '.$e->getMessage(),
             );
         }
-        
     }
 }

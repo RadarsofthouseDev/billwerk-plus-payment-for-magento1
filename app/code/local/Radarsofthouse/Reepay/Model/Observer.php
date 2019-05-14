@@ -41,7 +41,6 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
      * @param $observer
      * @return void
      */
-
     public function checkoutSubmitAllAfter(Varien_Event_Observer $observer)
     {
         $orderId = $observer->getEvent()->getOrder()->getIncrementId();
@@ -86,5 +85,20 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
                 Mage::throwException('Error: '.$e->getMessage());
             }
         }
+    }
+
+
+    /**
+     * "sales_order_payment_capture" event observer
+     * set latest captured invoice ID (for partial capture)
+     *
+     * @param $observer
+     * @return void
+     */
+    public function setLatestCapturedInvoice(Varien_Event_Observer $observer)
+    {
+        $adminSession = Mage::getSingleton('adminhtml/session');
+        $adminSession->setLatestCapturedInvoice($observer->getInvoice());
+        Mage::helper('reepay')->log('ADMIN setLatestCapturedInvoice observer : order '.$observer->getInvoice()->getOrderId());
     }
 }

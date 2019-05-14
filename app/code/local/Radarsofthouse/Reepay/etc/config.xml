@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.11</version>
+			<version>1.0.12</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -69,6 +69,15 @@
 					</Radarsofthouse_Reepay>
 				</observers>
 			</sales_order_payment_cancel>
+			<sales_order_payment_capture>
+				<observers>
+					<radarsofthouse_reepay_latest_captured_invoice>
+						<type>singleton</type>
+						<class>Radarsofthouse_Reepay_Model_Observer</class>
+						<method>setLatestCapturedInvoice</method>
+					</radarsofthouse_reepay_latest_captured_invoice>
+				</observers>
+			</sales_order_payment_capture>
 		</events>
 	</global>
 	<frontend>
