@@ -180,8 +180,11 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             'currency' => $order->getOrderCurrencyCode(),
             'order_lines' => $orderLines,
             'billing_address' => $billingAddress,
-            'shipping_address' => $shippingAddress,
         );
+
+        if (!empty($shippingAddress)) {
+            $orderData['shipping_address'] = $shippingAddress;
+        }
 
         $paymentMethods = $this->getPaymentMethods($order);
 
@@ -308,21 +311,25 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getOrderShippingAddress($order)
     {
-        return array(
-            'company' => $order->getShippingAddress()->getCompany(),
-            'vat' => $order->getShippingAddress()->getVatId(),
-            'attention' => '',
-            'address' => $order->getShippingAddress()->getStreet(1),
-            'address2' => $order->getShippingAddress()->getStreet(2),
-            'city' => $order->getShippingAddress()->getCity(),
-            'country' => $order->getShippingAddress()->getCountryId(),
-            'email' => $order->getShippingAddress()->getEmail(),
-            'phone' => $order->getShippingAddress()->getTelephone(),
-            'first_name' => $order->getShippingAddress()->getFirstname(),
-            'last_name' => $order->getShippingAddress()->getLastname(),
-            'postal_code' => $order->getShippingAddress()->getPostcode(),
-            'state_or_province' => $order->getShippingAddress()->getRegion(),
-        );
+        if ($order->getShippingAddress()) {
+            return array(
+                'company' => $order->getShippingAddress()->getCompany(),
+                'vat' => $order->getShippingAddress()->getVatId(),
+                'attention' => '',
+                'address' => $order->getShippingAddress()->getStreet(1),
+                'address2' => $order->getShippingAddress()->getStreet(2),
+                'city' => $order->getShippingAddress()->getCity(),
+                'country' => $order->getShippingAddress()->getCountryId(),
+                'email' => $order->getShippingAddress()->getEmail(),
+                'phone' => $order->getShippingAddress()->getTelephone(),
+                'first_name' => $order->getShippingAddress()->getFirstname(),
+                'last_name' => $order->getShippingAddress()->getLastname(),
+                'postal_code' => $order->getShippingAddress()->getPostcode(),
+                'state_or_province' => $order->getShippingAddress()->getRegion(),
+            );
+        } else {
+            return array();
+        }
     }
 
     /**
@@ -333,7 +340,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
     */
     public function getOrderLines($order)
     {
-        $orderGrandTotal = (int)($order->getGrandTotal() * 100);
+        $orderTotalDue = (int)($order->getTotalDue() * 100);
         $total = 0;
         $orderLines = array();
 
@@ -348,7 +355,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $line['vat'] = $orderitem->getTaxPercent()/100;
             $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
-            $total = $total + ($orderitem->getRowTotal() * 100);
+
+            $total = $total + (int)round($amount*$orderitem->getQtyOrdered());
         }
         /*
         // tax
@@ -379,7 +387,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             }
 
             $orderLines[] = $line;
-            $total = $total + $shippingAmount;
+            $total = $total + (int)$shippingAmount;
         }
 
         // discount
@@ -392,21 +400,21 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $line['vat'] = 0;
             $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
-            $total = $total + $discountAmount;
+            $total = $total + (int)$discountAmount;
         }
 
-        /*
+        
         // other
-        if ((int)$total != $orderGrandTotal) {
+        if ((int)$total != $orderTotalDue) {
             $line = array();
-            $line['ordertext'] = $this->__('etc.');
-            $line['amount'] = (int)($orderGrandTotal - $total);
+            $line['ordertext'] = $this->__('Other');
+            $line['amount'] = (int)($orderTotalDue - $total);
             $line['quantity'] = 1;
             $line['vat'] = 0;
             $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
         }
-        */
+        
 
         return $orderLines;
     }
