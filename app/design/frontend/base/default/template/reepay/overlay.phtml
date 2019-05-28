@@ -59,7 +59,20 @@
 		});
 
 		rp.addEventHandler(Reepay.Event.Cancel, function(data) {
-			// not do anything for overlay cancel
+			console.log("Reepay.Event.Cancel");
+			data._isAjax = 1;
+			jQuery.ajax({
+				url: '<?php echo Mage::getUrl('reepay/standard/cancel'); ?>',
+				method: 'POST',
+				data: data,
+			}).done(function(data){
+				if( data.status == 'success' ){
+					window.location = data.redirect_url;
+				}
+			}).fail(function(err){
+				console.log('Ajax: error');
+				console.log(err);
+			});
 		});
 
 		rp.addEventHandler(Reepay.Event.Close, function(data) {

@@ -107,7 +107,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         
         $orderId = $params['invoice'];
         $id = "";
-        if( !empty($params['id']) ){
+        if (!empty($params['id'])) {
             $id = $params['id'];
         }
         
@@ -123,7 +123,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             Mage::helper('reepay')->log('order : '.$orderId.' have been accepted already');
 
             // delete reepay session
-            if( !empty($id) ){
+            if (!empty($id)) {
                 // set token to 'reepay/status' model
                 foreach ($reepayStatus as $reepayStatusItem) {
                     $reepayStatusItem->setToken($id);
@@ -191,7 +191,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         Mage::helper('reepay')->addTransactionToOrder($order, $charge);
 
         // delete reepay session
-        if( !empty($id) ){
+        if (!empty($id)) {
             $res = Mage::helper('reepay/session')->delete($apiKey, $id);
             Mage::helper('reepay')->log('delete reepay session : '.$id);
         }
@@ -282,6 +282,15 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
 
                 Mage::helper('reepay')->log('Cancelled : '.$order->getIncrementId());
 
+                $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
+                if ($quote->getId()) {
+                    $quote->setIsActive(1)
+                        ->setReservedOrderId(null)
+                        ->save();
+                    $session->replaceQuote($quote);
+                }
+                $session->unsLastRealOrderId();
+
                 // delete reepay session
                 $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
                 $res = Mage::helper('reepay/session')->delete($apiKey, $id);
@@ -301,13 +310,13 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             Mage::helper('reepay')->log('reepay/standard/cancel : return ajax request');
             $result = array(
                 'status' => 'success',
-                'redirect_url' => Mage::getUrl('checkout/onepage/failure'),
+                'redirect_url' => Mage::getUrl('checkout/cart'),
             );
             $this->getResponse()->setHeader('Content-type', 'application/json');
             $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
         } else {
-            Mage::helper('reepay')->log('reepay/standard/cancel : redirect to failure page');
-            $this->_redirect('checkout/onepage/failure', array('_secure' => true));
+            Mage::helper('reepay')->log('reepay/standard/cancel : redirect to checkout/cart');
+            $this->_redirect('checkout/cart', array('_secure' => true));
         }
     }
 
