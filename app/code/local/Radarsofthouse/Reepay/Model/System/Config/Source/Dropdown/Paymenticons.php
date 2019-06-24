@@ -34,7 +34,6 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Paymenticons
             array('value' => 'visa-electron', 'label' => __('Visa electron')),
             array('value' => 'klarna-pay-later', 'label' => __('Klarna Pay Later')),
             array('value' => 'klarna-pay-now', 'label' => __('Klarna Pay Now')),
-            array('value' => 'ffk', 'label' => __('Forbrugsforeningen')),
         );
     }
 }

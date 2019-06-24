@@ -258,8 +258,18 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $session = Mage::getSingleton('checkout/session');
 
         $params = $this->getRequest()->getParams();
+
+        if (!empty($params['error'])) {
+            if ($params['error'] == "error.session.SESSION_DELETED") {
+                $this->_redirect('checkout/cart', array('_secure' => true));
+
+                return;
+            }
+        }
+
         if (empty($params['invoice']) || empty($params['id'])) {
             Mage::helper('reepay')->log('Not found parameters');
+            $this->_redirect('checkout/cart', array('_secure' => true));
 
             return;
         }
