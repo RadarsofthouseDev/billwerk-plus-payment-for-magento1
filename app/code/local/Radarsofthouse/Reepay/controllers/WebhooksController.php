@@ -309,6 +309,10 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
         Mage::helper('reepay')->log('webhook authorize : '.$orderId);
 
         try {
+            $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+            $reepayTransactionData = Mage::helper('reepay/invoice')->getTransaction($apiKey, $orderId, $data['transaction']);
+
+            /*
             // check if has reepay status row for the order, That means the order has been authorized
             $reepayStatus = Mage::getModel('reepay/status')->getCollection()->addFieldToFilter('order_id', $orderId);
             if ($reepayStatus->getSize() > 0) {
@@ -318,8 +322,22 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                     'message' => 'order #'.$orderId.' has been authorized already',
                 );
             }
+            */
 
-            $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+            // check the transaction has been created
+            $magentoTransaction = Mage::getModel('sales/order_payment_transaction')->getCollection()
+                ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
+                ->addAttributeToFilter('txn_id', array('eq' => $reepayTransactionData['id'] ));
+            if (count($magentoTransaction) > 0) {
+                Mage::helper('reepay')->log("Magento have created the transaction '".$reepayTransactionData['id']."' already.");
+
+                return array(
+                    'invoice' => $orderId,
+                    'message' => "Magento have created the transaction '".$reepayTransactionData['id']."' already.",
+                );
+            }
+
+            
             $charge = Mage::helper('reepay/charge')->get($apiKey, $orderId);
 
             $data = array(
@@ -354,10 +372,13 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
 
             $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment', $order->getStoreId());
             if ($sendEmailAfterPayment) {
-                $order->setEmailSent(true);
-                $order->sendNewOrderEmail();
-                $order->save();
-                Mage::helper('reepay')->log('send_email_after_payment');
+                if ($order->getEmailSent()) {
+                } else {
+                    $order->setEmailSent(true);
+                    $order->sendNewOrderEmail();
+                    $order->save();
+                    Mage::helper('reepay')->log('send_email_after_payment');
+                }
             }
 
             Mage::helper('reepay')->log('order #'.$orderId.' has been authorized by Reepay webhook');

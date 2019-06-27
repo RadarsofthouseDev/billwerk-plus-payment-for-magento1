@@ -188,7 +188,14 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $reepayOrderStatus->save();
         Mage::helper('reepay')->log('save Model:reepay/status');
 
-        Mage::helper('reepay')->addTransactionToOrder($order, $charge);
+        // check the transaction has been created
+        $magentoTransaction = Mage::getModel('sales/order_payment_transaction')->getCollection()
+            ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
+            ->addAttributeToFilter('txn_id', array('eq' => $charge['transaction'] ));
+        if (count($magentoTransaction) > 0) {
+        } else {
+            Mage::helper('reepay')->addTransactionToOrder($order, $charge);
+        }
 
         // delete reepay session
         if (!empty($id)) {
@@ -206,10 +213,13 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
 
         $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment', $order->getStoreId());
         if ($sendEmailAfterPayment) {
-            $order->setEmailSent(true);
-            $order->sendNewOrderEmail();
-            $order->save();
-            Mage::helper('reepay')->log('send_email_after_payment');
+            if ($order->getEmailSent()) {
+            } else {
+                $order->setEmailSent(true);
+                $order->sendNewOrderEmail();
+                $order->save();
+                Mage::helper('reepay')->log('send_email_after_payment');
+            }
         }
         
         if ($_isAjax == 1) {

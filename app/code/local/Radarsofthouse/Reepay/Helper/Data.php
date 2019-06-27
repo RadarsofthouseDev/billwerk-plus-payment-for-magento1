@@ -540,8 +540,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
  
             return  $transaction->getTransactionId();
         } catch (Exception $e) {
-            Mage::helper('reepay')->log('ERROR : addTransactionToOrder()');
-            Mage::helper('reepay')->log($e->getMessage());
+            $this->log('ERROR : addTransactionToOrder() => '.$e->getMessage());
         }
     }
 
