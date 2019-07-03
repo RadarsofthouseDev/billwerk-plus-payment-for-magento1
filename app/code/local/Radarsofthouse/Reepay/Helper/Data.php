@@ -529,19 +529,37 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
 
             $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
             $grandTotal = Mage::helper('core')->currencyByStore($order->getGrandTotal(), $orderStore, true, false);
-
+            
+            $order_status_after_payment = $this->getConfig('order_status_after_payment', $order->getStoreId());
             $order->setState(
-                Mage::helper('reepay')->getConfig('order_status_after_payment', $order->getStoreId()),
+                $this->_getAssignedState($order_status_after_payment),
                 true,
                 __('Reepay : The authorized amount is %s.', $grandTotal),
                 false
             );
+            $order->setStatus($order_status_after_payment);
             $order->save();
  
             return  $transaction->getTransactionId();
         } catch (Exception $e) {
             $this->log('ERROR : addTransactionToOrder() => '.$e->getMessage());
         }
+    }
+
+    /**
+     * Get state from status
+     *
+     * @param string $status
+     * @return string $item->getState()
+     */
+    protected function _getAssignedState($status)
+    {
+        $item = Mage::getResourceModel('sales/order_status_collection')
+            ->joinStates()
+            ->addFieldToFilter('main_table.status', $status)
+            ->getFirstItem();
+ 
+        return $item->getState();
     }
 
     /**
