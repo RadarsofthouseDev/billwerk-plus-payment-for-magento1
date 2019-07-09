@@ -1,7 +1,7 @@
 # Reepay payment for Magento 1
 The extensions integrates Magento with [Reepay](https://reepay.com/) payment to enable your Magento site to receive online payment through the most popular payment methods such as Dankort, VISA Dankort, Mastercard, VISA, VISA Electron, Maestro, MobilePay, ViaBill and Forbrugsforeningen etc.
 
-## INFORMATION
+## Information
 Compatible with Magento CE 1.7.x-1.9.x
 
 ## Installation
