@@ -1,6 +1,6 @@
 
 # Changelog
-## Version 1.0.17 on 03 July 2019
+## Version 1.0.18 on 09 July 2019
 
  - Force order status in the "invoice_settled" webhook.
 
