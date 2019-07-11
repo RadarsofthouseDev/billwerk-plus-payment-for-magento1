@@ -368,8 +368,9 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
             // $res = Mage::helper('reepay/session')->delete($apiKey, $id);
             // Mage::helper('reepay')->log('delete reepay session : '.$id);
 
-            $order->getStatusHistoryCollection(true);
-            $order->addStatusHistoryComment('Reepay : order has been authorized by Reepay webhook');
+            $afterPaymentPaidStatus = Mage::helper('reepay')->getConfig('order_status_after_payment', $order->getStoreId());
+            Mage::helper('reepay')->log('$afterPaymentPaidStatus :'.$afterPaymentPaidStatus);
+            $order->addStatusHistoryComment('Reepay : order has been authorized by Reepay webhook', $afterPaymentPaidStatus);
             $order->save();
 
             $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment', $order->getStoreId());
