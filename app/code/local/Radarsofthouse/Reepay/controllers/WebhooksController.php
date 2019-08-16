@@ -155,7 +155,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                     );
                 }
 
-                // create refund transaction
+                // create capture transaction
                 $settledAmount = Mage::helper('reepay')->convertAmount($reepayTransactionData['amount']);
                 $transactionID = Mage::helper('reepay')->addCaptureTransactionToOrder($order, $reepayTransactionData);
 
@@ -169,6 +169,40 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 $order->save();
 
                 Mage::helper('reepay')->log('Settled order #'.$orderId." , transaction ID : ".$transactionID." , Settled amount : ".$settledAmount);
+
+                $_autoCapture = Mage::helper('reepay')->getConfig('auto_capture', $order->getStoreId());
+                if($_autoCapture){
+
+                    $charge = Mage::helper('reepay/charge')->get($apiKey, $orderId);
+
+                    $data = array(
+                        'order_id' => $orderId,
+                        'first_name' => $order->getBillingAddress()->getFirstname(),
+                        'last_name' => $order->getBillingAddress()->getLastname(),
+                        'email' => $order->getCustomerEmail(),
+                        // 'token' => $params['id'],
+                        'token' => "",
+                        'masked_card_number' => $charge['source']['masked_card'],
+                        'fingerprint' => $charge['source']['fingerprint'],
+                        'card_type' => $charge['source']['card_type'],
+                        'status' => $charge['state'],
+                    );
+
+                    $reepayOrderStatus = Mage::getModel('reepay/status');
+                    $reepayOrderStatus->setData($data);
+                    $reepayOrderStatus->save();
+                    Mage::helper('reepay')->log('webhook settled : save Model:reepay/status');
+
+                    $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment', $order->getStoreId());
+                    if ($sendEmailAfterPayment) {
+                        if ($order->getEmailSent()) { } else {
+                            $order->setEmailSent(true);
+                            $order->sendNewOrderEmail();
+                            $order->save();
+                            Mage::helper('reepay')->log('webhook settled : send_email_after_payment');
+                        }
+                    }
+                } 
 
                 return array(
                     'invoice' => $orderId,
@@ -358,7 +392,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
             $reepayOrderStatus = Mage::getModel('reepay/status');
             $reepayOrderStatus->setData($data);
             $reepayOrderStatus->save();
-            Mage::helper('reepay')->log('save Model:reepay/status');
+            Mage::helper('reepay')->log('webhook authorize : save Model:reepay/status');
 
             Mage::helper('reepay')->addTransactionToOrder($order, $charge);
 
@@ -380,7 +414,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                     $order->setEmailSent(true);
                     $order->sendNewOrderEmail();
                     $order->save();
-                    Mage::helper('reepay')->log('send_email_after_payment');
+                    Mage::helper('reepay')->log('webhook authorize : send_email_after_payment');
                 }
             }
 

@@ -117,85 +117,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $reepayStatus = Mage::getModel('reepay/status')->getCollection()->addFieldToFilter('order_id', $orderId);
 
         $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
-        
-
-        if ($reepayStatus->getSize() > 0) {
-            Mage::helper('reepay')->log('order : '.$orderId.' have been accepted already');
-
-            // delete reepay session
-            if (!empty($id)) {
-                // set token to 'reepay/status' model
-                foreach ($reepayStatus as $reepayStatusItem) {
-                    $reepayStatusItem->setToken($id);
-                    $reepayStatusItem->save();
-                }
-
-                $res = Mage::helper('reepay/session')->delete($apiKey, $id);
-                Mage::helper('reepay')->log('delete reepay session : '.$id);
-            }
-
-            // unset reepay session id on checkout session
-            if (!empty($session->getReepaySessionID())) {
-                $session->unsReepaySessionID();
-            }
-            if (!empty($session->getReepaySessionOrder())) {
-                $session->unsReepaySessionOrder();
-            }
-
-            if ($_isAjax == 1) {
-                $result = array();
-                $result['status'] = 'success';
-
-                if (!empty($order->getRemoteIp())) {
-                    // place online
-                    $result['redirect_url'] = Mage::getUrl('checkout/onepage/success');
-                } else {
-                    // place by admin
-                    $result['redirect_url'] = Mage::getUrl('reepay/standard/success');
-                }
-                $this->getResponse()->setHeader('Content-type', 'application/json');
-                $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
-            } else {
-                if (!empty($order->getRemoteIp())) {
-                    // place online
-                    $this->_redirect('checkout/onepage/success', array('_secure' => true));
-                } else {
-                    // place by admin
-                    $this->_redirect('reepay/standard/success', array('_secure' => true));
-                }
-            }
-
-            return;
-        }
-
-        
-        $charge = Mage::helper('reepay/charge')->get($apiKey, $orderId);
-
-        $data = array(
-            'order_id' => $orderId,
-            'first_name' => $order->getBillingAddress()->getFirstname(),
-            'last_name' => $order->getBillingAddress()->getLastname(),
-            'email' => $order->getCustomerEmail(),
-            'token' => $id,
-            'masked_card_number' => $charge['source']['masked_card'],
-            'fingerprint' => $charge['source']['fingerprint'],
-            'card_type' => $charge['source']['card_type'],
-            'status' => $charge['state'],
-        );
-
-        $reepayOrderStatus = Mage::getModel('reepay/status');
-        $reepayOrderStatus->setData($data);
-        $reepayOrderStatus->save();
-        Mage::helper('reepay')->log('save Model:reepay/status');
-
-        // check the transaction has been created
-        $magentoTransaction = Mage::getModel('sales/order_payment_transaction')->getCollection()
-            ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
-            ->addAttributeToFilter('txn_id', array('eq' => $charge['transaction'] ));
-        if (count($magentoTransaction) > 0) {
-        } else {
-            Mage::helper('reepay')->addTransactionToOrder($order, $charge);
-        }
 
         // delete reepay session
         if (!empty($id)) {
@@ -209,17 +130,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         }
         if (!empty($session->getReepaySessionOrder())) {
             $session->unsReepaySessionOrder();
-        }
-
-        $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment', $order->getStoreId());
-        if ($sendEmailAfterPayment) {
-            if ($order->getEmailSent()) {
-            } else {
-                $order->setEmailSent(true);
-                $order->sendNewOrderEmail();
-                $order->save();
-                Mage::helper('reepay')->log('send_email_after_payment');
-            }
         }
         
         if ($_isAjax == 1) {

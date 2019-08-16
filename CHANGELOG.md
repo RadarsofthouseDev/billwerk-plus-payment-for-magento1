@@ -1,5 +1,10 @@
 
 # Changelog
+
+## Version 1.0.20 on 16 August 2019
+ - Fixed double email sending issue. (remove action in the accept callback and leave in the authorize webhook)
+ - Implement send order email in the settled webhook (for the auto capture function).
+
 ## Version 1.0.19 on 11 July 2019
 
  - Force order status in the "invoice_authorized" webhook.
