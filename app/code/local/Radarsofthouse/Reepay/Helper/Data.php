@@ -531,13 +531,10 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $grandTotal = Mage::helper('core')->currencyByStore($order->getGrandTotal(), $orderStore, true, false);
             
             $order_status_after_payment = $this->getConfig('order_status_after_payment', $order->getStoreId());
-            $order->setState(
-                $this->_getAssignedState($order_status_after_payment),
-                true,
-                __('Reepay : The authorized amount is %s.', $grandTotal),
-                false
-            );
-            $order->setStatus($order_status_after_payment);
+            
+            $this->log('order_status_after_payment : ' . $order_status_after_payment);
+
+            $order->addStatusHistoryComment(__('Reepay : The authorized amount is %s.', $grandTotal), $order_status_after_payment);
             $order->save();
  
             return  $transaction->getTransactionId();
@@ -554,12 +551,29 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
      */
     protected function _getAssignedState($status)
     {
-        $item = Mage::getResourceModel('sales/order_status_collection')
+        $_state = "";
+
+        $items = Mage::getResourceModel('sales/order_status_collection')
             ->joinStates()
-            ->addFieldToFilter('main_table.status', $status)
-            ->getFirstItem();
- 
-        return $item->getState();
+            ->addFieldToFilter('main_table.status', $status);
+
+        foreach ($items as $item) {
+            if ($item->getIsDefault()) {
+                $_state = $item->getState();
+            }
+        }
+
+        if (empty($_state)) {
+            $firstItem = Mage::getResourceModel('sales/order_status_collection')
+                ->joinStates()
+                ->addFieldToFilter('main_table.status', $status)
+                ->getFirstItem();
+            if ($firstItem) {
+                $_state = $firstItem->getState();
+            }
+        }
+
+        return $_state;
     }
 
     /**
