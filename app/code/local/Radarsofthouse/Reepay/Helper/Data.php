@@ -531,10 +531,13 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $grandTotal = Mage::helper('core')->currencyByStore($order->getGrandTotal(), $orderStore, true, false);
             
             $order_status_after_payment = $this->getConfig('order_status_after_payment', $order->getStoreId());
-            
             $this->log('order_status_after_payment : ' . $order_status_after_payment);
-
-            $order->addStatusHistoryComment(__('Reepay : The authorized amount is %s.', $grandTotal), $order_status_after_payment);
+            $order->setState(
+                Mage_Sales_Model_Order::STATE_PROCESSING,
+                $order_status_after_payment,
+                __('Reepay : The authorized amount is %s.', $grandTotal),
+                false
+            );
             $order->save();
  
             return  $transaction->getTransactionId();
@@ -632,6 +635,21 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $transaction->setTxnId($transactionData['id']);
             $transaction->setIsClosed(0);
             $transaction->save();
+
+
+            $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
+            $settledAmount = $transactionData['amount'];
+            $settledAmountFormat = Mage::helper('core')->currencyByStore($settledAmount, $orderStore, true, false);
+            $order_status_after_payment = $this->getConfig('order_status_after_payment', $order->getStoreId());
+            $this->log('order_status_after_payment : ' . $order_status_after_payment);
+            $order->setState(
+                Mage_Sales_Model_Order::STATE_PROCESSING,
+                $order_status_after_payment,
+                'Reepay : Captured amount of ' . $settledAmountFormat . ' by Reepay webhook. Transaction ID: "' . $transactionData['id'] . '".',
+                false
+            );
+            $order->save();
+
             return  $transaction->getTransactionId();
         } catch (Exception $e) {
             Mage::helper('reepay')->log('ERROR : addTransactionToOrder()');

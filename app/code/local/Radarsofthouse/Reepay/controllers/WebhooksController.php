@@ -159,17 +159,6 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 $settledAmount = Mage::helper('reepay')->convertAmount($reepayTransactionData['amount']);
                 $transactionID = Mage::helper('reepay')->addCaptureTransactionToOrder($order, $reepayTransactionData);
 
-                // add order history
-                $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
-                $settledAmountFormat = Mage::helper('core')->currencyByStore($settledAmount, $orderStore, true, false);
-
-                $afterPaymentPaidStatus = Mage::helper('reepay')->getConfig('order_status_after_payment', $order->getStoreId());
-                Mage::helper('reepay')->log('$afterPaymentPaidStatus :'.$afterPaymentPaidStatus);
-                $order->addStatusHistoryComment('Reepay : Captured amount of '.$settledAmountFormat.' by Reepay webhook. Transaction ID: "'.$reepayTransactionData['id'].'". ', $afterPaymentPaidStatus);
-                $order->save();
-
-                Mage::helper('reepay')->log('Settled order #'.$orderId." , transaction ID : ".$transactionID." , Settled amount : ".$settledAmount);
-
                 $_autoCapture = Mage::helper('reepay')->getConfig('auto_capture', $order->getStoreId());
                 if($_autoCapture){
 
