@@ -1,6 +1,10 @@
 
 # Changelog
 
+## Version 1.0.22 on 9 September 2019
+- Force order state to processing when authorized and settled
+- Prepare customer email from order data
+
 ## Version 1.0.21 on 28 August 2019
 - Fix after payment order status issue for custom order statuses
 
