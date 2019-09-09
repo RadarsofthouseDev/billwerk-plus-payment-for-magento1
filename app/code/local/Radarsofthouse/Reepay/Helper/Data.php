@@ -261,8 +261,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return array(
-            'handle' => $order->getBillingAddress()->getEmail(),
-            'email' => $order->getBillingAddress()->getEmail(),
+            'handle' => $order->getCustomerEmail(),
+            'email' => $order->getCustomerEmail(),
             'first_name' => $order->getBillingAddress()->getFirstname(),
             'last_name' => $order->getBillingAddress()->getLastname(),
             'address' => $order->getBillingAddress()->getStreet(1),
@@ -294,7 +294,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             'address2' => $order->getBillingAddress()->getStreet(2),
             'city' => $order->getBillingAddress()->getCity(),
             'country' => $order->getBillingAddress()->getCountryId(),
-            'email' => $order->getBillingAddress()->getEmail(),
+            'email' => $order->getCustomerEmail(),
             'phone' => $order->getBillingAddress()->getTelephone(),
             'first_name' => $order->getBillingAddress()->getFirstname(),
             'last_name' => $order->getBillingAddress()->getLastname(),
@@ -320,7 +320,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 'address2' => $order->getShippingAddress()->getStreet(2),
                 'city' => $order->getShippingAddress()->getCity(),
                 'country' => $order->getShippingAddress()->getCountryId(),
-                'email' => $order->getShippingAddress()->getEmail(),
+                'email' => $order->getCustomerEmail(),
                 'phone' => $order->getShippingAddress()->getTelephone(),
                 'first_name' => $order->getShippingAddress()->getFirstname(),
                 'last_name' => $order->getShippingAddress()->getLastname(),
