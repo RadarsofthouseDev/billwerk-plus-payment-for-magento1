@@ -1,6 +1,9 @@
 
 # Changelog
 
+## Version 1.0.23 on 18 September 2019
+- Add new payment options (Apple Pay, Paypal)
+
 ## Version 1.0.22 on 9 September 2019
 - Force order state to processing when authorized and settled
 - Prepare customer email from order data

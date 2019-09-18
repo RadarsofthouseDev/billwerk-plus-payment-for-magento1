@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.22</version>
+			<version>1.0.23</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -137,8 +137,8 @@
 				<send_email_after_payment>0</send_email_after_payment>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
-				<allowwed_payment>card,dankort,visa,visa_dk,visa_elec,mc,amex,klarna_pay_later,klarna_pay_now,diners,maestro,laser,discover,jcb,china_union_pay,ffk</allowwed_payment>
-				<payment_icons>american-express,dankort,diners-club-international,discover,forbrugsforeningen,jcb,maestro,mastercard,mobilepay,unionpay,viabill,visa,visa-electron,klarna-pay-later,klarna-pay-now</payment_icons>
+				<allowwed_payment>card,dankort,visa,visa_dk,visa_elec,mc,amex,klarna_pay_later,klarna_pay_now,diners,maestro,laser,discover,jcb,china_union_pay,ffk,applepay,paypal</allowwed_payment>
+				<payment_icons>american-express,dankort,diners-club-international,discover,forbrugsforeningen,jcb,maestro,mastercard,mobilepay,unionpay,viabill,visa,visa-electron,klarna-pay-later,klarna-pay-now,applepay,paypal</payment_icons>
 				<log>1</log>
 				<sort_order>1</sort_order>
 			</reepay>
