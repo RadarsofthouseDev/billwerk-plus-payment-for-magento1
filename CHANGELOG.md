@@ -1,5 +1,7 @@
 
 # Changelog
+## Version 1.0.24 on 1 October 2019
+- Update session validation
 
 ## Version 1.0.23 on 18 September 2019
 - Add new payment options (Apple Pay, Paypal)
