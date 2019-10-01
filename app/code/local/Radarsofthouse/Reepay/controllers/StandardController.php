@@ -25,35 +25,19 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $session = Mage::getSingleton('checkout/session');
         
         if (empty($session->getLastRealOrderId())) {
-            $this->_redirect('checkout/cart');
 
-            return;
-        }
-        
-        if (empty($session->getQuoteId())) {
-            $this->_redirect('checkout/cart');
-
-            return;
-        }
-        
-        $quote = Mage::getModel('sales/quote')->load($session->getQuoteId());
-        
-        if (empty($quote->getReservedOrderId())) {
-            $this->_redirect('checkout/cart');
-
-            return;
-        }
-        
-        if ($quote->getReservedOrderId() != $session->getLastRealOrderId()) {
+            Mage::helper('reepay')->log('############## empty getLastRealOrderId ##############');
             $this->_redirect('checkout/cart');
 
             return;
         }
 
-        $session->setReepayOrderIncrementId($quote->getReservedOrderId());
-        Mage::helper('reepay')->log('reepay/standard/redirect : '.$quote->getReservedOrderId());
+        Mage::helper('reepay')->log('reepay/standard/redirect : '.$session->getLastRealOrderId());
+        
+        $session->setReepayOrderIncrementId($session->getLastRealOrderId());
+        
 
-        $order = Mage::getModel('sales/order')->loadByIncrementId($quote->getReservedOrderId());
+        $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
 
         Mage::helper('reepay')->log('Display type : '.Mage::helper('reepay')->getConfig('display_type', $order->getStoreId()));
 
@@ -64,7 +48,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         // create new Reepay session
         $sessionId = Mage::helper('reepay')->createReepaySession($order);
 
-        $session->setReepaySessionOrder($quote->getReservedOrderId());
+        $session->setReepaySessionOrder($session->getLastRealOrderId());
         $session->setReepaySessionID($sessionId);
         
         if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill') {
