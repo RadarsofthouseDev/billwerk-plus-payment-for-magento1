@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.25 on 4 November 2019
+- Fixed PHP strict notice
+
 ## Version 1.0.24 on 1 October 2019
 - Update session validation
 

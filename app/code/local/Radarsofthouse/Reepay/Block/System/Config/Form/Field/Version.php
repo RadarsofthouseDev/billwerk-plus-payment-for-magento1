@@ -17,7 +17,7 @@ class Radarsofthouse_Reepay_Block_System_Config_Form_Field_Version extends Mage_
      * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      */
-    protected function _getElementHtml()
+    protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
     {
         return Mage::helper('reepay')->getInstalledVersion();
     }
