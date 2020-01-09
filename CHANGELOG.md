@@ -1,5 +1,9 @@
 
 # Changelog
+## Version 1.0.26 on 9 January 2020
+- Save payment additional data when authorize, settled and refund 
+- Fixed PHP Notice: Undefined index
+
 ## Version 1.0.25 on 4 November 2019
 - Fixed PHP strict notice
 

@@ -171,9 +171,9 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                         'email' => $order->getCustomerEmail(),
                         // 'token' => $params['id'],
                         'token' => "",
-                        'masked_card_number' => $charge['source']['masked_card'],
-                        'fingerprint' => $charge['source']['fingerprint'],
-                        'card_type' => $charge['source']['card_type'],
+                        'masked_card_number' => isset($charge['source']['masked_card']) ? $charge['source']['masked_card'] : '',
+                        'fingerprint' => isset($charge['source']['fingerprint']) ? $charge['source']['fingerprint'] : '',
+                        'card_type' => isset($charge['source']['card_type']) ? $charge['source']['card_type'] : '',
                         'status' => $charge['state'],
                     );
 
@@ -372,9 +372,9 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 'email' => $order->getCustomerEmail(),
                 // 'token' => $params['id'],
                 'token' => "",
-                'masked_card_number' => $charge['source']['masked_card'],
-                'fingerprint' => $charge['source']['fingerprint'],
-                'card_type' => $charge['source']['card_type'],
+                'masked_card_number' => isset($charge['source']['masked_card']) ? $charge['source']['masked_card'] : '',
+                'fingerprint' => isset($charge['source']['fingerprint']) ? $charge['source']['fingerprint'] : '',
+                'card_type' => isset($charge['source']['card_type']) ? $charge['source']['card_type'] : '',
                 'status' => $charge['state'],
             );
 

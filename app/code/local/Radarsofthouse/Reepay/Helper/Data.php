@@ -475,11 +475,28 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         if (isset($paymentData['source'])) {
             $_source = $paymentData['source'];
             unset($paymentData['source']);
-            $paymentData['source_type'] = $_source['type'];
-            $paymentData['source_fingerprint'] = $_source['fingerprint'];
-            $paymentData['source_card_type'] = $_source['card_type'];
-            $paymentData['source_exp_date'] = $_source['exp_date'];
-            $paymentData['source_masked_card'] = $_source['masked_card'];
+
+            if( isset($_source['type']) ){
+                $paymentData['source_type'] = $_source['type'];
+            }
+            if( isset($_source['fingerprint']) ){
+                $paymentData['source_fingerprint'] = $_source['fingerprint'];
+            }
+            if( isset($_source['provider']) ){
+                $paymentData['source_provider'] = $_source['provider'];
+            }
+            if( isset($_source['card_type']) ){
+                $paymentData['source_card_type'] = $_source['card_type'];
+            }
+            if( isset($_source['exp_date']) ){
+                $paymentData['source_exp_date'] = $_source['exp_date'];
+            }
+            if( isset($_source['masked_card']) ){
+                $paymentData['source_masked_card'] = $_source['masked_card'];
+            }
+            if( isset($_source['auth_transaction']) ){
+                $paymentData['source_auth_transaction'] = $_source['auth_transaction'];
+            }
         }
 
         return $paymentData;
@@ -617,9 +634,14 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             // prepare transaction data
             $transactionData = $this->prepareCaptureTransactionData($transactionData);
 
+            $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+            $charge = Mage::helper('reepay/charge')->get($apiKey,$order->getIncrementId());
+            $paymentData = $this->preparePaymentData($charge);
+            
+
             $payment = $order->getPayment();
             $payment->setTransactionId($transactionData['id']);
-            $payment->setAdditionalData(serialize($transactionData));
+            $payment->setAdditionalData(serialize($paymentData));
             $payment->setAdditionalInformation(
                 Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
                 (array) $transactionData
@@ -691,9 +713,13 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             // prepare transaction data
             $transactionData = $this->prepareRefundTransactionData($transactionData);
 
+            $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+            $charge = Mage::helper('reepay/charge')->get($apiKey,$order->getIncrementId());
+            $paymentData = $this->preparePaymentData($charge);
+
             $payment = $order->getPayment();
             $payment->setTransactionId($transactionData['id']);
-            $payment->setAdditionalData(serialize($transactionData));
+            $payment->setAdditionalData(serialize($paymentData));
             $payment->setAdditionalInformation(
                 Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
                 (array) $transactionData

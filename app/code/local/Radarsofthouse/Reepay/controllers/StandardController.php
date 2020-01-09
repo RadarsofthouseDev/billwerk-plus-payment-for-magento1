@@ -95,7 +95,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             $id = $params['id'];
         }
         
-        $_isAjax = $params['_isAjax'];
+        $_isAjax = isset($params['_isAjax']) ? $params['_isAjax'] : '';
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 
         $reepayStatus = Mage::getModel('reepay/status')->getCollection()->addFieldToFilter('order_id', $orderId);
