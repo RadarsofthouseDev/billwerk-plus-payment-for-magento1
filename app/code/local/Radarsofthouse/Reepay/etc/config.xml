@@ -78,6 +78,15 @@
 					</radarsofthouse_reepay_latest_captured_invoice>
 				</observers>
 			</sales_order_payment_capture>
+			<sales_order_invoice_save_after>
+				<observers>
+					<radarsofthouse_reepay_invoice_save_after>
+						<type>singleton</type>
+						<class>reepay/observer</class>
+						<method>sales_order_invoice_save_after</method>
+					</radarsofthouse_reepay_invoice_save_after>
+				</observers>
+			</sales_order_invoice_save_after>
 		</events>
 	</global>
 	<frontend>
@@ -131,7 +140,8 @@
 				<private_key/>
 				<api_key_type>0</api_key_type>
 				<order_status>pending</order_status>
-				<order_status_after_payment>processing</order_status_after_payment>
+				<order_status_authorized>processing</order_status_authorized>
+				<order_status_settled>processing</order_status_settled>
 				<display_type>1</display_type>
 				<auto_capture>0</auto_capture>
 				<send_email_after_payment>0</send_email_after_payment>

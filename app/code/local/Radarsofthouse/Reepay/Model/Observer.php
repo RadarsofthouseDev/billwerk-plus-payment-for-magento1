@@ -101,4 +101,45 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
         $adminSession->setLatestCapturedInvoice($observer->getInvoice());
         Mage::helper('reepay')->log('ADMIN setLatestCapturedInvoice observer : order '.$observer->getInvoice()->getOrderId());
     }
+
+    /**
+     * Change Order Status on Invoice Generation
+     *
+     * @param Varien_Event_Observer $observer
+     * @return $this
+     */
+    public function sales_order_invoice_save_after(Varien_Event_Observer $observer)
+    {
+        $invoice = $observer->getEvent()->getInvoice();
+        $order = $invoice->getOrder();
+        $payment = $order->getPayment();
+        $method = $payment->getMethodInstance();
+
+        $code = $method->getCode();
+        if (strpos($code, 'reepay') === false) {
+            return $this;
+        }
+
+        // is Captured
+        if (!$payment->getIsTransactionPending()) {
+            $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
+            $grandTotal = Mage::helper('core')->currencyByStore($order->getGrandTotal(), $orderStore, true, false);
+
+            // Change order status
+            /** @var Radarsofthouse_Reepay_Helper_Data $helper */
+            $helper = Mage::helper('reepay');
+
+            /** @var Mage_Sales_Model_Order_Status $status */
+            $status = $helper->getAssignedState($helper->getConfig('order_status_settled'));
+            $order->setData('state', $status->getState());
+            $order->setStatus($status->getStatus());
+            $order->addStatusHistoryComment(
+                Mage::helper('reepay')->__('Reepay : The settled amount is %s.', $grandTotal),
+                $status->getStatus()
+            );
+            $order->save();
+        }
+
+        return $this;
+    }
 }

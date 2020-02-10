@@ -45,6 +45,10 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 return Mage::getStoreConfig('payment/reepay/send_email_after_payment', $store);
             case 'order_status_after_payment':
                 return $this->getOrderState(Mage::getStoreConfig('payment/reepay/order_status_after_payment', $store));
+            case 'order_status_authorized':
+                return Mage::getStoreConfig('payment/reepay/order_status_authorized', $store);
+            case 'order_status_settled':
+                return Mage::getStoreConfig('payment/reepay/order_status_settled', $store);
             case 'allowspecific':
                 return Mage::getStoreConfig('payment/reepay/allowspecific', $store);
             case 'specificcountry':
@@ -525,42 +529,182 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $payment->setParentTransactionId(null);
             $payment->save();
 
-            $state = '';
-            $isClosed = 0;
-            if ($paymentData['state'] == 'authorized') {
-                $state = Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH;
-                $isClosed = 0;
-            } elseif ($paymentData['state'] == 'settled') {
-                $state = Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE;
-                $isClosed = 1;
-            }
-
-            $transaction = $payment->addTransaction($state);
-            $transaction->setAdditionalInformation(
-                Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
-                (array) $paymentData
-            );
-            $transaction->setTxnId($paymentData['transaction']);
-            $transaction->setIsClosed($isClosed);
-            $transaction->save();
-
             $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
             $grandTotal = Mage::helper('core')->currencyByStore($order->getGrandTotal(), $orderStore, true, false);
-            
-            $order_status_after_payment = $this->getConfig('order_status_after_payment', $order->getStoreId());
-            $this->log('order_status_after_payment : ' . $order_status_after_payment);
-            $order->setState(
-                Mage_Sales_Model_Order::STATE_PROCESSING,
-                $order_status_after_payment,
-                __('Reepay : The authorized amount is %s.', $grandTotal),
-                false
-            );
-            $order->save();
- 
+
+            switch ($paymentData['state']) {
+                case 'authorized':
+                    /** @var Mage_Sales_Model_Order_Payment_Transaction $transaction */
+                    $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH);
+                    $transaction->setAdditionalInformation(
+                        Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                        (array) $paymentData
+                    );
+                    $transaction->setTxnId($paymentData['transaction']);
+                    $transaction->setIsClosed(0);
+                    $transaction->save();
+
+                    // Change order status
+                    /** @var Mage_Sales_Model_Order_Status $status */
+                    $status = $this->getAssignedState($this->getConfig('order_status_authorized'));
+                    $order->setData('state', $status->getState());
+                    $order->setStatus($status->getStatus());
+                    $order->addStatusHistoryComment(
+                        Mage::helper('reepay')->__('Reepay : The authorized amount is %s.', $grandTotal),
+                        $status->getStatus()
+                    );
+                    $order->save();
+                    $order->sendNewOrderEmail();
+
+                    break;
+                case 'settled':
+                    /** @var Mage_Sales_Model_Order_Payment_Transaction $transaction */
+                    $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
+                    $transaction->setAdditionalInformation(
+                        Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                        (array) $paymentData
+                    );
+                    $transaction->setTxnId($paymentData['transaction']);
+                    $transaction->setIsClosed(0);
+                    $transaction->save();
+
+                    // Change order status
+                    /** @var Mage_Sales_Model_Order_Status $status */
+                    $status = $this->getAssignedState($this->getConfig('order_status_settled'));
+                    $order->setData('state', $status->getState());
+                    $order->setStatus($status->getStatus());
+                    $order->addStatusHistoryComment(
+                        Mage::helper('reepay')->__('Reepay : The settled amount is %s.', $grandTotal),
+                        $status->getStatus()
+                    );
+
+                    $invoice = $this->makeInvoice($order, false);
+                    $invoice->setTransactionId($paymentData['transaction']);
+                    $invoice->save();
+
+                    $this->setReepayPaymentState($order->getPayment(), 'settled');
+
+                    $order->save();
+                    $order->sendNewOrderEmail();
+                    break;
+                default:
+                    /** @var Mage_Sales_Model_Order_Payment_Transaction $transaction */
+                    $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_PAYMENT);
+                    $transaction->setAdditionalInformation(
+                        Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+                        (array) $paymentData
+                    );
+                    $transaction->setTxnId($paymentData['transaction']);
+                    $transaction->setIsClosed(1);
+                    $transaction->save();
+
+                    // Cancel order
+                    if (in_array($paymentData['state'], array('cancelled', 'failed'))) {
+                        $message = Mage::helper('reepay')->__('Order was automatically canceled. Payment state is %s.',
+                            $paymentData['state']
+                        );
+
+                        $order->cancel();
+                        $order->addStatusHistoryComment($message);
+
+                        $this->setReepayPaymentState($order->getPayment(), 'cancelled');
+
+                        $order->save();
+                        $order->sendOrderUpdateEmail(true, $message);
+                    }
+
+                    break;
+            }
+
             return  $transaction->getTransactionId();
         } catch (Exception $e) {
             $this->log('ERROR : addTransactionToOrder() => '.$e->getMessage());
         }
+    }
+
+    /**
+     * Create Invoice
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @param bool $online
+     * @return Mage_Sales_Model_Order_Invoice
+     */
+    public function makeInvoice(&$order, $online = false)
+    {
+        // Prepare Invoice
+        /** @var Mage_Sales_Model_Order_Invoice $invoice */
+        $invoice = Mage::getModel('sales/service_order', $order)->prepareInvoice();
+        $invoice->addComment(Mage::helper('reepay')->__('Auto-generated from Reepay extension'), false, false);
+        $invoice->setRequestedCaptureCase(
+            $online ? Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE : Mage_Sales_Model_Order_Invoice::CAPTURE_OFFLINE
+        );
+        $invoice->register();
+
+        $invoice->getOrder()->setIsInProcess(true);
+
+        try {
+            $transactionSave = Mage::getModel('core/resource_transaction')
+                ->addObject($invoice)
+                ->addObject($invoice->getOrder());
+            $transactionSave->save();
+        } catch (Mage_Core_Exception $e) {
+            // Save Error Message
+            $order->addStatusToHistory(
+                $order->getStatus(),
+                'Failed to create invoice: ' . $e->getMessage(),
+                true
+            );
+            Mage::throwException($e->getMessage());
+        }
+
+        $invoice->setIsPaid(true);
+
+        $order->setTotalPaid($order->getTotalDue());
+        $order->setBaseTotalPaid($order->getBaseTotalDue());
+        $order->setTotalDue($order->getTotalDue() - $order->getTotalPaid());
+        $order->getBaseTotalDue($order->getBaseTotalDue() - $order->getBaseTotalPaid());
+        $order->setTotalInvoiced($order->getTotalInvoiced() + $invoice->getGrandTotal());
+        $order->setBaseTotalInvoiced($order->getBaseTotalInvoiced() + $invoice->getBaseGrandTotal());
+        $order->setSubtotalInvoiced($order->getSubtotalInvoiced() + $invoice->getSubtotal());
+        $order->setBaseSubtotalInvoiced($order->getBaseSubtotalInvoiced() + $invoice->getBaseSubtotal());
+        $order->setTaxInvoiced($order->getTaxInvoiced() + $invoice->getTaxAmount());
+        $order->setBaseTaxInvoiced($order->getBaseTaxInvoiced() + $invoice->getBaseTaxAmount());
+        $order->setHiddenTaxInvoiced($order->getHiddenTaxInvoiced() + $invoice->getHiddenTaxAmount());
+        $order->setBaseHiddenTaxInvoiced($order->getBaseHiddenTaxInvoiced() + $invoice->getBaseHiddenTaxAmount());
+        $order->setShippingTaxInvoiced($order->getShippingTaxInvoiced() + $invoice->getShippingTaxAmount());
+        $order->setBaseShippingTaxInvoiced($order->getBaseShippingTaxInvoiced() + $invoice->getBaseShippingTaxAmount());
+        $order->setShippingInvoiced($order->getShippingInvoiced() + $invoice->getShippingAmount());
+        $order->setBaseShippingInvoiced($order->getBaseShippingInvoiced() + $invoice->getBaseShippingAmount());
+        $order->setDiscountInvoiced($order->getDiscountInvoiced() + $invoice->getDiscountAmount());
+        $order->setBaseDiscountInvoiced($order->getBaseDiscountInvoiced() + $invoice->getBaseDiscountAmount());
+        $order->setBaseTotalInvoicedCost($order->getBaseTotalInvoicedCost() + $invoice->getBaseCost());
+        $order->save();
+
+        // Assign Last Transaction Id with Invoice
+        $transactionId = $invoice->getOrder()->getPayment()->getLastTransId();
+        if ($transactionId) {
+            $invoice->setTransactionId($transactionId);
+            $invoice->save();
+        }
+
+        return $invoice;
+    }
+
+    /**
+     * Get Assigned State
+     *
+     * @param $status
+     * @return Mage_Sales_Model_Order_Status
+     */
+    public function getAssignedState($status)
+    {
+        $status = Mage::getModel('sales/order_status')
+            ->getCollection()
+            ->joinStates()
+            ->addFieldToFilter('main_table.status', $status)
+            ->getFirstItem();
+
+        return $status;
     }
 
     /**
@@ -658,19 +802,31 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $transaction->setIsClosed(0);
             $transaction->save();
 
-
             $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
             $settledAmount = $transactionData['amount'];
             $settledAmountFormat = Mage::helper('core')->currencyByStore($settledAmount, $orderStore, true, false);
-            $order_status_after_payment = $this->getConfig('order_status_after_payment', $order->getStoreId());
-            $this->log('order_status_after_payment : ' . $order_status_after_payment);
-            $order->setState(
-                Mage_Sales_Model_Order::STATE_PROCESSING,
-                $order_status_after_payment,
-                'Reepay : Captured amount of ' . $settledAmountFormat . ' by Reepay webhook. Transaction ID: "' . $transactionData['id'] . '".',
-                false
+
+            // Change order status
+            /** @var Mage_Sales_Model_Order_Status $status */
+            $status = $this->getAssignedState($this->getConfig('order_status_settled'));
+            $order->setData('state', $status->getState());
+            $order->setStatus($status->getStatus());
+            $order->addStatusHistoryComment(
+                Mage::helper('reepay')->__('Reepay : Captured amount of %s by Reepay webhook. Transaction ID: "%s".',
+                    $settledAmountFormat,
+                    $transactionData['id']
+                ),
+                $status->getStatus()
             );
+
+            $invoice = $this->makeInvoice($order, false);
+            $invoice->setTransactionId($paymentData['transaction']);
+            $invoice->save();
+
+            $this->setReepayPaymentState($order->getPayment(), 'settled');
+
             $order->save();
+            //$order->sendNewOrderEmail();
 
             return  $transaction->getTransactionId();
         } catch (Exception $e) {
