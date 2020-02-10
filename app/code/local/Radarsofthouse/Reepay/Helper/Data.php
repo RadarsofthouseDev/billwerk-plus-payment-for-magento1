@@ -68,6 +68,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 break;
             case 'sort_order':
                 return Mage::getStoreConfig('payment/reepay/sort_order', $store);
+            case 'cleanup_time':
+                return (int) Mage::getStoreConfig('payment/reepay/cleanup_time', $store);
             default:
                 return false;
         }

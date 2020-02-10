@@ -142,4 +142,46 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
 
         return $this;
     }
+
+    /**
+     * Clean up Pending Orders
+     *
+     * @return $this
+     */
+    public function cleanup_pending_orders()
+    {
+        $orders = Mage::getModel('sales/order')->getCollection();
+        $orders->getSelect()->join(
+            array('p' => $orders->getResource()->getTable('sales/order_payment')),
+            'p.parent_id = main_table.entity_id',
+            array()
+        );
+        $orders->addFieldToFilter('method', array('in' => array('reepay', 'reepay_mobilepay', 'reepay_viabill')));
+        $orders->addFieldToFilter('status', array('in' => array('pending_payment')));
+        foreach ($orders as $order) {
+            /** @var $order Mage_Sales_Model_Order */
+            // Check order state
+            if (!$order->isCanceled() && !$order->hasInvoices()) {
+                try {
+                    $clean_time = -1 * Mage::helper('reepay')->getConfig('cleanup_time', $order->getStore());
+                    if ($clean_time !== 0) {
+                        $clean_time = strtotime($clean_time . ' minutes');
+                        $order_created_time = strtotime($order->getCreatedAt());
+                        if ($clean_time > $order_created_time) {
+                            // Cancel order
+                            $order->cancel();
+                            $order->addStatusHistoryComment(Mage::helper('reepay')->__('Order has been cancelled by timeout.'));
+                            $order->save();
+
+                            Mage::helper('reepay')->log(sprintf('Pending Cleaner: Order #%s was cancelled.', $order->getIncrementId()));
+                        }
+                    }
+                } catch (Exception $e) {
+                    continue;
+                }
+            }
+        }
+
+        return $this;
+    }
 }

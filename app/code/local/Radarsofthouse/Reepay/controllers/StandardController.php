@@ -38,6 +38,17 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         
 
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
+        if (!$order->getId()) {
+            Mage::throwException('No order for processing found');
+        }
+
+        // Set Pending Payment status
+        $order->setState(
+            Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
+            Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
+            Mage::helper('reepay')->__('The customer was redirected to Reepay.')
+        );
+        $order->save();
 
         Mage::helper('reepay')->log('Display type : '.Mage::helper('reepay')->getConfig('display_type', $order->getStoreId()));
 

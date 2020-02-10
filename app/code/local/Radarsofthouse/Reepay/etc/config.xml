@@ -151,6 +151,7 @@
 				<payment_icons>american-express,dankort,diners-club-international,discover,forbrugsforeningen,jcb,maestro,mastercard,mobilepay,unionpay,viabill,visa,visa-electron,klarna-pay-later,klarna-pay-now,applepay,paypal</payment_icons>
 				<log>1</log>
 				<sort_order>1</sort_order>
+				<cleanup_time>20</cleanup_time>
 			</reepay>
 			<reepay_viabill>
 				<model>reepay/viabill</model>
@@ -174,4 +175,17 @@
 			</reepay_mobilepay>
 		</payment>
 	</default>
+
+	<crontab>
+		<jobs>
+			<reepay_clean_up_pending_orders>
+				<schedule>
+					<cron_expr>*/5 * * * *</cron_expr>
+				</schedule>
+				<run>
+					<model>reepay/observer::cleanup_pending_orders</model>
+				</run>
+			</reepay_clean_up_pending_orders>
+		</jobs>
+	</crontab>
 </config>
