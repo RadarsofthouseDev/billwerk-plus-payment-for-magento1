@@ -87,21 +87,6 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
         }
     }
 
-
-    /**
-     * "sales_order_payment_capture" event observer
-     * set latest captured invoice ID (for partial capture)
-     *
-     * @param $observer
-     * @return void
-     */
-    public function setLatestCapturedInvoice(Varien_Event_Observer $observer)
-    {
-        $adminSession = Mage::getSingleton('adminhtml/session');
-        $adminSession->setLatestCapturedInvoice($observer->getInvoice());
-        Mage::helper('reepay')->log('ADMIN setLatestCapturedInvoice observer : order '.$observer->getInvoice()->getOrderId());
-    }
-
     /**
      * Change Order Status on Invoice Generation
      *

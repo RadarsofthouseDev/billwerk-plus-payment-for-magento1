@@ -69,15 +69,6 @@
 					</Radarsofthouse_Reepay>
 				</observers>
 			</sales_order_payment_cancel>
-			<sales_order_payment_capture>
-				<observers>
-					<radarsofthouse_reepay_latest_captured_invoice>
-						<type>singleton</type>
-						<class>Radarsofthouse_Reepay_Model_Observer</class>
-						<method>setLatestCapturedInvoice</method>
-					</radarsofthouse_reepay_latest_captured_invoice>
-				</observers>
-			</sales_order_payment_capture>
 			<sales_order_invoice_save_after>
 				<observers>
 					<radarsofthouse_reepay_invoice_save_after>
