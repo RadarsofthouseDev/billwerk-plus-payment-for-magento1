@@ -291,7 +291,12 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
 
         if ($order->canCancel()) {
             try {
-                $order->cancel();
+                try {
+                    $order->cancel();
+                } catch (Exception $e) {
+                    //
+                }
+
                 $order->getStatusHistoryCollection(true);
                 $order->addStatusHistoryComment('Reepay : order have been cancelled by Reepay webhook');
                 $order->save();

@@ -16,6 +16,7 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
     protected $_canUseInternal = true;
     protected $_canUseForMultishipping = false;
     protected $_canCapture = true;
+    protected $_canVoid = true;
     protected $_canRefund = true;
     protected $_isGateway = true;
     protected $_canCapturePartial = true;
@@ -145,6 +146,64 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
     }
 
     /**
+     * Cancel payment
+     *
+     * @param   Varien_Object $payment
+     * @return  $this
+     */
+    public function cancel(Varien_Object $payment)
+    {
+        parent::cancel($payment);
+
+        $order = $payment->getOrder();
+        Mage::helper('reepay')->log("ADMIN cancel : " . $order->getIncrementId());
+
+        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+        $cancel = Mage::helper('reepay/charge')->cancel($apiKey, $order->getIncrementId());
+
+        if (empty($cancel) || $cancel['state'] !== 'cancelled') {
+            Mage::helper('reepay')->log("State is not cancelled", Zend_Log::ERR);
+            Mage::throwException(Mage::helper('reepay')->__('Cancellation is failed'));
+        }
+
+        // Add Cancel Transaction
+        $payment->setStatus(self::STATUS_DECLINED)
+                ->setTransactionId($cancel['transaction'] . '-cancel')
+                ->setIsTransactionClosed(1); // Closed
+
+        // Add Transaction fields
+        $payment->setAdditionalInformation(
+            Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
+            array(
+                'handle' => $cancel['handle'],
+                'transaction' => $cancel['transaction'],
+                'state' => $cancel['state'],
+                'amount' => $cancel['amount'],
+                'customer' => $cancel['customer'],
+                'currency' => $cancel['currency'],
+                'created' => $cancel['created'],
+                'authorized' => $cancel['authorized'],
+                'cancelled' => $cancel['cancelled']
+            )
+        );
+
+        Mage::helper('reepay')->setReepayPaymentState($order->getPayment(), 'cancelled');
+
+        return $this;
+    }
+
+    /**
+     * Void payment
+     *
+     * @param Varien_Object $payment
+     * @return $this
+     */
+    public function void(Varien_Object $payment)
+    {
+        return $this->cancel($payment);
+    }
+
+    /**
      * prepare order line by invoice
      *
      * @param $invoice
@@ -218,5 +277,32 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
         }
 
         return $this;
+    }
+
+    /**
+     * Check void availability
+     *
+     * @param   Varien_Object $payment
+     * @return  bool
+     */
+    public function canVoid(Varien_Object $payment)
+    {
+        if ($payment instanceof Mage_Sales_Model_Order_Invoice
+            || $payment instanceof Mage_Sales_Model_Order_Creditmemo
+        ) {
+            return false;
+        }
+
+        return $this->_canVoid;
+    }
+
+    /**
+     * Can be edit order (renew order)
+     *
+     * @return bool
+     */
+    public function canEdit()
+    {
+        return false;
     }
 }

@@ -12,30 +12,6 @@
 class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
 {
     /**
-     * Cancle order payment observer <sales_order_payment_cancel>
-     *
-     * @param $observer
-     * @return void
-     */
-    public function cancleOrder($observer)
-    {
-        $order = $observer->getEvent()->getPayment()->getOrder();
-
-        Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
-
-        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
-        $cancle = Mage::helper('reepay/charge')->cancel($apiKey, $order->getIncrementId());
-        if (!empty($cancle)) {
-            if ($cancle['state'] == 'cancelled') {
-                $_payment = $order->getPayment();
-                Mage::helper('reepay')->setReepayPaymentState($_payment, 'cancelled');
-                $order->save();
-                Mage::helper('reepay')->log($cancle);
-            }
-        }
-    }
-
-    /**
      * Send email to customer when admin have created an order in the backend
      *
      * @param $observer
