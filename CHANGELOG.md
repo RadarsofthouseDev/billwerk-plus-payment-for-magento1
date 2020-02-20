@@ -1,5 +1,10 @@
 
 # Changelog
+## Version 1.0.27 on 20 February 2020
+- Add API error handle when capture and refund from Magento
+- Change logic to calculate "Other" line for order lines.
+- Fixed integer parse issue
+
 ## Version 1.0.26 on 9 January 2020
 - Save payment additional data when authorize, settled and refund 
 - Fixed PHP Notice: Undefined index

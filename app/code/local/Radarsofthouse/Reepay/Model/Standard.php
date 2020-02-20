@@ -101,6 +101,12 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
             $charge = Mage::helper('reepay/charge')->settle($apiKey, $order->getIncrementId(), $options);
             if (!empty($charge)) {
+                if( isset($charge["error"]) ){
+                    Mage::helper('reepay')->log($charge);
+                    Mage::throwException($charge["error"]);
+                    return;
+                }
+
                 if ($charge['state'] == 'settled') {
                     $_payment = $order->getPayment();
                     Mage::helper('reepay')->setReepayPaymentState($_payment, 'settled');
@@ -150,11 +156,20 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
             $amount = ($item->getRowTotal() * 100) / $item->getQty();
             $line = array();
             $line['ordertext'] = $item->getName();
-            $line['amount'] = (int)$amount;
-            $line['quantity'] = (int)$item->getQty();
+            $line['amount'] = $this->toInt($amount);
+            $line['quantity'] = $this->toInt($item->getQty());
             $orderLines[] = $line;
         }
         return $orderLines;
+    }
+
+    /**
+     * convert variable to integer
+     *
+     * @return int
+     */
+    public function toInt($number){
+        return (int)($number."");
     }
 
     /**
@@ -181,6 +196,12 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
         $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
         $refund = Mage::helper('reepay/refund')->create($apiKey, $options);
         if (!empty($refund)) {
+            if( isset($refund["error"]) ){
+                Mage::helper('reepay')->log($refund);
+                Mage::throwException($refund["error"]);
+                return;
+            }
+
             if ($refund['state'] == 'refunded') {
                 $_payment = $order->getPayment();
                 Mage::helper('reepay')->setReepayPaymentState($_payment, 'refunded');

@@ -58,7 +58,7 @@ class Radarsofthouse_Reepay_Helper_Refund extends Mage_Core_Helper_Abstract
             $log['response_errors'] = Mage::helper('reepay/client')->getErrors();
             Mage::helper('reepay')->log(json_encode($log), Zend_Log::ERR, true);
 
-            return false;
+            return $response;
         }
     }
 }

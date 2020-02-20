@@ -340,7 +340,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
     */
     public function getOrderLines($order)
     {
-        $orderTotalDue = (int)($order->getTotalDue() * 100);
+        $orderTotalDue = $order->getTotalDue() * 100;
+        $orderTotalDue = $this->toInt($orderTotalDue);
         $total = 0;
         $orderLines = array();
 
@@ -348,15 +349,19 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $orderitems = $order->getAllVisibleItems();
         foreach ($orderitems as $orderitem) {
             $amount = $orderitem->getPriceInclTax() * 100;
+            $amount = round($amount);
+
+            $qty = $orderitem->getQtyOrdered();
+            
             $line = array();
             $line['ordertext'] = $orderitem->getProduct()->getName();
-            $line['amount'] = (int)round($amount);
-            $line['quantity'] = (int)$orderitem->getQtyOrdered();
+            $line['amount'] = $this->toInt($amount);
+            $line['quantity'] = $this->toInt($qty);
             $line['vat'] = $orderitem->getTaxPercent()/100;
             $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
 
-            $total = $total + (int)round($amount*$orderitem->getQtyOrdered());
+            $total = $total + $this->toInt($amount) * $this->toInt($qty);
         }
         /*
         // tax
@@ -377,7 +382,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $line = array();
             $line['ordertext'] = $order->getShippingDescription();
             $line['quantity'] = 1;
-            $line['amount'] = (int)$shippingAmount;
+            $line['amount'] = $this->toInt($shippingAmount);
             if ($order->getShippingTaxAmount() > 0) {
                 $line['vat'] = $order->getShippingTaxAmount()/$order->getShippingAmount();
                 $line['amount_incl_vat'] = "true";
@@ -387,7 +392,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             }
 
             $orderLines[] = $line;
-            $total = $total + (int)$shippingAmount;
+            $total = $total + $this->toInt($shippingAmount);
         }
 
         // discount
@@ -395,20 +400,20 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         if ($discountAmount != 0) {
             $line = array();
             $line['ordertext'] = $order->getDiscountDescription();
-            $line['amount'] = (int)$discountAmount;
+            $line['amount'] = $this->toInt($discountAmount);
             $line['quantity'] = 1;
             $line['vat'] = 0;
             $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
-            $total = $total + (int)$discountAmount;
+            $total = $total + $this->toInt($discountAmount);
         }
 
-        
-        // other
-        if ((int)$total != $orderTotalDue) {
+        // other (For eaxmple: Fee line from third party)
+        if ($total != $orderTotalDue) {
+            $amount = $orderTotalDue - $total;
             $line = array();
             $line['ordertext'] = $this->__('Other');
-            $line['amount'] = (int)($orderTotalDue - $total);
+            $line['amount'] = $this->toInt($amount);
             $line['quantity'] = 1;
             $line['vat'] = 0;
             $line['amount_incl_vat'] = "true";
@@ -417,6 +422,15 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         
 
         return $orderLines;
+    }
+
+    /**
+     * convert variable to integer
+     *
+     * @return int
+     */
+    public function toInt($number){
+        return (int)($number."");
     }
 
     /**
