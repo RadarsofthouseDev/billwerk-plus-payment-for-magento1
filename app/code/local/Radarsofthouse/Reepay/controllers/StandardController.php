@@ -115,6 +115,9 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         if (!empty($session->getReepaySessionOrder())) {
             $session->unsReepaySessionOrder();
         }
+
+        $session->setLastOrderId($order->getId());
+        $session->setLastRealOrderId($order->getIncrementId());
         
         if ($_isAjax == 1) {
             Mage::helper('reepay')->log('reepay/standard/accept : return ajax request');

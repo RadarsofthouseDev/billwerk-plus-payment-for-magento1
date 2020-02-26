@@ -21,16 +21,22 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
     {
         $order = $observer->getEvent()->getPayment()->getOrder();
 
-        Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
+        $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
+        if ($paymentMethod == 'reepay' ||
+            $paymentMethod == 'reepay_mobilepay' ||
+            $paymentMethod == 'reepay_viabill'
+        ) {
+            Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
 
-        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
-        $cancle = Mage::helper('reepay/charge')->cancel($apiKey, $order->getIncrementId());
-        if (!empty($cancle)) {
-            if ($cancle['state'] == 'cancelled') {
-                $_payment = $order->getPayment();
-                Mage::helper('reepay')->setReepayPaymentState($_payment, 'cancelled');
-                $order->save();
-                Mage::helper('reepay')->log($cancle);
+            $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+            $cancle = Mage::helper('reepay/charge')->cancel($apiKey, $order->getIncrementId());
+            if (!empty($cancle)) {
+                if ($cancle['state'] == 'cancelled') {
+                    $_payment = $order->getPayment();
+                    Mage::helper('reepay')->setReepayPaymentState($_payment, 'cancelled');
+                    $order->save();
+                    Mage::helper('reepay')->log($cancle);
+                }
             }
         }
     }
