@@ -33,7 +33,8 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Allowwedpayment
             array('value' => 'china_union_pay', 'label' => __('China Union Pay')),
             array('value' => 'ffk', 'label' => __('Forbrugsforeningen')),
             array('value' => 'applepay', 'label' => __('Apple Pay')),
-            array('value' => 'paypal', 'label' => __('PayPal'))
+            array('value' => 'paypal', 'label' => __('PayPal')),
+            array('value' => 'resurs', 'label' => __('Resurs Bank'))
         );
     }
 }

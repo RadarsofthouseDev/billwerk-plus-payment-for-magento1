@@ -35,7 +35,8 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Paymenticons
             array('value' => 'klarna-pay-later', 'label' => __('Klarna Pay Later')),
             array('value' => 'klarna-pay-now', 'label' => __('Klarna Pay Now')),
             array('value' => 'applepay', 'label' => __('Apple Pay')),
-            array('value' => 'paypal', 'label' => __('PayPal'))
+            array('value' => 'paypal', 'label' => __('PayPal')),
+            array('value' => 'resurs', 'label' => __('Resurs Bank'))
         );
     }
 }
