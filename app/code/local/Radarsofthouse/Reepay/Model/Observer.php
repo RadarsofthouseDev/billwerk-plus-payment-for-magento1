@@ -24,7 +24,10 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
         if ($paymentMethod == 'reepay' ||
             $paymentMethod == 'reepay_mobilepay' ||
-            $paymentMethod == 'reepay_viabill'
+            $paymentMethod == 'reepay_viabill' ||
+            $paymentMethod == 'reepay_paypal' ||
+            $paymentMethod == 'reepay_klarna' ||
+            $paymentMethod == 'reepay_applepay'
         ) {
             Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
 
@@ -55,7 +58,10 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
 
         if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_mobilepay' ||
-            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill'
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_paypal' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarna' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_applepay'
         ) {
             try {
                 $sessionId = Mage::helper('reepay')->createReepaySession($order);

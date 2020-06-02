@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.29</version>
+			<version>1.0.30</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -162,6 +162,37 @@
 				<specificcountry>0</specificcountry>
 				<sort_order>3</sort_order>
 			</reepay_mobilepay>
+            <reepay_paypal>
+				<model>reepay/paypal</model>
+				<active>0</active>
+				<title>Reepay Paypal</title>
+				<instructions>Paypal payment from Reepay</instructions>
+				<show_icon>0</show_icon>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>4</sort_order>
+			</reepay_paypal>
+            <reepay_klarna>
+				<model>reepay/klarna</model>
+				<active>0</active>
+				<title>Reepay Klarna</title>
+				<instructions>Klarna payment from Reepay</instructions>
+				<allowwed_payment>klarna_pay_later,klarna_pay_now</allowwed_payment>
+				<payment_icons>klarna-pay-later,klarna-pay-now</payment_icons>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>5</sort_order>
+			</reepay_klarna>
+            <reepay_applepay>
+				<model>reepay/applepay</model>
+				<active>0</active>
+				<title>Reepay Apple Pay</title>
+				<instructions>Apple Pay payment from Reepay</instructions>
+				<show_icon>0</show_icon>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>6</sort_order>
+			</reepay_applepay>
 		</payment>
 	</default>
 </config>

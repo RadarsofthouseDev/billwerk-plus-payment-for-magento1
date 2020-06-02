@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.30 on 2 June 2020
+- separate payment methods for Klarna, ApplePay and Paypal.
+
 ## Version 1.0.29 on 27 February 2020
 - add "Resurs Bank" payment option.
 - Fix checkout session for thank you page.

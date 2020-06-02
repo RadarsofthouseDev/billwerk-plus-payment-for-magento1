@@ -446,6 +446,13 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $_paymentMethods[] = 'viabill';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_mobilepay') {
             $_paymentMethods[] = 'mobilepay';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_paypal') {
+            $_paymentMethods[] = 'paypal';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarna') {
+            $paymentMethods = Mage::getStoreConfig('payment/reepay_klarna/allowwed_payment', $order->getStoreId() );
+            $_paymentMethods = explode(',', $paymentMethods);
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_applepay') {
+            $_paymentMethods[] = 'applepay';
         } else {
             $paymentMethods = $this->getConfig('allowwed_payment');
             $_paymentMethods = explode(',', $paymentMethods);
