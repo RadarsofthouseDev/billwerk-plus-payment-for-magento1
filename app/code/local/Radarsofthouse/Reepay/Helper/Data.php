@@ -189,7 +189,9 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $paymentMethods = $this->getPaymentMethods($order);
 
         $settle = false;
-        if ($this->getConfig('auto_capture', $order->getStoreId()) == 1) {
+        if ( $this->getConfig('auto_capture', $order->getStoreId()) == 1 ||
+            $order->getPayment()->getMethodInstance()->getCode() == "reepay_swish"
+        ) {
             $settle = true;
         }
 
@@ -448,11 +450,18 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $_paymentMethods[] = 'mobilepay';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_paypal') {
             $_paymentMethods[] = 'paypal';
-        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarna') {
-            $paymentMethods = Mage::getStoreConfig('payment/reepay_klarna/allowwed_payment', $order->getStoreId() );
-            $_paymentMethods = explode(',', $paymentMethods);
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaynow') {
+            $_paymentMethods[] = 'klarna_pay_now';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaylater') {
+            $_paymentMethods[] = 'klarna_pay_later';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_applepay') {
             $_paymentMethods[] = 'applepay';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_swish') {
+            $_paymentMethods[] = 'swish';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_resurs') {
+            $_paymentMethods[] = 'resurs';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_forbrugsforeningen') {
+            $_paymentMethods[] = 'ffk';
         } else {
             $paymentMethods = $this->getConfig('allowwed_payment');
             $_paymentMethods = explode(',', $paymentMethods);

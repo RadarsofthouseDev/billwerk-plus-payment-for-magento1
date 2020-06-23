@@ -9,12 +9,12 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
  */
-class Radarsofthouse_Reepay_Model_Klarna extends Radarsofthouse_Reepay_Model_Standard
+class Radarsofthouse_Reepay_Model_Forbrugsforeningen extends Radarsofthouse_Reepay_Model_Standard
 {
-    protected $_code = 'reepay_klarna';
+    protected $_code = 'reepay_forbrugsforeningen';
 
-    protected $_formBlockType = 'reepay/form_klarna';
-    protected $_infoBlockType = 'reepay/info_klarna';
+    protected $_formBlockType = 'reepay/form_forbrugsforeningen';
+    protected $_infoBlockType = 'reepay/info_forbrugsforeningen';
 
     /**
      * Return Order place redirect url
@@ -33,6 +33,11 @@ class Radarsofthouse_Reepay_Model_Klarna extends Radarsofthouse_Reepay_Model_Sta
      */
     public function getPaymentIcons()
     {
-        return trim($this->getConfigData('payment_icons'));
+        $paymentIcon = '';
+        if ($this->getConfigData('show_icon')) {
+            $paymentIcon = 'forbrugsforeningen';
+        }
+
+        return $paymentIcon;
     }
 }

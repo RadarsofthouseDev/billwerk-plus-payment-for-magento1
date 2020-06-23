@@ -26,8 +26,12 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $paymentMethod == 'reepay_mobilepay' ||
             $paymentMethod == 'reepay_viabill' ||
             $paymentMethod == 'reepay_paypal' ||
-            $paymentMethod == 'reepay_klarna' ||
-            $paymentMethod == 'reepay_applepay'
+            $paymentMethod == 'reepay_klarnapaynow' ||
+            $paymentMethod == 'reepay_klarnapaylater' ||
+            $paymentMethod == 'reepay_applepay' ||
+            $paymentMethod == 'reepay_swish' ||
+            $paymentMethod == 'reepay_resurs' ||
+            $paymentMethod == 'reepay_forbrugsforeningen'
         ) {
             Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
 
@@ -60,8 +64,12 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_mobilepay' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_paypal' ||
-            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarna' ||
-            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_applepay'
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaynow' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaylater' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_applepay' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_swish' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_resurs' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_forbrugsforeningen'
         ) {
             try {
                 $sessionId = Mage::helper('reepay')->createReepaySession($order);

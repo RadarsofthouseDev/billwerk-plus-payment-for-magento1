@@ -1,5 +1,9 @@
 
 # Changelog
+## Version 1.0.31 on 23 June 2020
+- Add "Swish Bank", "Resurs" and "Forbrugsforeningen" payment methods.
+- Split Klarna payment method to "Klarna Pay Now" and "Klarna Pay Later".
+
 ## Version 1.0.30 on 2 June 2020
 - separate payment methods for Klarna, ApplePay and Paypal.
 

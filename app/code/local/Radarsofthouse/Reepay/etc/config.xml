@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.30</version>
+			<version>1.0.31</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -172,17 +172,26 @@
 				<specificcountry>0</specificcountry>
 				<sort_order>4</sort_order>
 			</reepay_paypal>
-            <reepay_klarna>
-				<model>reepay/klarna</model>
+            <reepay_klarnapaynow>
+				<model>reepay/klarnapaynow</model>
 				<active>0</active>
-				<title>Reepay Klarna</title>
-				<instructions>Klarna payment from Reepay</instructions>
-				<allowwed_payment>klarna_pay_later,klarna_pay_now</allowwed_payment>
-				<payment_icons>klarna-pay-later,klarna-pay-now</payment_icons>
+				<title>Reepay Klarna Pay Now</title>
+				<instructions>Klarna Pay Now payment from Reepay</instructions>
+				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
 				<sort_order>5</sort_order>
-			</reepay_klarna>
+			</reepay_klarnapaynow>
+            <reepay_klarnapaylater>
+				<model>reepay/klarnapaylater</model>
+				<active>0</active>
+				<title>Reepay Klarna Pay Later</title>
+				<instructions>Klarna Pay Later payment from Reepay</instructions>
+				<show_icon>0</show_icon>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>5</sort_order>
+			</reepay_klarnapaylater>
             <reepay_applepay>
 				<model>reepay/applepay</model>
 				<active>0</active>
@@ -193,6 +202,36 @@
 				<specificcountry>0</specificcountry>
 				<sort_order>6</sort_order>
 			</reepay_applepay>
+            <reepay_swish>
+				<model>reepay/swish</model>
+				<active>0</active>
+				<title>Reepay Swish</title>
+				<instructions>Swish payment from Reepay</instructions>
+				<show_icon>0</show_icon>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>7</sort_order>
+			</reepay_swish>
+            <reepay_resurs>
+				<model>reepay/resurs</model>
+				<active>0</active>
+				<title>Reepay Resurs Bank</title>
+				<instructions>Resurs Bank payment from Reepay</instructions>
+				<show_icon>0</show_icon>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>8</sort_order>
+			</reepay_resurs>
+            <reepay_forbrugsforeningen>
+				<model>reepay/forbrugsforeningen</model>
+				<active>0</active>
+				<title>Reepay Forbrugsforeningen</title>
+				<instructions>Forbrugsforeningen payment from Reepay</instructions>
+				<show_icon>0</show_icon>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>9</sort_order>
+			</reepay_forbrugsforeningen>
 		</payment>
 	</default>
 </config>

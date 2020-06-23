@@ -9,7 +9,7 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
  */
-class Radarsofthouse_Reepay_Block_Form_Klarna extends Mage_Payment_Block_Form
+class Radarsofthouse_Reepay_Block_Form_Swish extends Mage_Payment_Block_Form
 {
     protected $_instructions;
     protected $_paymenticons;
@@ -17,7 +17,7 @@ class Radarsofthouse_Reepay_Block_Form_Klarna extends Mage_Payment_Block_Form
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('reepay/form/klarna.phtml');
+        $this->setTemplate('reepay/form/swish.phtml');
     }
 
     public function getInstructions()
