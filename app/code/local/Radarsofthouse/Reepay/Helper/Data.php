@@ -641,11 +641,11 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         if (isset($transactionData['card_transaction'])) {
             $cardTransaction = $transactionData['card_transaction'];
             unset($transactionData['card_transaction']);
-            $transactionData['card_transaction_ref_transaction'] = $cardTransaction['ref_transaction'];
-            $transactionData['card_transaction_fingerprint'] = $cardTransaction['fingerprint'];
-            $transactionData['card_transaction_card_type'] = $cardTransaction['card_type'];
-            $transactionData['card_transaction_exp_date'] = $cardTransaction['exp_date'];
-            $transactionData['card_transaction_masked_card'] = $cardTransaction['masked_card'];
+            $transactionData['card_transaction_ref_transaction'] = isset($cardTransaction['ref_transaction']) ? $cardTransaction['ref_transaction'] : '';
+            $transactionData['card_transaction_fingerprint'] = isset($cardTransaction['fingerprint']) ? $cardTransaction['fingerprint'] : '';
+            $transactionData['card_transaction_card_type'] = isset($cardTransaction['card_type']) ? $cardTransaction['card_type'] : '';
+            $transactionData['card_transaction_exp_date'] = isset($cardTransaction['exp_date']) ? $cardTransaction['exp_date'] : '';
+            $transactionData['card_transaction_masked_card'] = isset($cardTransaction['masked_card']) ? $cardTransaction['masked_card'] : '';
         }
 
         return $transactionData;
@@ -724,7 +724,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         if (isset($transactionData['card_transaction'])) {
             $cardTransaction = $transactionData['card_transaction'];
             unset($transactionData['card_transaction']);
-            $transactionData['card_transaction_ref_transaction'] = $cardTransaction['ref_transaction'];
+            $transactionData['card_transaction_ref_transaction'] = isset($cardTransaction['ref_transaction']) ? $cardTransaction['ref_transaction'] : '';
         }
 
         return $transactionData;

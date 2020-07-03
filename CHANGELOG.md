@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.32 on 3 July 2020
+- Small fix for PHP notice
+
 ## Version 1.0.31 on 23 June 2020
 - Add "Swish Bank", "Resurs" and "Forbrugsforeningen" payment methods.
 - Split Klarna payment method to "Klarna Pay Now" and "Klarna Pay Later".

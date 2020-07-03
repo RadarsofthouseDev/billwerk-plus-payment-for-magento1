@@ -183,9 +183,9 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             return;
         }
 
-        $orderId = $params['invoice'];
-        $id = $params['id'];
-        $_isAjax = $params['_isAjax'];
+        $orderId = isset($params['invoice']) ? $params['invoice'] : null;
+        $id = isset($params['id']) ? $params['id'] : "";
+        $_isAjax = isset($params['_isAjax']) ? $params['_isAjax'] : null;
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
         
         if ($order->canCancel()) {
