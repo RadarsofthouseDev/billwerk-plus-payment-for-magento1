@@ -34,8 +34,36 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $paymentMethod == 'reepay_forbrugsforeningen'
         ) {
             Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
-
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+
+            // refund for SWISH payment
+            if ($paymentMethod == 'reepay_swish'){
+                $captureTransactions = Mage::getModel('sales/order_payment_transaction')->getCollection()
+                    ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
+                    ->addAttributeToFilter('txn_type', array('eq' => 'capture'));
+                if(count($captureTransactions) > 0){
+                    foreach($captureTransactions as $transaction){
+                        $transactionData = $transaction->getData();
+                        if( isset( $transactionData['additional_information']['raw_details_info']['amount'] ) ){
+                            Mage::helper('reepay')->log('Refund SWISH payment : '.$order->getIncrementId());
+                            $amount = ($transactionData['additional_information']['raw_details_info']['amount'])*100;
+                            $options = array();
+                            $options['invoice'] = $order->getIncrementId();
+                            $options['key'] = 90;
+                            $options['amount'] = (int)($amount."");
+                            $options['ordertext'] = "refund";
+                            $refund = Mage::helper('reepay/refund')->create($apiKey, $options);
+                            if (!empty($refund)) {
+                                if( isset($refund["error"]) ){
+                                    Mage::helper('reepay')->log('Refund SWISH payment error : '.$refund["error"]);
+                                    Mage::throwException('Refund SWISH payment error : '.$refund["error"]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             $cancle = Mage::helper('reepay/charge')->cancel($apiKey, $order->getIncrementId());
             if (!empty($cancle)) {
                 if ($cancle['state'] == 'cancelled') {

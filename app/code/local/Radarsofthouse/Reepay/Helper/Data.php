@@ -676,7 +676,9 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
                 (array) $transactionData
             );
-            $payment->setParentTransactionId($transactionData['card_transaction_ref_transaction']);
+            
+            $card_transaction_ref_transaction = isset($transactionData['card_transaction_ref_transaction']) ? $transactionData['card_transaction_ref_transaction'] : '';
+            $payment->setParentTransactionId($card_transaction_ref_transaction);
             $payment->save();
 
             $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE);
@@ -754,7 +756,9 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
                 (array) $transactionData
             );
-            $payment->setParentTransactionId($transactionData['card_transaction_ref_transaction']);
+
+            $card_transaction_ref_transaction = isset($transactionData['card_transaction_ref_transaction']) ? $transactionData['card_transaction_ref_transaction'] : '';
+            $payment->setParentTransactionId($card_transaction_ref_transaction);
             $payment->save();
 
             $transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_REFUND);

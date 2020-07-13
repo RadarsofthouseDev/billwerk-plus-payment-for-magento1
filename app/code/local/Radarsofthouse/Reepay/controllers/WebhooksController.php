@@ -256,7 +256,9 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
                 $refundAmountFormat = Mage::helper('core')->currencyByStore($refundAmount, $orderStore, true, false);
                 $order->getStatusHistoryCollection(true);
-                $order->addStatusHistoryComment('Reepay : Refunded amount of '.$refundAmountFormat.' by Reepay webhook. Transaction ID: "'.$refundData['id'].'". ');
+                $_order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
+                Mage::helper('reepay')->log('order status : '.$_order->getStatus());
+                $order->addStatusHistoryComment('Reepay : Refunded amount of '.$refundAmountFormat.' by Reepay webhook. Transaction ID: "'.$refundData['id'].'". ',$_order->getStatus());
                 $order->save();
 
                 return array(

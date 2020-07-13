@@ -1,5 +1,9 @@
 
 # Changelog
+## Version 1.0.33 on 13 July 2020
+- Add refund function when cancel order (only Swish payment).
+- Small fix for PHP notice
+
 ## Version 1.0.32 on 3 July 2020
 - Small fix for PHP notice
 
