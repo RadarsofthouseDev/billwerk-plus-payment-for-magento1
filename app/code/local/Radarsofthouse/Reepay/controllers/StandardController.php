@@ -189,33 +189,41 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
         
         if ($order->canCancel()) {
-            try {
-                $order->cancel();
-                $order->getStatusHistoryCollection(true);
-                $order->addStatusHistoryComment('Reepay : order have been cancelled by payment page');
-                $order->save();
 
-                $_payment = $order->getPayment();
-                Mage::helper('reepay')->setReepayPaymentState($_payment, 'cancelled');
-                $order->save();
+            $captureTransactions = Mage::getModel('sales/order_payment_transaction')->getCollection()
+                    ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
+                    ->addAttributeToFilter('txn_type', array('eq' => 'capture'));
+            if(count($captureTransactions) > 0){
+                Mage::helper('reepay')->log('SKIP cancelation : already has capture transaction');
+            }else{
+                try {
+                    $order->cancel();
+                    $order->getStatusHistoryCollection(true);
+                    $order->addStatusHistoryComment('Reepay : order have been cancelled by payment page');
+                    $order->save();
 
-                Mage::helper('reepay')->log('Cancelled : '.$order->getIncrementId());
+                    $_payment = $order->getPayment();
+                    Mage::helper('reepay')->setReepayPaymentState($_payment, 'cancelled');
+                    $order->save();
 
-                $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
-                if ($quote->getId()) {
-                    $quote->setIsActive(1)
-                        ->setReservedOrderId(null)
-                        ->save();
-                    $session->replaceQuote($quote);
+                    Mage::helper('reepay')->log('Cancelled : '.$order->getIncrementId());
+
+                    $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
+                    if ($quote->getId()) {
+                        $quote->setIsActive(1)
+                            ->setReservedOrderId(null)
+                            ->save();
+                        $session->replaceQuote($quote);
+                    }
+                    $session->unsLastRealOrderId();
+
+                    // delete reepay session
+                    $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
+                    $res = Mage::helper('reepay/session')->delete($apiKey, $id);
+                    Mage::helper('reepay')->log('delete reepay session : '.$id);
+                } catch (Exception $e) {
+                    Mage::helper('reepay')->log('cancel by window payment (Exception) : '.$e->getMessage(), Zend_Log::ERR);
                 }
-                $session->unsLastRealOrderId();
-
-                // delete reepay session
-                $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
-                $res = Mage::helper('reepay/session')->delete($apiKey, $id);
-                Mage::helper('reepay')->log('delete reepay session : '.$id);
-            } catch (Exception $e) {
-                Mage::helper('reepay')->log('cancel by window payment (Exception) : '.$e->getMessage(), Zend_Log::ERR);
             }
         }
 
