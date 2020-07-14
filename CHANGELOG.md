@@ -1,6 +1,6 @@
 
 # Changelog
-## Version 1.0.33 on 13 July 2020
+## Version 1.0.34 on 14 July 2020
 - Skip order cancelation if already has capture transaction.
 
 ## Version 1.0.33 on 13 July 2020
