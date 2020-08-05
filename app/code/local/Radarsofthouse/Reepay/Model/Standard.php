@@ -77,14 +77,23 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
      * Capture payment online
      *
      * @param Varien_Object $payment
-     * @param int $amount
+     * @param int/float $amount
      * @return Radarsofthouse_Reepay_Model_Standard $this
      */
     public function capture(Varien_Object $payment, $amount)
     {
+        /** @var Mage_Sales_Model_Order $order */
         $order = $payment->getOrder();
-        $amount = $amount;
         $adminSession = Mage::getSingleton('adminhtml/session');
+        $originalAmount  = $amount;
+
+        if($amount > $order->getGrandTotal()){
+            $amount = $order->getGrandTotal();
+        }
+
+        if($amount != $originalAmount) {
+            Mage::log("Change capture amount from {$originalAmount} to {$amount} for order". $order->getIncrementId());
+        }
 
         if ($adminSession->getLatestCapturedInvoice()->getOrderId() == $order->getId()) {
             Mage::helper('reepay')->log("ADMIN capture : ".$order->getIncrementId());

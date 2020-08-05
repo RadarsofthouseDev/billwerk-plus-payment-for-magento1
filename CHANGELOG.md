@@ -1,5 +1,9 @@
 
 # Changelog
+## Version 1.0.35 on 5 August 2020
+- Add "Send order lines" option.
+- Prevent capture amount more than authorized amount.
+
 ## Version 1.0.34 on 14 July 2020
 - Skip order cancelation if already has capture transaction.
 

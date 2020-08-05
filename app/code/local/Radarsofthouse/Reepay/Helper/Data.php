@@ -41,6 +41,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 return Mage::getStoreConfig('payment/reepay/display_type', $store);
             case 'auto_capture':
                 return Mage::getStoreConfig('payment/reepay/auto_capture', $store);
+            case 'send_order_line':
+                return Mage::getStoreConfig('payment/reepay/send_order_line', $store);
             case 'send_email_after_payment':
                 return Mage::getStoreConfig('payment/reepay/send_email_after_payment', $store);
             case 'order_status_after_payment':
@@ -174,13 +176,17 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $customer = $this->getCustomerData($order);
         $billingAddress = $this->getOrderBillingAddress($order);
         $shippingAddress = $this->getOrderShippingAddress($order);
-        $orderLines = $this->getOrderLines($order);
         $orderData = array(
             'handle' => $order->getIncrementId(),
             'currency' => $order->getOrderCurrencyCode(),
-            'order_lines' => $orderLines,
             'billing_address' => $billingAddress,
         );
+        if($this->getConfig('send_order_line', $order->getStoreId()) == 1){
+            $orderData['order_lines'] = $this->getOrderLines($order);
+        }else{
+            $grandTotal = $order->getGrandTotal() * 100;
+            $orderData['amount'] = (int)$grandTotal;
+        }
 
         if (!empty($shippingAddress)) {
             $orderData['shipping_address'] = $shippingAddress;
