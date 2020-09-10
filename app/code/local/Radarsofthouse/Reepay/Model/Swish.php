@@ -40,4 +40,8 @@ class Radarsofthouse_Reepay_Model_Swish extends Radarsofthouse_Reepay_Model_Stan
 
         return $paymentIcon;
     }
+    public function capture(Varien_Object $payment, $amount)
+    {
+        return $this;
+    }
 }
