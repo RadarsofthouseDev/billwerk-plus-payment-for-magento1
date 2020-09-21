@@ -100,14 +100,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
 
         $reepayStatus = Mage::getModel('reepay/status')->getCollection()->addFieldToFilter('order_id', $orderId);
 
-        $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
-
-        // delete reepay session
-        if (!empty($id)) {
-            $res = Mage::helper('reepay/session')->delete($apiKey, $id);
-            Mage::helper('reepay')->log('delete reepay session : '.$id);
-        }
-
         // unset reepay session id on checkout session
         if (!empty($session->getReepaySessionID())) {
             $session->unsReepaySessionID();
