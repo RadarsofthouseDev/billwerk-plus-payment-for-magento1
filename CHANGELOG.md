@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.38 on 28 September 2020
+- add "Klarna Slice It" and "Vipps" payment options.
+
 ## Version 1.0.37 on 21 September 2020
 - Not delete Reepay session when payment success.
 

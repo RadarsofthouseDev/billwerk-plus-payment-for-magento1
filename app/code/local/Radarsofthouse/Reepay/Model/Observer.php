@@ -28,8 +28,10 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $paymentMethod == 'reepay_paypal' ||
             $paymentMethod == 'reepay_klarnapaynow' ||
             $paymentMethod == 'reepay_klarnapaylater' ||
+            $paymentMethod == 'reepay_klarnasliceit' ||
             $paymentMethod == 'reepay_applepay' ||
             $paymentMethod == 'reepay_swish' ||
+            $paymentMethod == 'reepay_vipps' ||
             $paymentMethod == 'reepay_resurs' ||
             $paymentMethod == 'reepay_forbrugsforeningen'
         ) {
@@ -94,8 +96,10 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_paypal' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaynow' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaylater' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnasliceit' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_applepay' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_swish' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_vipps' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_resurs' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_forbrugsforeningen'
         ) {

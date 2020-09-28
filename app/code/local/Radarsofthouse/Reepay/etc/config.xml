@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.37</version>
+			<version>1.0.38</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -193,6 +193,16 @@
 				<specificcountry>0</specificcountry>
 				<sort_order>5</sort_order>
 			</reepay_klarnapaylater>
+			<reepay_klarnasliceit>
+				<model>reepay/klarnasliceit</model>
+				<active>0</active>
+				<title>Reepay Klarna Slice It</title>
+				<instructions>Klarna Slice It payment from Reepay</instructions>
+				<show_icon>0</show_icon>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>6</sort_order>
+			</reepay_klarnasliceit>
             <reepay_applepay>
 				<model>reepay/applepay</model>
 				<active>0</active>
@@ -201,7 +211,7 @@
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
-				<sort_order>6</sort_order>
+				<sort_order>7</sort_order>
 			</reepay_applepay>
             <reepay_swish>
 				<model>reepay/swish</model>
@@ -211,7 +221,7 @@
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
-				<sort_order>7</sort_order>
+				<sort_order>8</sort_order>
 			</reepay_swish>
             <reepay_resurs>
 				<model>reepay/resurs</model>
@@ -221,8 +231,18 @@
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
-				<sort_order>8</sort_order>
+				<sort_order>9</sort_order>
 			</reepay_resurs>
+			<reepay_vipps>
+				<model>reepay/vipps</model>
+				<active>0</active>
+				<title>Reepay Vipps</title>
+				<instructions>Vipps payment from Reepay</instructions>
+				<show_icon>0</show_icon>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>10</sort_order>
+			</reepay_vipps>
             <reepay_forbrugsforeningen>
 				<model>reepay/forbrugsforeningen</model>
 				<active>0</active>
@@ -231,7 +251,7 @@
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
-				<sort_order>9</sort_order>
+				<sort_order>11</sort_order>
 			</reepay_forbrugsforeningen>
 		</payment>
 	</default>

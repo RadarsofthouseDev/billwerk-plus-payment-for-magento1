@@ -25,6 +25,7 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Allowwedpayment
             array('value' => 'viabill', 'label' => __('ViaBill')),
             array('value' => 'klarna_pay_later', 'label' => __('Klarna Pay Later')),
             array('value' => 'klarna_pay_now', 'label' => __('Klarna Pay Now')),
+            array('value' => 'klarna_slice_it', 'label' => __('Klarna Slice It')),
             array('value' => 'diners', 'label' => __('Diners Club')),
             array('value' => 'maestro', 'label' => __('Maestro')),
             array('value' => 'laser', 'label' => __('Laser')),
@@ -34,7 +35,8 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Allowwedpayment
             array('value' => 'ffk', 'label' => __('Forbrugsforeningen')),
             array('value' => 'applepay', 'label' => __('Apple Pay')),
             array('value' => 'paypal', 'label' => __('PayPal')),
-            array('value' => 'resurs', 'label' => __('Resurs Bank'))
+            array('value' => 'resurs', 'label' => __('Resurs Bank')),
+            array('value' => 'vipps', 'label' => __('Vipps')),
         );
     }
 }

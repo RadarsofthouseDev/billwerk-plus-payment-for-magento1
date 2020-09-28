@@ -34,9 +34,11 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Paymenticons
             array('value' => 'visa-electron', 'label' => __('Visa electron')),
             array('value' => 'klarna-pay-later', 'label' => __('Klarna Pay Later')),
             array('value' => 'klarna-pay-now', 'label' => __('Klarna Pay Now')),
+            array('value' => 'klarna-slice-it', 'label' => __('Klarna Slice It')),
             array('value' => 'applepay', 'label' => __('Apple Pay')),
             array('value' => 'paypal', 'label' => __('PayPal')),
-            array('value' => 'resurs', 'label' => __('Resurs Bank'))
+            array('value' => 'resurs', 'label' => __('Resurs Bank')),
+            array('value' => 'vipps', 'label' => __('Vipps')),
         );
     }
 }

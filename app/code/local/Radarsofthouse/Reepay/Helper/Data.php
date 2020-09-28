@@ -460,6 +460,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $_paymentMethods[] = 'klarna_pay_now';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaylater') {
             $_paymentMethods[] = 'klarna_pay_later';
+        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnasliceit') {
+            $_paymentMethods[] = 'klarna_slice_it';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_applepay') {
             $_paymentMethods[] = 'applepay';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_swish') {
@@ -468,6 +470,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $_paymentMethods[] = 'resurs';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_forbrugsforeningen') {
             $_paymentMethods[] = 'ffk';
+        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_vipps') {
+            $_paymentMethods[] = 'vipps';
         } else {
             $paymentMethods = $this->getConfig('allowwed_payment');
             $_paymentMethods = explode(',', $paymentMethods);
