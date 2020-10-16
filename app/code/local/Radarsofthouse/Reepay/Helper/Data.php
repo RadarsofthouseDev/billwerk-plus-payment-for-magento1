@@ -388,7 +388,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $shippingAmount = ($order->getShippingInclTax() * 100);
         if ($shippingAmount != 0) {
             $line = array();
-            $line['ordertext'] = $order->getShippingDescription();
+            $line['ordertext'] = !empty($order->getShippingDescription()) ? $order->getShippingDescription() : $this->__('Shipping');;
             $line['quantity'] = 1;
             $line['amount'] = $this->toInt($shippingAmount);
             if ($order->getShippingTaxAmount() > 0) {
@@ -407,7 +407,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $discountAmount = ($order->getDiscountAmount() * 100);
         if ($discountAmount != 0) {
             $line = array();
-            $line['ordertext'] = $order->getDiscountDescription();
+            $line['ordertext'] = !empty($order->getDiscountDescription()) ? $this->__('Discount: %s',$order->getDiscountDescription()) : $this->__('Discount');
             $line['amount'] = $this->toInt($discountAmount);
             $line['quantity'] = 1;
             $line['vat'] = 0;
