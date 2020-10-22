@@ -82,6 +82,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
+                            <comment>Note: ViaBill, Vipps, Resurs Bank and Apple Pay will be opened in "Window" display type.</comment>
 						</display_type>
 						<auto_capture translate="label">
 							<label>Auto capture</label>

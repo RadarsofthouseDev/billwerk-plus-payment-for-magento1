@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.39</version>
+			<version>1.0.40</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -78,6 +78,15 @@
 					</radarsofthouse_reepay_latest_captured_invoice>
 				</observers>
 			</sales_order_payment_capture>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <radarsofthouse_core_block_abstract_to_html_before>
+                        <type>singleton</type>
+						<class>Radarsofthouse_Reepay_Model_Observer</class>
+						<method>disableBlockCache</method>
+                    </radarsofthouse_core_block_abstract_to_html_before>
+                </observers>
+            </core_block_abstract_to_html_before>
 		</events>
 	</global>
 	<frontend>

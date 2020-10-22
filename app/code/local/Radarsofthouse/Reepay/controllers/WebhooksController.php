@@ -18,6 +18,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     {
         $request = $this->getRequest()->getRawBody();
         $this->getResponse()->clearHeaders()->setHeader('Content-type', 'application/json');
+        $this->getResponse()->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0', true);
         $log = array(
             'method' => __METHOD__,
             'request' => array('request' => json_decode($request, true)),

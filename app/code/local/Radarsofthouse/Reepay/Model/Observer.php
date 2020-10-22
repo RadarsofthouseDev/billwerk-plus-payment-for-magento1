@@ -153,4 +153,19 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
         $adminSession->setLatestCapturedInvoice($observer->getInvoice());
         Mage::helper('reepay')->log('ADMIN setLatestCapturedInvoice observer : order '.$observer->getInvoice()->getOrderId());
     }
+
+    /**
+     * disable block cache
+     *
+     * @param $observer
+     * @return void
+     */
+    public function disableBlockCache(Varien_Event_Observer $observer)
+    {
+        $blockClass = get_class($observer->getBlock()); 
+        if (strpos($blockClass, 'Radarsofthouse_Reepay') !== false) {
+            $observer->getBlock()->setCacheLifetime(null);
+        }
+    }
+
 }

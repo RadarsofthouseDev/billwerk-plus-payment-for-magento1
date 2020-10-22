@@ -22,6 +22,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
      */
     public function redirectAction()
     {
+        $this->getResponse()->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0', true);
         $session = Mage::getSingleton('checkout/session');
         
         if (empty($session->getLastRealOrderId())) {
@@ -44,14 +45,13 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $this->loadLayout();
         $this->getLayout()->getBlock('head')->setTitle($this->__('Reepay payment'));
         
-        $sessionId = null;
+        unset($sessionId);
         // create new Reepay session
         $sessionId = Mage::helper('reepay')->createReepaySession($order);
 
         $session->setReepaySessionOrder($session->getLastRealOrderId());
         $session->setReepaySessionID($sessionId);
-        
-        if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill') {
+        if ( in_array($order->getPayment()->getMethodInstance()->getCode(),array('reepay_viabill','reepay_vipps','reepay_resurs','reepay_applepay'))) {
             // force viabill into payment window always
             $this->getLayout()->getBlock('reepay_index')
                 ->setPaymentSessionId($sessionId)
@@ -69,7 +69,6 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
                 ->setPaymentSessionId($sessionId)
                 ->setTemplate('reepay/window.phtml');
         }
-
         $this->renderLayout();
     }
 
@@ -78,6 +77,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
      */
     public function acceptAction()
     {
+        $this->getResponse()->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0', true);
         Mage::helper('reepay')->log('reepay/standard/accept');
 
         $session = Mage::getSingleton('checkout/session');
@@ -145,6 +145,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
      */
     public function successAction()
     {
+        $this->getResponse()->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0', true);
         $this->loadLayout();
         $this->renderLayout();
     }
@@ -154,6 +155,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
      */
     public function cancelAction()
     {
+        $this->getResponse()->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0', true);
         Mage::helper('reepay')->log('reepay/standard/cancel');
 
         $session = Mage::getSingleton('checkout/session');
@@ -244,6 +246,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
      */
     public function errorAction()
     {
+        $this->getResponse()->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0', true);
         Mage::helper('reepay')->log('reepay/standard/error');
         
         $params = $this->getRequest()->getParams();
