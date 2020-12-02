@@ -1,5 +1,9 @@
 
 # Changelog
+## Version 1.0.41 on 2 December 2020
+- Block the cancel action if order has authorized payment status
+- Add delay to webhooks to avoid immediately call back
+
 ## Version 1.0.40 on 22 October 2020
 - Force Vipps, Resurs Bank and Apple Pay to be opened in "Window" display type.
 - Disable cache for Reepay block

@@ -184,11 +184,11 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         
         if ($order->canCancel()) {
 
-            $captureTransactions = Mage::getModel('sales/order_payment_transaction')->getCollection()
+            $orderTransactions = Mage::getModel('sales/order_payment_transaction')->getCollection()
                     ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
-                    ->addAttributeToFilter('txn_type', array('eq' => 'capture'));
-            if(count($captureTransactions) > 0){
-                Mage::helper('reepay')->log('SKIP cancelation : already has capture transaction');
+                    ->addAttributeToFilter('txn_type', array('in' => array("capture","authorization"))); 
+            if(count($orderTransactions) > 0){
+                Mage::helper('reepay')->log('SKIP cancelation : order is already authorized or captured');
             }else{
                 try {
                     $order->cancel();

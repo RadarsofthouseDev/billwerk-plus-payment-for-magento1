@@ -42,6 +42,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                                 'message' => 'This request is not charge invoice.',
                             );
                         } else {
+                            sleep(5);
                             $response = $this->refund($data);
                         }
 
@@ -54,6 +55,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                                 'message' => 'This request is not charge refund.',
                             );
                         } else {
+                            sleep(5);
                             $response = $this->settled($data);
                         }
 
@@ -66,6 +68,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                                 'message' => 'This request is not charge cancel.',
                             );
                         } else {
+                            sleep(5);
                             $response = $this->cancel($data['invoice']);
                         }
 
@@ -78,6 +81,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                                 'message' => 'This request is not authorize.',
                             );
                         } else {
+                            sleep(5);
                             $response = $this->authorize($data);
                         }
 
