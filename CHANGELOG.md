@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.42 on 14 December 2020
+- Change admin label and set default "send_email_after_payment"
+
 ## Version 1.0.41 on 2 December 2020
 - Block the cancel action if order has authorized payment status
 - Add delay to webhooks to avoid immediately call back
