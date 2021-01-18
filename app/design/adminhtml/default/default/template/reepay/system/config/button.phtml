@@ -1,0 +1,37 @@
+<?php
+/**
+ * @var $this Radarsofthouse_Reepay_Block_Adminhtml_System_Config_Form_Button
+ */
+?>
+
+<script type="text/javascript">
+    //<![CDATA[
+    function update_webhook() {
+        new Ajax.Request('<?php echo $this->getAjaxWebhookUpdateUrl() ?>', {
+            method:'get',
+            onCreate: function() {
+                document.getElementById("webhook_message_span").innerText = '';
+            },
+            onSuccess: function(transport){
+                let resultText = '';
+                if(transport.status > 200){
+                    resultText = transport.statusText;
+                }else{
+                    let jsonResponse = transport.responseJSON;
+                    if(jsonResponse.success === true){
+                        // resultText = 'Updated at:'+jsonResponse.time;
+                        resultText = 'Updated.';
+                    }else{
+                        resultText = 'Something went wrong!';
+                    }
+                }
+                document.getElementById("webhook_message_span").innerText = resultText
+            }
+        });
+    }
+    //]]>
+</script>
+<span class="collect-indicator" id="webhook_span">
+<?php echo $this->getButtonHtml() ?>
+    <span id="webhook_message_span"></span>
+</span>

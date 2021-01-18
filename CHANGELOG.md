@@ -1,5 +1,9 @@
 
 # Changelog
+## Version 1.0.43 on 18 January 2021
+- implement customer handle solution.
+- implement webhook setting button in Magento backend.
+
 ## Version 1.0.42 on 14 December 2020
 - Change admin label and set default "send_email_after_payment"
 

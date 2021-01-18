@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.42</version>
+			<version>1.0.43</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -89,6 +89,17 @@
             </core_block_abstract_to_html_before>
 		</events>
 	</global>
+	<admin>
+		<routers>
+			<adminhtml>
+				<args>
+					<modules>
+						<Radarsofthouse_Reepay before="Mage_Adminhtml">Radarsofthouse_Reepay_Adminhtml</Radarsofthouse_Reepay>
+					</modules>
+				</args>
+			</adminhtml>
+		</routers>
+	</admin>
 	<frontend>
 		<routers>
 			<reepay>

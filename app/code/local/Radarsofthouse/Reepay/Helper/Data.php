@@ -172,7 +172,9 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
     public function createReepaySession($order)
     {
         $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
-        
+
+        $customerEmail = $order->getCustomerEmail();
+        $customerHandle = Mage::helper('reepay/customer')->search($apiKey,$customerEmail);
         $customer = $this->getCustomerData($order);
         $billingAddress = $this->getOrderBillingAddress($order);
         $shippingAddress = $this->getOrderShippingAddress($order);
@@ -239,17 +241,29 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $options['accept_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl().'reepay/standard/accept/';
         $options['cancel_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl().'reepay/standard/cancel/';
 
-        $res = Mage::helper('reepay/session')->chargeCreateWithNewCustomer(
-            $apiKey,
-            $customer,
-            $orderData,
-            $paymentMethods,
-            $settle,
-            $options
-        );
-        $this->log('reepay/session : chargeCreateWithNewCustomer response');
-        $this->log($res);
+        if($customerHandle !== false){
+            $res = Mage::helper('reepay/session')->chargeCreateWithExistCustomer(
+                $apiKey,
+                $customerHandle,
+                $orderData,
+                $paymentMethods,
+                $settle,
+                $options
+            );
+            $this->log('reepay/session : chargeCreateWithExistCustomer response');
+        }else{
+            $res = Mage::helper('reepay/session')->chargeCreateWithNewCustomer(
+                $apiKey,
+                $customer,
+                $orderData,
+                $paymentMethods,
+                $settle,
+                $options
+            );
+            $this->log('reepay/session : chargeCreateWithNewCustomer response');
+        }
 
+        $this->log($res);
         $sessionId = $res['id'];
 
         return $sessionId;
