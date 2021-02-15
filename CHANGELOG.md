@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.44 on 15 February 2021
+- Add backend configuration to control order cancellation.
+
 ## Version 1.0.43 on 18 January 2021
 - implement customer handle solution.
 - implement webhook setting button in Magento backend.

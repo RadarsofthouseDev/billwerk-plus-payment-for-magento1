@@ -47,6 +47,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 return Mage::getStoreConfig('payment/reepay/send_email_after_payment', $store);
             case 'order_status_after_payment':
                 return $this->getOrderState(Mage::getStoreConfig('payment/reepay/order_status_after_payment', $store));
+            case 'cancel_order_after_payment_cancel':
+                return Mage::getStoreConfig('payment/reepay/cancel_order_after_payment_cancel', $store);
             case 'allowspecific':
                 return Mage::getStoreConfig('payment/reepay/allowspecific', $store);
             case 'specificcountry':

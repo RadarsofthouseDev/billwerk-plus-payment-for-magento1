@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.43</version>
+			<version>1.0.44</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -152,6 +152,7 @@
 				<api_key_type>0</api_key_type>
 				<order_status>pending</order_status>
 				<order_status_after_payment>processing</order_status_after_payment>
+				<cancel_order_after_payment_cancel>1</cancel_order_after_payment_cancel>
 				<display_type>1</display_type>
 				<auto_capture>0</auto_capture>
 				<send_order_line>1</send_order_line>

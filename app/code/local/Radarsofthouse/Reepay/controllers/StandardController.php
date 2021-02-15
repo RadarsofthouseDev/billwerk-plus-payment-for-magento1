@@ -181,8 +181,8 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $id = isset($params['id']) ? $params['id'] : "";
         $_isAjax = isset($params['_isAjax']) ? $params['_isAjax'] : null;
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-        
-        if ($order->canCancel()) {
+        $cancelConfig = Mage::helper('reepay')->getConfig('cancel_order_after_payment_cancel', $order->getStoreId());
+        if ($cancelConfig && $order->canCancel()) {
 
             $orderTransactions = Mage::getModel('sales/order_payment_transaction')->getCollection()
                     ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
@@ -235,7 +235,9 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             );
             $this->getResponse()->setHeader('Content-type', 'application/json');
             $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
-        } else {
+        } elseif(!$cancelConfig){
+            $this->_redirect('/', array('_secure' => true));
+        } else{
             Mage::helper('reepay')->log('reepay/standard/cancel : redirect to checkout/cart');
             $this->_redirect('checkout/cart', array('_secure' => true));
         }
