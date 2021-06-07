@@ -488,6 +488,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $_paymentMethods[] = 'ffk';
         }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_vipps') {
             $_paymentMethods[] = 'vipps';
+        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_googlepay') {
+            $_paymentMethods[] = 'googlepay';
         } else {
             $paymentMethods = $this->getConfig('allowwed_payment');
             $_paymentMethods = explode(',', $paymentMethods);

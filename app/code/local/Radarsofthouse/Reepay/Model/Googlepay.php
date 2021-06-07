@@ -9,12 +9,12 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
  */
-class Radarsofthouse_Reepay_Model_Applepay extends Radarsofthouse_Reepay_Model_Standard
+class Radarsofthouse_Reepay_Model_Googlepay extends Radarsofthouse_Reepay_Model_Standard
 {
-    protected $_code = 'reepay_applepay';
+    protected $_code = 'reepay_googlepay';
 
-    protected $_formBlockType = 'reepay/form_applepay';
-    protected $_infoBlockType = 'reepay/info_applepay';
+    protected $_formBlockType = 'reepay/form_googlepay';
+    protected $_infoBlockType = 'reepay/info_googlepay';
 
     /**
      * Return Order place redirect url
@@ -35,14 +35,14 @@ class Radarsofthouse_Reepay_Model_Applepay extends Radarsofthouse_Reepay_Model_S
     {
         $paymentIcon = '';
         if ($this->getConfigData('show_icon')) {
-            $paymentIcon = 'applepay';
+            $paymentIcon = 'googlepay';
         }
 
         return $paymentIcon;
     }
 
     /**
-     * Get is available : allowwed only Safari browser
+     * Get is available : allowwed only Chrome browser
      *
      * @return bollean
      */
@@ -50,9 +50,7 @@ class Radarsofthouse_Reepay_Model_Applepay extends Radarsofthouse_Reepay_Model_S
         $user_agent = $_SERVER['HTTP_USER_AGENT'];
         if(stripos( $user_agent, 'Edg') !== false){
             return false;
-        }else if(stripos( $user_agent, 'Chrome') !== false){
-            return false;
-        }else if(stripos( $user_agent, 'Safari') !== false){
+        }elseif (stripos( $user_agent, 'Chrome') !== false){
             return parent::isAvailable($quote);   
         }else{
             return false;

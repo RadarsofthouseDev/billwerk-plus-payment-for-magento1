@@ -1,5 +1,9 @@
 
 # Changelog
+## Version 1.0.45 on 7 June 2021
+- Add "Google Pay" payment method.
+- Allowed "Apple Pay" payment only Safari browser.
+
 ## Version 1.0.44 on 15 February 2021
 - Add backend configuration to control order cancellation.
 

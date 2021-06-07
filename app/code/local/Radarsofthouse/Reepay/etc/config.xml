@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.44</version>
+			<version>1.0.45</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -159,8 +159,8 @@
 				<send_email_after_payment>1</send_email_after_payment>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
-				<allowwed_payment>card,dankort,visa,visa_dk,visa_elec,mc,amex,klarna_pay_later,klarna_pay_now,diners,maestro,laser,discover,jcb,china_union_pay,ffk,applepay,paypal,resurs</allowwed_payment>
-				<payment_icons>american-express,dankort,diners-club-international,discover,forbrugsforeningen,jcb,maestro,mastercard,mobilepay,unionpay,viabill,visa,visa-electron,klarna-pay-later,klarna-pay-now,applepay,paypal,resurs</payment_icons>
+				<allowwed_payment>card,dankort,visa,visa_dk,visa_elec,mc,amex,klarna_pay_later,klarna_pay_now,diners,maestro,laser,discover,jcb,china_union_pay,ffk,applepay,paypal,resurs,googlepay</allowwed_payment>
+				<payment_icons>american-express,dankort,diners-club-international,discover,forbrugsforeningen,jcb,maestro,mastercard,mobilepay,unionpay,viabill,visa,visa-electron,klarna-pay-later,klarna-pay-now,applepay,paypal,resurs,googlepay</payment_icons>
 				<log>1</log>
 				<sort_order>1</sort_order>
 			</reepay>
@@ -274,6 +274,16 @@
 				<specificcountry>0</specificcountry>
 				<sort_order>11</sort_order>
 			</reepay_forbrugsforeningen>
+            <reepay_googlepay>
+				<model>reepay/googlepay</model>
+				<active>0</active>
+				<title>Reepay Google Pay</title>
+				<instructions>Google Pay payment from Reepay</instructions>
+				<show_icon>0</show_icon>
+				<allowspecific>0</allowspecific>
+				<specificcountry>0</specificcountry>
+				<sort_order>12</sort_order>
+			</reepay_googlepay>
 		</payment>
 	</default>
 </config>

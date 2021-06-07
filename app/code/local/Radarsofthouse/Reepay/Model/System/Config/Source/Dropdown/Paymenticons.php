@@ -39,6 +39,7 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Paymenticons
             array('value' => 'paypal', 'label' => __('PayPal')),
             array('value' => 'resurs', 'label' => __('Resurs Bank')),
             array('value' => 'vipps', 'label' => __('Vipps')),
+            array('value' => 'googlepay', 'label' => __('Google Pay'))
         );
     }
 }

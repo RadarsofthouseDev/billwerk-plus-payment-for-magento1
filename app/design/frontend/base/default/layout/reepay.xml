@@ -46,6 +46,13 @@
 
 	<checkout_multishipping_shipping>
 		<reference name="head">
+            <block type="core/text" name="reepay_js">
+				<action method="setText">
+					<text>
+						<![CDATA[<script src="https://checkout.reepay.com/checkout.js"></script>]]>
+					</text>
+				</action>
+			</block>
 			<action method="addItem">
 				<type>skin_css</type>
 				<name>css/reepay/reepay.css</name>
@@ -55,6 +62,13 @@
 
 	<checkout_onepage_index>
 		<reference name="head">
+            <block type="core/text" name="reepay_js">
+				<action method="setText">
+					<text>
+						<![CDATA[<script src="https://checkout.reepay.com/checkout.js"></script>]]>
+					</text>
+				</action>
+			</block>
 			<action method="addItem">
 				<type>skin_css</type>
 				<name>css/reepay/reepay.css</name>
@@ -64,6 +78,13 @@
 
 	<onepagecheckout_index_index>
 		<reference name="head">
+            <block type="core/text" name="reepay_js">
+				<action method="setText">
+					<text>
+						<![CDATA[<script src="https://checkout.reepay.com/checkout.js"></script>]]>
+					</text>
+				</action>
+			</block>
 			<action method="addItem">
 				<type>skin_css</type>
 				<name>css/reepay/reepay.css</name>
@@ -73,6 +94,13 @@
 
 	<opc_index_index>
 		<reference name="head">
+            <block type="core/text" name="reepay_js">
+				<action method="setText">
+					<text>
+						<![CDATA[<script src="https://checkout.reepay.com/checkout.js"></script>]]>
+					</text>
+				</action>
+			</block>
 			<action method="addItem">
 				<type>skin_css</type>
 				<name>css/reepay/reepay.css</name>
@@ -82,10 +110,18 @@
 
 	<onestepcheckout_index_index>
 		<reference name="head">
+            <block type="core/text" name="reepay_js">
+				<action method="setText">
+					<text>
+						<![CDATA[<script src="https://checkout.reepay.com/checkout.js"></script>]]>
+					</text>
+				</action>
+			</block>
 			<action method="addItem">
 				<type>skin_css</type>
 				<name>css/reepay/reepay.css</name>
 			</action>
 		</reference>
 	</onestepcheckout_index_index>
+    
 </layout>

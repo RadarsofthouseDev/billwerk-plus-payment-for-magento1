@@ -33,7 +33,8 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $paymentMethod == 'reepay_swish' ||
             $paymentMethod == 'reepay_vipps' ||
             $paymentMethod == 'reepay_resurs' ||
-            $paymentMethod == 'reepay_forbrugsforeningen'
+            $paymentMethod == 'reepay_forbrugsforeningen' ||
+            $paymentMethod == 'reepay_googlepay'
         ) {
             Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
