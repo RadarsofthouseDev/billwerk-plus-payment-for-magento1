@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.46 on 8 November 2021
+- Fixed customer handle bug. (ref. issue report #2)
+
 ## Version 1.0.45 on 7 June 2021
 - Add "Google Pay" payment method.
 - Allowed "Apple Pay" payment only Safari browser.

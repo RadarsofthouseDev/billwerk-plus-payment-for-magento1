@@ -285,7 +285,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return array(
-            'handle' => $order->getCustomerEmail(),
+            //'handle' => $order->getCustomerEmail(),
             'email' => $order->getCustomerEmail(),
             'first_name' => $order->getBillingAddress()->getFirstname(),
             'last_name' => $order->getBillingAddress()->getLastname(),
@@ -298,7 +298,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             'postal_code' => $order->getBillingAddress()->getPostcode(),
             'vat' => $order->getBillingAddress()->getVatId(),
             'test' => $testMode,
-            'generate_handle' => false,
+            'generate_handle' => true,
         );
     }
 
