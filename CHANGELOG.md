@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.47 on 11 July 2022
+- Add new payment methods "iDEAL", "BLIK", "Przelewy24 (P24)", "Verkkopankki", "giropay" and "SEPA Direct Debit".
+
 ## Version 1.0.46 on 8 November 2021
 - Fixed customer handle bug. (ref. issue report #2)
 

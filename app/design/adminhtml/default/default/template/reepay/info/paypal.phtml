@@ -1,0 +1,19 @@
+<?php echo $this->escapeHtml($this->getMethod()->getTitle()).'<br>'; ?>
+<?php if ($this->getInfo()->getAdditionalData()): ?>
+	<?php $additionalData = unserialize($this->getInfo()->getAdditionalData()); ?>
+	<?php if (!empty($additionalData['state'])): ?>
+		<div>
+			<?php echo 'State : '.$additionalData['state']; ?>
+		</div>
+	<?php endif; ?>
+	<?php if (!empty($additionalData['error'])): ?>
+		<div>
+			<?php echo 'Error code : '.$additionalData['error']; ?>
+		</div>
+	<?php endif; ?>
+	<?php if (!empty($additionalData['error_state'])): ?>
+		<div>
+			<?php echo 'Error state : '.$additionalData['error_state']; ?>
+		</div>
+	<?php endif; ?>
+<?php endif; ?>

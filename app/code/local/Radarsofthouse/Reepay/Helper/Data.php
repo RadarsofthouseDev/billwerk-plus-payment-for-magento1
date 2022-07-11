@@ -490,6 +490,18 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $_paymentMethods[] = 'vipps';
         }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_googlepay') {
             $_paymentMethods[] = 'googlepay';
+        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_ideal') {
+            $_paymentMethods[] = 'ideal';
+        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_blik') {
+            $_paymentMethods[] = 'blik';
+        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_p24') {
+            $_paymentMethods[] = 'p24';
+        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_verkkopankki') {
+            $_paymentMethods[] = 'verkkopankki';
+        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_giropay') {
+            $_paymentMethods[] = 'giropay';
+        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_sepa') {
+            $_paymentMethods[] = 'sepa';
         } else {
             $paymentMethods = $this->getConfig('allowwed_payment');
             $_paymentMethods = explode(',', $paymentMethods);

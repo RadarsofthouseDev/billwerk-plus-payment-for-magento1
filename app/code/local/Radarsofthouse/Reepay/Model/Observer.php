@@ -34,7 +34,13 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $paymentMethod == 'reepay_vipps' ||
             $paymentMethod == 'reepay_resurs' ||
             $paymentMethod == 'reepay_forbrugsforeningen' ||
-            $paymentMethod == 'reepay_googlepay'
+            $paymentMethod == 'reepay_googlepay' ||
+            $paymentMethod == 'reepay_ideal' ||
+            $paymentMethod == 'reepay_blik' ||
+            $paymentMethod == 'reepay_p24' ||
+            $paymentMethod == 'reepay_verkkopankki' ||
+            $paymentMethod == 'reepay_giropay' ||
+            $paymentMethod == 'reepay_sepa'
         ) {
             Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
@@ -102,7 +108,14 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_swish' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_vipps' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_resurs' ||
-            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_forbrugsforeningen'
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_forbrugsforeningen' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_googlepay' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_ideal' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_blik' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_p24' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_verkkopankki' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_giropay' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_sepa'
         ) {
             try {
                 $sessionId = Mage::helper('reepay')->createReepaySession($order);
