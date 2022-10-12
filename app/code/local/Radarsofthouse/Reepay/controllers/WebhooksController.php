@@ -165,7 +165,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 $transactionID = Mage::helper('reepay')->addCaptureTransactionToOrder($order, $reepayTransactionData);
 
                 $_autoCapture = Mage::helper('reepay')->getConfig('auto_capture', $order->getStoreId());
-                if( $order->getPayment()->getMethodInstance()->getCode() == "reepay_swish" ){
+                if( $order->getPayment()->getMethodInstance()->isAutoCapture() ){
                     $_autoCapture = true;
                 }
                 if($_autoCapture){

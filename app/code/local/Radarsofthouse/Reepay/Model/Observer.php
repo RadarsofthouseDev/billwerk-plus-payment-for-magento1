@@ -46,7 +46,7 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
 
             // refund for SWISH payment
-            if ($paymentMethod == 'reepay_swish'){
+            if ($order->getPayment()->getMethodInstance()->isAutoCapture()){
                 $captureTransactions = Mage::getModel('sales/order_payment_transaction')->getCollection()
                     ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
                     ->addAttributeToFilter('txn_type', array('eq' => 'capture'));
@@ -54,7 +54,7 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
                     foreach($captureTransactions as $transaction){
                         $transactionData = $transaction->getData();
                         if( isset( $transactionData['additional_information']['raw_details_info']['amount'] ) ){
-                            Mage::helper('reepay')->log('Refund SWISH payment : '.$order->getIncrementId());
+                            Mage::helper('reepay')->log('Refund '. $paymentMethod .' : '.$order->getIncrementId());
                             $amount = ($transactionData['additional_information']['raw_details_info']['amount'])*100;
                             $options = array();
                             $options['invoice'] = $order->getIncrementId();
@@ -64,8 +64,8 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
                             $refund = Mage::helper('reepay/refund')->create($apiKey, $options);
                             if (!empty($refund)) {
                                 if( isset($refund["error"]) ){
-                                    Mage::helper('reepay')->log('Refund SWISH payment error : '.$refund["error"]);
-                                    Mage::throwException('Refund SWISH payment error : '.$refund["error"]);
+                                    Mage::helper('reepay')->log('Refund '. $paymentMethod .' payment error : '.$refund["error"]);
+                                    Mage::throwException('Refund '. $paymentMethod .' payment error : '.$refund["error"]);
                                 }
                             }
                         }

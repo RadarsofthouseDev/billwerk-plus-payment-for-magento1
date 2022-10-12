@@ -200,7 +200,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
 
         $settle = false;
         if ( $this->getConfig('auto_capture', $order->getStoreId()) == 1 ||
-            $order->getPayment()->getMethodInstance()->getCode() == "reepay_swish"
+            $order->getPayment()->getMethodInstance()->isAutoCapture()
         ) {
             $settle = true;
         }

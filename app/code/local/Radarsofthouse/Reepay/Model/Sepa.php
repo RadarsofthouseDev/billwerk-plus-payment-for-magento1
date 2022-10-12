@@ -12,6 +12,7 @@
 class Radarsofthouse_Reepay_Model_Sepa extends Radarsofthouse_Reepay_Model_Standard
 {
     protected $_code = 'reepay_sepa';
+    protected $_isAutoCapture = true;
 
     protected $_formBlockType = 'reepay/form_sepa';
     protected $_infoBlockType = 'reepay/info_sepa';

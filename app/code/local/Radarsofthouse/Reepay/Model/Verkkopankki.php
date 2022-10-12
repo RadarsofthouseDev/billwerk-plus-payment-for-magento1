@@ -12,6 +12,7 @@
 class Radarsofthouse_Reepay_Model_Verkkopankki extends Radarsofthouse_Reepay_Model_Standard
 {
     protected $_code = 'reepay_verkkopankki';
+    protected $_isAutoCapture = true;
 
     protected $_formBlockType = 'reepay/form_verkkopankki';
     protected $_infoBlockType = 'reepay/info_verkkopankki';

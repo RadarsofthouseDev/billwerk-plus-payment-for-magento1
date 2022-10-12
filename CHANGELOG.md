@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.48 on 12 October 2022
+- Changed "SEPA Direct Debit" and "Verkkopankki" payments to the "auto_captute" payment flow.
+
 ## Version 1.0.47 on 11 July 2022
 - Add new payment methods "iDEAL", "BLIK", "Przelewy24 (P24)", "Verkkopankki", "giropay" and "SEPA Direct Debit".
 

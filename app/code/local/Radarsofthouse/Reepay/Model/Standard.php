@@ -20,6 +20,7 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
     protected $_isGateway = true;
     protected $_canCapturePartial = true;
     protected $_canRefundInvoicePartial = true;
+    protected $_isAutoCapture = false;
     protected $_formBlockType = 'reepay/form_reepay';
     protected $_infoBlockType = 'reepay/info_reepay';
 
@@ -240,5 +241,14 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
         }
 
         return $this;
+    }
+
+    /**
+     * Check payment type is "auto_capture" payment
+     *
+     * @return $bool
+     */
+    public function isAutoCapture(){
+        return $this->_isAutoCapture;
     }
 }

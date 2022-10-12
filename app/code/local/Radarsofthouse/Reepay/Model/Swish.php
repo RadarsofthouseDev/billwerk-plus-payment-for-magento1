@@ -12,6 +12,7 @@
 class Radarsofthouse_Reepay_Model_Swish extends Radarsofthouse_Reepay_Model_Standard
 {
     protected $_code = 'reepay_swish';
+    protected $_isAutoCapture = true;
 
     protected $_formBlockType = 'reepay/form_swish';
     protected $_infoBlockType = 'reepay/info_swish';
