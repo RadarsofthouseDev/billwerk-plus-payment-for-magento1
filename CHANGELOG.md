@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.49 on 18 November 2022
+- Fixed multiple currency issue when create do capture and refund.
+
 ## Version 1.0.48 on 12 October 2022
 - Changed "SEPA Direct Debit" and "Verkkopankki" payments to the "auto_captute" payment flow.
 

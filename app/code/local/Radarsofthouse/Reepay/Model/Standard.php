@@ -86,11 +86,8 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
         /** @var Mage_Sales_Model_Order $order */
         $order = $payment->getOrder();
         $adminSession = Mage::getSingleton('adminhtml/session');
-        $originalAmount  = $amount;
+        $originalAmount  = $order->getBaseGrandTotal();
 
-        if($amount > $order->getGrandTotal()){
-            $amount = $order->getGrandTotal();
-        }
 
         if($amount != $originalAmount) {
             Mage::log("Change capture amount from {$originalAmount} to {$amount} for order". $order->getIncrementId());
@@ -101,6 +98,13 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
             
             $orderInvoices = $order->getInvoiceCollection();
             $invoice = $adminSession->getLatestCapturedInvoice();
+
+            if ($invoice->getStoreCurrencyCode() !== $invoice->getOrderCurrencyCode()) {
+                $amount = $invoice->getGrandTotal();
+            } elseif ($amount > $order->getGrandTotal()) {
+                $amount = $order->getGrandTotal();
+            };
+
             $options = array();
             $options['key'] = count($orderInvoices);
             $options['amount'] = $amount*100;
@@ -192,12 +196,15 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
     public function refund(Varien_Object $payment, $amount)
     {
         $order = $payment->getOrder();
-        $amount = $amount;
-        $creditmemos = $order->getCreditmemosCollection();
+        $creditmemo = $payment->getCreditmemo();
+
+        if ($creditmemo->getStoreCurrencyCode() !== $creditmemo->getOrderCurrencyCode()) {
+            $amount = $creditmemo->getGrandTotal();
+        }
 
         $options = array();
         $options['invoice'] = $order->getIncrementId();
-        $options['key'] = count($creditmemos);
+        $options['key'] = $creditmemo->getIncrementId();
         $options['amount'] = $amount*100;
         $options['ordertext'] = "refund";
 
