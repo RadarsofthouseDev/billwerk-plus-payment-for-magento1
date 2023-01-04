@@ -25,10 +25,13 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
         if ($paymentMethod == 'reepay' ||
             $paymentMethod == 'reepay_mobilepay' ||
             $paymentMethod == 'reepay_viabill' ||
+            $paymentMethod == 'reepay_anyday' ||
             $paymentMethod == 'reepay_paypal' ||
             $paymentMethod == 'reepay_klarnapaynow' ||
             $paymentMethod == 'reepay_klarnapaylater' ||
             $paymentMethod == 'reepay_klarnasliceit' ||
+            $paymentMethod == 'reepay_klarnadirectbanktransfer' ||
+            $paymentMethod == 'reepay_klarnadirectdebit' ||
             $paymentMethod == 'reepay_applepay' ||
             $paymentMethod == 'reepay_swish' ||
             $paymentMethod == 'reepay_vipps' ||
@@ -100,10 +103,13 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
         if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_mobilepay' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_anyday' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_paypal' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaynow' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaylater' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnasliceit' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnadirectbanktransfer' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnadirectdebit' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_applepay' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_swish' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_vipps' ||

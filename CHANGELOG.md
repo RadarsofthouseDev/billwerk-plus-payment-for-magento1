@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.50 on 4 January 2023
+- Added new payment methods "AnyDay", "Klarna Direct Bank Transfer" and "Klarna Direct Debit".
+
 ## Version 1.0.49 on 18 November 2022
 - Fixed multiple currency issue when create do capture and refund.
 

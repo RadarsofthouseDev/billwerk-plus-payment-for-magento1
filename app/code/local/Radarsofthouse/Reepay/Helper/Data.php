@@ -468,6 +468,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
 
         if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill') {
             $_paymentMethods[] = 'viabill';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_anyday') {
+            $_paymentMethods[] = 'anyday';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_mobilepay') {
             $_paymentMethods[] = 'mobilepay';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_paypal') {
@@ -476,8 +478,12 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $_paymentMethods[] = 'klarna_pay_now';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnapaylater') {
             $_paymentMethods[] = 'klarna_pay_later';
-        }elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnasliceit') {
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnasliceit') {
             $_paymentMethods[] = 'klarna_slice_it';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnadirectbanktransfer') {
+            $_paymentMethods[] = 'klarna_direct_bank_transfer';
+        } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_klarnadirectdebit') {
+            $_paymentMethods[] = 'klarna_direct_debit';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_applepay') {
             $_paymentMethods[] = 'applepay';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_swish') {
