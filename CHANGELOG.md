@@ -1,5 +1,9 @@
 
 # Changelog
+## Version 1.0.51 on 10 January 2023
+- Added new payment method "Bancontact".
+- Remove "SEPA Direct Debit" and "Verkkopankki" from payment options of main method.
+
 ## Version 1.0.50 on 4 January 2023
 - Added new payment methods "AnyDay", "Klarna Direct Bank Transfer" and "Klarna Direct Debit".
 

@@ -43,12 +43,13 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $paymentMethod == 'reepay_p24' ||
             $paymentMethod == 'reepay_verkkopankki' ||
             $paymentMethod == 'reepay_giropay' ||
-            $paymentMethod == 'reepay_sepa'
+            $paymentMethod == 'reepay_sepa' ||
+            $paymentMethod == 'reepay_bancontact'
         ) {
             Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
 
-            // refund for SWISH payment
+            // refund for auto capture payment
             if ($order->getPayment()->getMethodInstance()->isAutoCapture()){
                 $captureTransactions = Mage::getModel('sales/order_payment_transaction')->getCollection()
                     ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
@@ -121,7 +122,8 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_p24' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_verkkopankki' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_giropay' ||
-            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_sepa'
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_sepa' ||
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay_bancontact'
         ) {
             try {
                 $sessionId = Mage::helper('reepay')->createReepaySession($order);

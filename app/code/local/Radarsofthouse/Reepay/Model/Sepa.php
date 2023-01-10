@@ -41,4 +41,14 @@ class Radarsofthouse_Reepay_Model_Sepa extends Radarsofthouse_Reepay_Model_Stand
 
         return $paymentIcon;
     }
+
+    /**
+     * Skip settle action for auto capture payment
+     *
+     * @return Radarsofthouse_Reepay_Model_Swish $this
+     */
+    public function capture(Varien_Object $payment, $amount)
+    {
+        return $this;
+    }
 }

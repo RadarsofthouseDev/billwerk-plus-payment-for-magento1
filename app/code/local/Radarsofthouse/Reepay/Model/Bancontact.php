@@ -9,13 +9,13 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
  */
-class Radarsofthouse_Reepay_Model_Verkkopankki extends Radarsofthouse_Reepay_Model_Standard
+class Radarsofthouse_Reepay_Model_Bancontact extends Radarsofthouse_Reepay_Model_Standard
 {
-    protected $_code = 'reepay_verkkopankki';
+    protected $_code = 'reepay_bancontact';
     protected $_isAutoCapture = true;
 
-    protected $_formBlockType = 'reepay/form_verkkopankki';
-    protected $_infoBlockType = 'reepay/info_verkkopankki';
+    protected $_formBlockType = 'reepay/form_bancontact';
+    protected $_infoBlockType = 'reepay/info_bancontact';
 
     /**
      * Return Order place redirect url
@@ -36,12 +36,12 @@ class Radarsofthouse_Reepay_Model_Verkkopankki extends Radarsofthouse_Reepay_Mod
     {
         $paymentIcon = '';
         if ($this->getConfigData('show_icon')) {
-            $paymentIcon = 'verkkopankki';
+            $paymentIcon = 'bancontact';
         }
 
         return $paymentIcon;
     }
-
+    
     /**
      * Skip settle action for auto capture payment
      *
