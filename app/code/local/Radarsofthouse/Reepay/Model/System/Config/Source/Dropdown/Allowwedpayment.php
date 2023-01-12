@@ -41,7 +41,6 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Allowwedpayment
             array('value' => 'resurs', 'label' => __('Resurs Bank')),
             array('value' => 'vipps', 'label' => __('Vipps')),
             array('value' => 'googlepay', 'label' => __('Google Pay')),
-            array('value' => 'ideal', 'label' => __('iDEAL')),
             array('value' => 'blik', 'label' => __('BLIK')),
             array('value' => 'p24', 'label' => __('Przelewy24 (P24)')),
             array('value' => 'giropay', 'label' => __('giropay'))

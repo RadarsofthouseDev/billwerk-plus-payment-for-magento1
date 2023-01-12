@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.52 on 12 January 2023
+- Changed "iDEAL" payment to the "auto_captute" payment flow.
+
 ## Version 1.0.51 on 10 January 2023
 - Added new payment method "Bancontact".
 - Remove "SEPA Direct Debit" and "Verkkopankki" from payment options of main method.

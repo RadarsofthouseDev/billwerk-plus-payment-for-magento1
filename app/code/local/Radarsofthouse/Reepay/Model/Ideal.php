@@ -12,6 +12,7 @@
 class Radarsofthouse_Reepay_Model_Ideal extends Radarsofthouse_Reepay_Model_Standard
 {
     protected $_code = 'reepay_ideal';
+    protected $_isAutoCapture = true;
 
     protected $_formBlockType = 'reepay/form_ideal';
     protected $_infoBlockType = 'reepay/info_ideal';
@@ -39,5 +40,15 @@ class Radarsofthouse_Reepay_Model_Ideal extends Radarsofthouse_Reepay_Model_Stan
         }
 
         return $paymentIcon;
+    }
+
+    /**
+     * Skip settle action for auto capture payment
+     *
+     * @return Radarsofthouse_Reepay_Model_Swish $this
+     */
+    public function capture(Varien_Object $payment, $amount)
+    {
+        return $this;
     }
 }
