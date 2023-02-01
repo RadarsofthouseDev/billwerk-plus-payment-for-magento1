@@ -1,5 +1,9 @@
 
 # Changelog
+## Version 1.0.53 on 1 February 2023
+- Added the missing payment info templates in the backend.
+- Fixed the wrong payment additional info when capture and refund.
+
 ## Version 1.0.52 on 12 January 2023
 - Changed "iDEAL" payment to the "auto_captute" payment flow.
 

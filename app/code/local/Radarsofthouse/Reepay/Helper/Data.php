@@ -133,7 +133,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
         $_additionalInfo['raw_details_info']['state'] = $state;
-        $payment->setAdditionalInformation(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $_additionalInfo);
+        $payment->setAdditionalInformation(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $_additionalInfo['raw_details_info']);
         
         $payment->save();
 
