@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.53</version>
+			<version>1.0.54</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -177,8 +177,8 @@
             <reepay_anyday>
 				<model>reepay/anyday</model>
 				<active>0</active>
-				<title>Reepay AnyDay</title>
-				<instructions>AnyDay payment from Reepay</instructions>
+				<title>Reepay Anyday</title>
+				<instructions>Anyday payment from Reepay</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>

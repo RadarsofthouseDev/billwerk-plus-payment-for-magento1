@@ -23,7 +23,7 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Allowwedpayment
             array('value' => 'amex', 'label' => __('American Express')),
             array('value' => 'mobilepay', 'label' => __('MobilePay')),
             array('value' => 'viabill', 'label' => __('ViaBill')),
-            array('value' => 'anyday', 'label' => __('AnyDay')),
+            array('value' => 'anyday', 'label' => __('Anyday')),
             array('value' => 'klarna_pay_later', 'label' => __('Klarna Pay Later')),
             array('value' => 'klarna_pay_now', 'label' => __('Klarna Pay Now')),
             array('value' => 'klarna_slice_it', 'label' => __('Klarna Slice It')),

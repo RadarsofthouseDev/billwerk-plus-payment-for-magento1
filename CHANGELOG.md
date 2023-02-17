@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.54 on 17 February 2023
+- Changed "AnyDay" to "Anyday"
+
 ## Version 1.0.53 on 1 February 2023
 - Added the missing payment info templates in the backend.
 - Fixed the wrong payment additional info when capture and refund.

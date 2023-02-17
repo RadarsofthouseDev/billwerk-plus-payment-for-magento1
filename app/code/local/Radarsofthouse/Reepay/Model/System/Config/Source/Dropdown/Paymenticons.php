@@ -30,7 +30,7 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Paymenticons
             array('value' => 'mobilepay', 'label' => __('Mobilepay')),
             array('value' => 'unionpay', 'label' => __('Unionpay')),
             array('value' => 'viabill', 'label' => __('Viabill')),
-            array('value' => 'anyday', 'label' => __('AnyDay')),
+            array('value' => 'anyday', 'label' => __('Anyday')),
             array('value' => 'visa', 'label' => __('Visa')),
             array('value' => 'visa-electron', 'label' => __('Visa electron')),
             array('value' => 'klarna-pay-later', 'label' => __('Klarna Pay Later')),
