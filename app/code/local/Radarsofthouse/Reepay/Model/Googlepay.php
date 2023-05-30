@@ -47,7 +47,7 @@ class Radarsofthouse_Reepay_Model_Googlepay extends Radarsofthouse_Reepay_Model_
      * @return bollean
      */
     public function isAvailable($quote = null){
-        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
         if(stripos( $user_agent, 'Edg') !== false){
             return false;
         }elseif (stripos( $user_agent, 'Chrome') !== false){
