@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.55 on 30 May 2023
+- Handle PHP notice in Google Pay and Apple Pay
+
 ## Version 1.0.54 on 17 February 2023
 - Changed "AnyDay" to "Anyday"
 
