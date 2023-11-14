@@ -1,6 +1,6 @@
 <?php
 /**
- * Reepay payment extension for Magento
+ * Billwerk+ payment extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -499,7 +499,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_ideal') {
             $_paymentMethods[] = 'ideal';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_blik') {
-            $_paymentMethods[] = 'blik';
+            $_paymentMethods[] = 'blik_oc';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_p24') {
             $_paymentMethods[] = 'p24';
         } elseif ($order->getPayment()->getMethodInstance()->getCode() == 'reepay_verkkopankki') {
@@ -630,7 +630,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $order->setState(
                 Mage_Sales_Model_Order::STATE_PROCESSING,
                 $order_status_after_payment,
-                __('Reepay : The authorized amount is %s.', $grandTotal),
+                __('Billwerk+ : The authorized amount is %s.', $grandTotal),
                 false
             );
             $order->save();
@@ -747,7 +747,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $order->setState(
                 Mage_Sales_Model_Order::STATE_PROCESSING,
                 $order_status_after_payment,
-                'Reepay : Captured amount of ' . $settledAmountFormat . ' by Reepay webhook. Transaction ID: "' . $transactionData['id'] . '".',
+                'Billwerk+ : Captured amount of ' . $settledAmountFormat . ' by the webhook. Transaction ID: "' . $transactionData['id'] . '".',
                 false
             );
             $order->save();

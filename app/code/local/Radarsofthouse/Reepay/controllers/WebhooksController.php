@@ -1,6 +1,6 @@
 <?php
 /**
- * Reepay payment extension for Magento
+ * Billwerk+ payment extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -12,7 +12,7 @@
 class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Front_Action
 {
     /**
-     * Reepay webhooks (callback from Reepay)
+     * Webhooks (callback from Billwerk+)
      */
     public function indexAction()
     {
@@ -130,7 +130,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     }
 
     /**
-     * Capture from Reepay
+     * Capture from Billwerk+
      *
      * @param array $data
      * @return void
@@ -206,11 +206,11 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                     'message' => 'Settled order #'.$orderId." , transaction ID : ".$transactionID." , Settled amount : ".$settledAmount,
                 );
             } else {
-                Mage::helper('reepay')->log('Cannot get transaction data from Reepay : transaction ID = '.$data['transaction']);
+                Mage::helper('reepay')->log('Cannot get transaction data from Billwerk+ : transaction ID = '.$data['transaction']);
 
                 return array(
                     'invoice' => $orderId,
-                    'message' => 'Cannot get transaction data from Reepay : transaction ID = '.$data['transaction'],
+                    'message' => 'Cannot get transaction data from Billwerk+ : transaction ID = '.$data['transaction'],
                 );
             }
         } catch (Mage_Core_Exception $e) {
@@ -224,7 +224,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     }
 
     /**
-     * Refund from Reepay
+     * Refund from Billwerk+
      *
      * @param array $data
      * @return array
@@ -263,7 +263,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 $order->getStatusHistoryCollection(true);
                 $_order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
                 Mage::helper('reepay')->log('order status : '.$_order->getStatus());
-                $order->addStatusHistoryComment('Reepay : Refunded amount of '.$refundAmountFormat.' by Reepay webhook. Transaction ID: "'.$refundData['id'].'". ',$_order->getStatus());
+                $order->addStatusHistoryComment('Billwerk+ : Refunded amount of '.$refundAmountFormat.' by the webhook. Transaction ID: "'.$refundData['id'].'". ',$_order->getStatus());
                 $order->save();
 
                 return array(
@@ -271,11 +271,11 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                     'message' => 'Refunded order #'.$orderId." , transaction ID : ".$transactionID." , amount : ".$refundAmount,
                 );
             } else {
-                Mage::helper('reepay')->log('Cannot get refund transaction data from Reepay : transaction ID = '.$data['transaction']);
+                Mage::helper('reepay')->log('Cannot get refund transaction data from Billwerk+ : transaction ID = '.$data['transaction']);
 
                 return array(
                     'invoice' => $orderId,
-                    'message' => 'Cannot get refund transaction data from Reepay : transaction ID = '.$data['transaction'],
+                    'message' => 'Cannot get refund transaction data from Billwerk+ : transaction ID = '.$data['transaction'],
                 );
             }
         } catch (Mage_Core_Exception $e) {
@@ -289,7 +289,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     }
 
     /**
-     * Cancel from Reepay
+     * Cancel from Billwerk+
      *
      * @param string $orderId (order increment ID)
      * @return array
@@ -303,7 +303,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
             try {
                 $order->cancel();
                 $order->getStatusHistoryCollection(true);
-                $order->addStatusHistoryComment('Reepay : order have been cancelled by Reepay webhook');
+                $order->addStatusHistoryComment('Billwerk+ : order have been cancelled by the webhook');
                 $order->save();
 
                 $_payment = $order->getPayment();
@@ -412,11 +412,11 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 }
             }
 
-            Mage::helper('reepay')->log('order #'.$orderId.' has been authorized by Reepay webhook');
+            Mage::helper('reepay')->log('order #'.$orderId.' has been authorized by the webhook');
 
             return array(
                 'invoice' => $orderId,
-                'message' => 'order #'.$orderId.' has been authorized by Reepay webhook',
+                'message' => 'order #'.$orderId.' has been authorized by the webhook',
             );
         } catch (Exception $e) {
             Mage::helper('reepay')->log('webhook authorize exception : '.$e->getMessage(), Zend_Log::ERR);

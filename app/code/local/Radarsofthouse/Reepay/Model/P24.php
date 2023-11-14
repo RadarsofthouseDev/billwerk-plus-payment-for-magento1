@@ -1,6 +1,6 @@
 <?php
 /**
- * Reepay payment extension for Magento
+ * Billwerk+ payment extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -12,6 +12,7 @@
 class Radarsofthouse_Reepay_Model_P24 extends Radarsofthouse_Reepay_Model_Standard
 {
     protected $_code = 'reepay_p24';
+    protected $_isAutoCapture = true;
 
     protected $_formBlockType = 'reepay/form_p24';
     protected $_infoBlockType = 'reepay/info_p24';
@@ -39,5 +40,15 @@ class Radarsofthouse_Reepay_Model_P24 extends Radarsofthouse_Reepay_Model_Standa
         }
 
         return $paymentIcon;
+    }
+
+    /**
+     * Skip settle action for auto capture payment
+     *
+     * @return Radarsofthouse_Reepay_Model_P24 $this
+     */
+    public function capture(Varien_Object $payment, $amount)
+    {
+        return $this;
     }
 }

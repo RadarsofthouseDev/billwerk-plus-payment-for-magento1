@@ -1,6 +1,6 @@
 <?php
 /**
- * Reepay payment extension for Magento
+ * Billwerk+ payment extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -45,7 +45,7 @@ class Radarsofthouse_Reepay_Model_Verkkopankki extends Radarsofthouse_Reepay_Mod
     /**
      * Skip settle action for auto capture payment
      *
-     * @return Radarsofthouse_Reepay_Model_Swish $this
+     * @return Radarsofthouse_Reepay_Model_Verkkopankki $this
      */
     public function capture(Varien_Object $payment, $amount)
     {

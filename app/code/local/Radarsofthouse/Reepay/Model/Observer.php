@@ -1,6 +1,6 @@
 <?php
 /**
- * Reepay payment extension for Magento
+ * Billwerk+ payment extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -129,8 +129,8 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
                 $sessionId = Mage::helper('reepay')->createReepaySession($order);
 
                 if (empty($sessionId)) {
-                    Mage::log('Cannot create Reepay payment session', null, 'reepay-observer.log');
-                    Mage::throwException('Cannot create Reepay payment session');
+                    Mage::log('Cannot create Billwerk+ payment session', null, 'reepay-observer.log');
+                    Mage::throwException('Cannot create Billwerk+ payment session');
 
                     return;
                 }

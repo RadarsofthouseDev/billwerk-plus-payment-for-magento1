@@ -1,6 +1,6 @@
 <?php
 /**
- * Reepay payment extension for Magento
+ * Billwerk+ payment extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -15,7 +15,7 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Log
     {
         return array(
             array('value' => 0, 'label' => __('Disabled')),
-            array('value' => 1, 'label' => __('Only Reepay API')),
+            array('value' => 1, 'label' => __('Only Billwerk+ API')),
             array('value' => 2, 'label' => __('Debug mode')),
         );
     }

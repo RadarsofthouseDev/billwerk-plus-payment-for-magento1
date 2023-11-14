@@ -1,6 +1,6 @@
 <?php
 /**
- * Reepay payment extension for Magento
+ * Billwerk+ payment extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -16,7 +16,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
     const DISPLAY_WINDOW = 3;
     
     /**
-     * Reepay payment page (reepay/standard/redirect)
+     * Payment page (reepay/standard/redirect)
      *
      * @return void
      */
@@ -43,7 +43,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         Mage::helper('reepay')->log('Display type : '.Mage::helper('reepay')->getConfig('display_type', $order->getStoreId()));
 
         $this->loadLayout();
-        $this->getLayout()->getBlock('head')->setTitle($this->__('Reepay payment'));
+        $this->getLayout()->getBlock('head')->setTitle($this->__('Billwerk+ payment'));
         
         unset($sessionId);
         // create new Reepay session
@@ -193,7 +193,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
                 try {
                     $order->cancel();
                     $order->getStatusHistoryCollection(true);
-                    $order->addStatusHistoryComment('Reepay : order have been cancelled by payment page');
+                    $order->addStatusHistoryComment('Billwerk+ : order have been cancelled by payment page');
                     $order->save();
 
                     $_payment = $order->getPayment();

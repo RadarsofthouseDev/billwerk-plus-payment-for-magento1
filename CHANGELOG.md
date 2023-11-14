@@ -1,5 +1,10 @@
 
 # Changelog
+## Version 1.0.56 on 14 November 2023
+- Changed "Reepay" labels to "Billwerk+"
+- Changed "BLIK" payment to "BLIK One Click" payment
+- Changed "Przelewy24 (P24)" payment to the "auto_captute" payment flow
+
 ## Version 1.0.55 on 30 May 2023
 - Handle PHP notice in Google Pay and Apple Pay
 

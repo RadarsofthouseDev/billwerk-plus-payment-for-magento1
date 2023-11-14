@@ -1,6 +1,6 @@
 <?php
 /**
- * Reepay payment extension for Magento
+ * Billwerk+ payment extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -41,8 +41,7 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Allowwedpayment
             array('value' => 'resurs', 'label' => __('Resurs Bank')),
             array('value' => 'vipps', 'label' => __('Vipps')),
             array('value' => 'googlepay', 'label' => __('Google Pay')),
-            array('value' => 'blik', 'label' => __('BLIK')),
-            array('value' => 'p24', 'label' => __('Przelewy24 (P24)')),
+            array('value' => 'blik_oc', 'label' => __('BLIK One Click')),
             array('value' => 'giropay', 'label' => __('giropay'))
         );
     }

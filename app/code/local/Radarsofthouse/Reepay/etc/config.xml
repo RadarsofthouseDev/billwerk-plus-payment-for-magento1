@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.55</version>
+			<version>1.0.56</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -33,7 +33,7 @@
 		<template>
 			<email>
 				<reepay_payment translate="label">
-					<label>Reepay payment</label>
+					<label>Billwerk+ payment</label>
 					<file>reepay_payment.html</file>
 					<type>html</type>
 				</reepay_payment>
@@ -145,7 +145,7 @@
 			<reepay>
 				<model>reepay/standard</model>
 				<active>0</active>
-				<title>Reepay payment</title>
+				<title>Billwerk+ payment</title>
 				<instructions>The best payments in Europe.</instructions>
 				<private_key_test/>
 				<private_key/>
@@ -159,16 +159,16 @@
 				<send_email_after_payment>1</send_email_after_payment>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
-				<allowwed_payment>card,dankort,visa,visa_dk,visa_elec,mc,amex,mobilepay,viabill,anyday,klarna_pay_later,klarna_pay_now,klarna_slice_it,klarna_direct_bank_transfer,klarna_direct_debit,diners,maestro,laser,discover,jcb,china_union_pay,ffk,applepay,paypal,resurs,vipps,googlepay,blik,p24,giropay</allowwed_payment>
-				<payment_icons>american-express,dankort,diners-club-international,discover,forbrugsforeningen,jcb,maestro,mastercard,mobilepay,unionpay,viabill,anyday,visa,visa-electron,klarna-pay-later,klarna-pay-now,klarna-slice-it,klarna-direct-bank-transfer,klarna-direct-debit,applepay,paypal,resurs,vipps,googlepay,blik,p24,giropay</payment_icons>
+				<allowwed_payment>card,dankort,visa,visa_dk,visa_elec,mc,amex,mobilepay,viabill,anyday,klarna_pay_later,klarna_pay_now,klarna_slice_it,klarna_direct_bank_transfer,klarna_direct_debit,diners,maestro,laser,discover,jcb,china_union_pay,ffk,applepay,paypal,resurs,vipps,googlepay,blik_oc,giropay</allowwed_payment>
+				<payment_icons>american-express,dankort,diners-club-international,discover,forbrugsforeningen,jcb,maestro,mastercard,mobilepay,unionpay,viabill,anyday,visa,visa-electron,klarna-pay-later,klarna-pay-now,klarna-slice-it,klarna-direct-bank-transfer,klarna-direct-debit,applepay,paypal,resurs,vipps,googlepay,blik_oc,giropay</payment_icons>
 				<log>1</log>
 				<sort_order>1</sort_order>
 			</reepay>
 			<reepay_viabill>
 				<model>reepay/viabill</model>
 				<active>0</active>
-				<title>Reepay viabill</title>
-				<instructions>Viabill payment from Reepay</instructions>
+				<title>Billwerk+ viabill</title>
+				<instructions>Viabill payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -177,8 +177,8 @@
             <reepay_anyday>
 				<model>reepay/anyday</model>
 				<active>0</active>
-				<title>Reepay Anyday</title>
-				<instructions>Anyday payment from Reepay</instructions>
+				<title>Billwerk+ Anyday</title>
+				<instructions>Anyday payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -187,8 +187,8 @@
 			<reepay_mobilepay>
 				<model>reepay/mobilepay</model>
 				<active>0</active>
-				<title>Reepay Mobile Pay</title>
-				<instructions>Mobile Pay payment from Reepay</instructions>
+				<title>Billwerk+ Mobile Pay</title>
+				<instructions>Mobile Pay payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -197,8 +197,8 @@
             <reepay_paypal>
 				<model>reepay/paypal</model>
 				<active>0</active>
-				<title>Reepay Paypal</title>
-				<instructions>Paypal payment from Reepay</instructions>
+				<title>Billwerk+ Paypal</title>
+				<instructions>Paypal payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -207,8 +207,8 @@
             <reepay_klarnapaynow>
 				<model>reepay/klarnapaynow</model>
 				<active>0</active>
-				<title>Reepay Klarna Pay Now</title>
-				<instructions>Klarna Pay Now payment from Reepay</instructions>
+				<title>Billwerk+ Klarna Pay Now</title>
+				<instructions>Klarna Pay Now payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -217,8 +217,8 @@
             <reepay_klarnapaylater>
 				<model>reepay/klarnapaylater</model>
 				<active>0</active>
-				<title>Reepay Klarna Pay Later</title>
-				<instructions>Klarna Pay Later payment from Reepay</instructions>
+				<title>Billwerk+ Klarna Pay Later</title>
+				<instructions>Klarna Pay Later payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -227,8 +227,8 @@
 			<reepay_klarnasliceit>
 				<model>reepay/klarnasliceit</model>
 				<active>0</active>
-				<title>Reepay Klarna Slice It</title>
-				<instructions>Klarna Slice It payment from Reepay</instructions>
+				<title>Billwerk+ Klarna Slice It</title>
+				<instructions>Klarna Slice It payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -237,8 +237,8 @@
             <reepay_klarnadirectbanktransfer>
 				<model>reepay/klarnadirectbanktransfer</model>
 				<active>0</active>
-				<title>Klarna Direct Bank Transfer</title>
-				<instructions>Klarna Direct Bank Transfer payment from Reepay</instructions>
+				<title>Billwerk+ Klarna Direct Bank Transfer</title>
+				<instructions>Klarna Direct Bank Transfer payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -247,8 +247,8 @@
             <reepay_klarnadirectdebit>
 				<model>reepay/klarnadirectdebit</model>
 				<active>0</active>
-				<title>Klarna Direct Debit</title>
-				<instructions>Klarna Direct Debit payment from Reepay</instructions>
+				<title>Billwerk+ Klarna Direct Debit</title>
+				<instructions>Klarna Direct Debit payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -257,8 +257,8 @@
             <reepay_applepay>
 				<model>reepay/applepay</model>
 				<active>0</active>
-				<title>Reepay Apple Pay</title>
-				<instructions>Apple Pay payment from Reepay</instructions>
+				<title>Billwerk+ Apple Pay</title>
+				<instructions>Apple Pay payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -267,8 +267,8 @@
             <reepay_swish>
 				<model>reepay/swish</model>
 				<active>0</active>
-				<title>Reepay Swish</title>
-				<instructions>Swish payment from Reepay</instructions>
+				<title>Billwerk+ Swish</title>
+				<instructions>Swish payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -277,8 +277,8 @@
             <reepay_resurs>
 				<model>reepay/resurs</model>
 				<active>0</active>
-				<title>Reepay Resurs Bank</title>
-				<instructions>Resurs Bank payment from Reepay</instructions>
+				<title>Billwerk+ Resurs Bank</title>
+				<instructions>Resurs Bank payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -287,8 +287,8 @@
 			<reepay_vipps>
 				<model>reepay/vipps</model>
 				<active>0</active>
-				<title>Reepay Vipps</title>
-				<instructions>Vipps payment from Reepay</instructions>
+				<title>Billwerk+ Vipps</title>
+				<instructions>Vipps payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -297,8 +297,8 @@
             <reepay_forbrugsforeningen>
 				<model>reepay/forbrugsforeningen</model>
 				<active>0</active>
-				<title>Reepay Forbrugsforeningen</title>
-				<instructions>Forbrugsforeningen payment from Reepay</instructions>
+				<title>Billwerk+ Forbrugsforeningen</title>
+				<instructions>Forbrugsforeningen payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -307,8 +307,8 @@
             <reepay_googlepay>
 				<model>reepay/googlepay</model>
 				<active>0</active>
-				<title>Reepay Google Pay</title>
-				<instructions>Google Pay payment from Reepay</instructions>
+				<title>Billwerk+ Google Pay</title>
+				<instructions>Google Pay payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -317,8 +317,8 @@
             <reepay_ideal>
 				<model>reepay/ideal</model>
 				<active>0</active>
-				<title>Reepay iDEAL</title>
-				<instructions>iDEAL payment from Reepay</instructions>
+				<title>Billwerk+ iDEAL</title>
+				<instructions>iDEAL payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -327,8 +327,8 @@
             <reepay_blik>
 				<model>reepay/blik</model>
 				<active>0</active>
-				<title>Reepay BLIK</title>
-				<instructions>BLIK payment from Reepay</instructions>
+				<title>Billwerk+ BLIK One Click</title>
+				<instructions>BLIK One Click payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -337,8 +337,8 @@
             <reepay_p24>
 				<model>reepay/p24</model>
 				<active>0</active>
-				<title>Reepay Przelewy24 (P24)</title>
-				<instructions>Przelewy24 (P24) payment from Reepay</instructions>
+				<title>Billwerk+ Przelewy24 (P24)</title>
+				<instructions>Przelewy24 (P24) payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -347,8 +347,8 @@
             <reepay_verkkopankki>
 				<model>reepay/verkkopankki</model>
 				<active>0</active>
-				<title>Reepay Verkkopankki</title>
-				<instructions>Verkkopankki payment from Reepay</instructions>
+				<title>Billwerk+ Verkkopankki</title>
+				<instructions>Verkkopankki payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -357,8 +357,8 @@
             <reepay_giropay>
 				<model>reepay/giropay</model>
 				<active>0</active>
-				<title>Reepay giropay</title>
-				<instructions>giropay payment from Reepay</instructions>
+				<title>Billwerk+ giropay</title>
+				<instructions>giropay payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -367,8 +367,8 @@
             <reepay_sepa>
 				<model>reepay/sepa</model>
 				<active>0</active>
-				<title>Reepay SEPA Direct Debit</title>
-				<instructions>SEPA Direct Debit payment from Reepay</instructions>
+				<title>Billwerk+ SEPA Direct Debit</title>
+				<instructions>SEPA Direct Debit payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -377,8 +377,8 @@
             <reepay_bancontact>
 				<model>reepay/bancontact</model>
 				<active>0</active>
-				<title>Reepay Bancontact</title>
-				<instructions>Bancontact payment from Reepay</instructions>
+				<title>Billwerk+ Bancontact</title>
+				<instructions>Bancontact payment from Billwerk+</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>

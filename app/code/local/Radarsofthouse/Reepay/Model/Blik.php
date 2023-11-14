@@ -1,6 +1,6 @@
 <?php
 /**
- * Reepay payment extension for Magento
+ * Billwerk+ payment extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -35,7 +35,7 @@ class Radarsofthouse_Reepay_Model_Blik extends Radarsofthouse_Reepay_Model_Stand
     {
         $paymentIcon = '';
         if ($this->getConfigData('show_icon')) {
-            $paymentIcon = 'blik';
+            $paymentIcon = 'blik_oc';
         }
 
         return $paymentIcon;

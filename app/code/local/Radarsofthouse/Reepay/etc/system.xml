@@ -4,7 +4,7 @@
 		<payment>
 			<groups>
 				<reepay translate="label" module="reepay">
-					<label>Reepay payment</label>
+					<label>Billwerk+ payment</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>1</sort_order>
 					<show_in_default>1</show_in_default>
@@ -53,7 +53,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
-							<comment><![CDATA[you can find at <a href="https://admin.reepay.com" target="_blank">https://admin.reepay.com</a> under "Developers" >> "API Credentials".]]></comment>
+							<comment><![CDATA[you can find at <a href="https://admin.billwerk.plus" target="_blank">https://admin.billwerk.plus</a> under "Developers" >> "API Credentials".]]></comment>
 						</private_key>
 						<private_key_test translate="label">
 							<label>Private API Key For Test</label>
@@ -62,7 +62,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
-							<comment><![CDATA[you can find at <a href="https://admin.reepay.com" target="_blank">https://admin.reepay.com</a> under "Developers" >> "API Credentials".]]></comment>
+							<comment><![CDATA[you can find at <a href="https://admin.billwerk.plus" target="_blank">https://admin.billwerk.plus</a> under "Developers" >> "API Credentials".]]></comment>
 						</private_key_test>
 						<api_key_type translate="label">
 							<label>API Key Type</label>
@@ -75,7 +75,7 @@
 							<comment>To switch account between test account and live account.</comment>
 						</api_key_type>
 						<webhook translate="label">
-							<label>Update webhook URL in Reepay</label>
+							<label>Update webhook URL in Billwerk+</label>
 							<frontend_type>button</frontend_type>
 							<frontend_model>reepay/adminhtml_system_config_form_button</frontend_model>
 							<sort_order>9</sort_order>
@@ -187,14 +187,14 @@
 							<comment>Payment icons which show on the checkout page.</comment>
 						</payment_icons>
 						<log translate="label">
-							<label>Reepay log</label>
+							<label>Log</label>
 							<frontend_type>select</frontend_type>
 							<source_model>reepay/system_config_source_dropdown_log</source_model>
 							<sort_order>20</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
-							<comment>To enable Reepay log. Please make sure Magento log have been enabled.</comment>
+							<comment>To enable Billwerk+ log. Please make sure Magento log have been enabled.</comment>
 						</log>
 						<sort_order translate="label">
 							<label>Sort order</label>
@@ -207,7 +207,7 @@
 					</fields>
 				</reepay>
 				<reepay_viabill translate="label" module="reepay">
-					<label>Reepay: Viabill</label>
+					<label>Billwerk+: Viabill</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -278,7 +278,7 @@
 					</fields>
 				</reepay_viabill>
                 <reepay_anyday translate="label" module="reepay">
-					<label>Reepay: Anyday</label>
+					<label>Billwerk+: Anyday</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -349,7 +349,7 @@
 					</fields>
 				</reepay_anyday>
 				<reepay_mobilepay translate="label" module="reepay">
-					<label>Reepay: Mobile Pay</label>
+					<label>Billwerk+: Mobile Pay</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -420,7 +420,7 @@
 					</fields>
 				</reepay_mobilepay>
                 <reepay_paypal translate="label" module="reepay">
-					<label>Reepay: Paypal</label>
+					<label>Billwerk+: Paypal</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -491,7 +491,7 @@
 					</fields>
 				</reepay_paypal>
                 <reepay_klarnapaynow translate="label" module="reepay">
-					<label>Reepay: Klarna Pay Now</label>
+					<label>Billwerk+: Klarna Pay Now</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -562,7 +562,7 @@
 					</fields>
 				</reepay_klarnapaynow>
                 <reepay_klarnapaylater translate="label" module="reepay">
-					<label>Reepay: Klarna Pay Later</label>
+					<label>Billwerk+: Klarna Pay Later</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -633,7 +633,7 @@
 					</fields>
 				</reepay_klarnapaylater>
 				<reepay_klarnasliceit translate="label" module="reepay">
-					<label>Reepay: Klarna Slice It</label>
+					<label>Billwerk+: Klarna Slice It</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -704,7 +704,7 @@
 					</fields>
 				</reepay_klarnasliceit>
                 <reepay_klarnadirectbanktransfer translate="label" module="reepay">
-					<label>Reepay: Klarna Direct Bank Transfer</label>
+					<label>Billwerk+: Klarna Direct Bank Transfer</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -775,7 +775,7 @@
 					</fields>
 				</reepay_klarnadirectbanktransfer>
                 <reepay_klarnadirectdebit translate="label" module="reepay">
-					<label>Reepay: Klarna Direct Debit</label>
+					<label>Billwerk+: Klarna Direct Debit</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -846,7 +846,7 @@
 					</fields>
 				</reepay_klarnadirectdebit>
                 <reepay_applepay translate="label" module="reepay">
-					<label>Reepay: Apple Pay</label>
+					<label>Billwerk+: Apple Pay</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -917,7 +917,7 @@
 					</fields>
 				</reepay_applepay>
                 <reepay_swish translate="label" module="reepay">
-					<label>Reepay: Swish</label>
+					<label>Billwerk+: Swish</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -988,7 +988,7 @@
 					</fields>
 				</reepay_swish>
                 <reepay_resurs translate="label" module="reepay">
-					<label>Reepay: Resurs Bank</label>
+					<label>Billwerk+: Resurs Bank</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1059,7 +1059,7 @@
 					</fields>
 				</reepay_resurs>
 				<reepay_vipps translate="label" module="reepay">
-					<label>Reepay: Vipps</label>
+					<label>Billwerk+: Vipps</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1130,7 +1130,7 @@
 					</fields>
 				</reepay_vipps>
                 <reepay_forbrugsforeningen translate="label" module="reepay">
-					<label>Reepay: Forbrugsforeningen</label>
+					<label>Billwerk+: Forbrugsforeningen</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1201,7 +1201,7 @@
 					</fields>
 				</reepay_forbrugsforeningen>
                 <reepay_googlepay translate="label" module="reepay">
-					<label>Reepay: Google Pay</label>
+					<label>Billwerk+: Google Pay</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1272,7 +1272,7 @@
 					</fields>
 				</reepay_googlepay>
                 <reepay_ideal translate="label" module="reepay">
-					<label>Reepay: iDEAL</label>
+					<label>Billwerk+: iDEAL</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1343,7 +1343,7 @@
 					</fields>
 				</reepay_ideal>
                 <reepay_blik translate="label" module="reepay">
-					<label>Reepay: BLIK</label>
+					<label>Billwerk+: BLIK One Click</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1377,7 +1377,7 @@
 							<show_in_store>1</show_in_store>
 						</instructions>
 						<show_icon translate="label">
-							<label>Show BLIK icon</label>
+							<label>Show BLIK One Click icon</label>
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<sort_order>4</sort_order>
@@ -1414,7 +1414,7 @@
 					</fields>
 				</reepay_blik>
                 <reepay_p24 translate="label" module="reepay">
-					<label>Reepay: Przelewy24 (P24)</label>
+					<label>Billwerk+: Przelewy24 (P24)</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1485,7 +1485,7 @@
 					</fields>
 				</reepay_p24>
                 <reepay_verkkopankki translate="label" module="reepay">
-					<label>Reepay: Verkkopankki</label>
+					<label>Billwerk+: Verkkopankki</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1556,7 +1556,7 @@
 					</fields>
 				</reepay_verkkopankki>
                 <reepay_giropay translate="label" module="reepay">
-					<label>Reepay: giropay</label>
+					<label>Billwerk+: giropay</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1627,7 +1627,7 @@
 					</fields>
 				</reepay_giropay>
                 <reepay_sepa translate="label" module="reepay">
-					<label>Reepay: SEPA Direct Debit</label>
+					<label>Billwerk+: SEPA Direct Debit</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1698,7 +1698,7 @@
 					</fields>
 				</reepay_sepa>
                 <reepay_bancontact translate="label" module="reepay">
-					<label>Reepay: Bancontact</label>
+					<label>Billwerk+: Bancontact</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
