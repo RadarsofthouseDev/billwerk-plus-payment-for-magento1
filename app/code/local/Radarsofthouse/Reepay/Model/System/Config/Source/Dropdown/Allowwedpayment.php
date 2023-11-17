@@ -41,7 +41,6 @@ class Radarsofthouse_Reepay_Model_System_Config_Source_Dropdown_Allowwedpayment
             array('value' => 'resurs', 'label' => __('Resurs Bank')),
             array('value' => 'vipps', 'label' => __('Vipps')),
             array('value' => 'googlepay', 'label' => __('Google Pay')),
-            array('value' => 'blik_oc', 'label' => __('BLIK One Click')),
             array('value' => 'giropay', 'label' => __('giropay'))
         );
     }

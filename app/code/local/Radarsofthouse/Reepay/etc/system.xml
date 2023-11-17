@@ -102,6 +102,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
+                            <comment>Note: BLIK One Click, Przelewy24 (P24), Swish, Ideal, Verkkopankki, Sepa, Bancontact are always auto-captured.</comment>
 						</auto_capture>
 						<send_order_line>
 							<label>Send order lines</label>

@@ -1,9 +1,12 @@
 
 # Changelog
+## Version 1.0.57 on 17 November 2023
+- Changed "BLIK One Click" payment to the "auto_capture" payment flow.
+
 ## Version 1.0.56 on 14 November 2023
 - Changed "Reepay" labels to "Billwerk+"
 - Changed "BLIK" payment to "BLIK One Click" payment
-- Changed "Przelewy24 (P24)" payment to the "auto_captute" payment flow
+- Changed "Przelewy24 (P24)" payment to the "auto_capture" payment flow
 
 ## Version 1.0.55 on 30 May 2023
 - Handle PHP notice in Google Pay and Apple Pay
@@ -16,7 +19,7 @@
 - Fixed the wrong payment additional info when capture and refund.
 
 ## Version 1.0.52 on 12 January 2023
-- Changed "iDEAL" payment to the "auto_captute" payment flow.
+- Changed "iDEAL" payment to the "auto_capture" payment flow.
 
 ## Version 1.0.51 on 10 January 2023
 - Added new payment method "Bancontact".
@@ -29,7 +32,7 @@
 - Fixed multiple currency issue when create do capture and refund.
 
 ## Version 1.0.48 on 12 October 2022
-- Changed "SEPA Direct Debit" and "Verkkopankki" payments to the "auto_captute" payment flow.
+- Changed "SEPA Direct Debit" and "Verkkopankki" payments to the "auto_capture" payment flow.
 
 ## Version 1.0.47 on 11 July 2022
 - Add new payment methods "iDEAL", "BLIK", "Przelewy24 (P24)", "Verkkopankki", "giropay" and "SEPA Direct Debit".

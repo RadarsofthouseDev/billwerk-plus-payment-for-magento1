@@ -12,6 +12,7 @@
 class Radarsofthouse_Reepay_Model_Blik extends Radarsofthouse_Reepay_Model_Standard
 {
     protected $_code = 'reepay_blik';
+    protected $_isAutoCapture = true;
 
     protected $_formBlockType = 'reepay/form_blik';
     protected $_infoBlockType = 'reepay/info_blik';
@@ -39,5 +40,15 @@ class Radarsofthouse_Reepay_Model_Blik extends Radarsofthouse_Reepay_Model_Stand
         }
 
         return $paymentIcon;
+    }
+
+    /**
+     * Skip settle action for auto capture payment
+     *
+     * @return Radarsofthouse_Reepay_Model_Blik $this
+     */
+    public function capture(Varien_Object $payment, $amount)
+    {
+        return $this;
     }
 }
