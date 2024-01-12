@@ -133,7 +133,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
      * Capture from Billwerk+
      *
      * @param array $data
-     * @return void
+     * @return array
      */
     protected function settled($data)
     {
@@ -189,6 +189,18 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                     $reepayOrderStatus->setData($data);
                     $reepayOrderStatus->save();
                     Mage::helper('reepay')->log('webhook settled : save Model:reepay/status');
+
+                    if($order->canInvoice()) {
+                        $invoice = Mage::getModel('sales/service_order', $order)->prepareInvoice();
+                        $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+                        $invoice->register();
+                        $transactionSave = Mage::getModel('core/resource_transaction')
+                            ->addObject($invoice)
+                            ->addObject($invoice->getOrder());
+                        $transactionSave->save();
+                        Mage::helper('reepay')->log("webhook settled : auto create invoice: ".$order->getIncrementId());
+                    }
+
 
                     $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment', $order->getStoreId());
                     if ($sendEmailAfterPayment) {

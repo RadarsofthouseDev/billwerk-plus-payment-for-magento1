@@ -88,6 +88,10 @@ class Radarsofthouse_Reepay_Model_Standard extends Mage_Payment_Model_Method_Abs
         $adminSession = Mage::getSingleton('adminhtml/session');
         $originalAmount  = $order->getBaseGrandTotal();
 
+        if($this->getConfigData('auto_capture',$order->getStoreId())){
+            Mage::helper('reepay')->log("Skip settle: auto capture mode is enabled: ".$order->getIncrementId());
+            return $this;
+        }
 
         if($amount != $originalAmount) {
             Mage::log("Change capture amount from {$originalAmount} to {$amount} for order". $order->getIncrementId());

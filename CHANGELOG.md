@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.58 on 12 January 2024
+- Added an automatic invoice creation function for auto-capture mode and auto-capture payment.
+
 ## Version 1.0.57 on 17 November 2023
 - Changed "BLIK One Click" payment to the "auto_capture" payment flow.
 
