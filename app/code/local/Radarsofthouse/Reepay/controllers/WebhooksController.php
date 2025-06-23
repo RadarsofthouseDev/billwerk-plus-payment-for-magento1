@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Billwerk+ payment extension for Magento
+ * Frisbii Pay extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -12,7 +13,7 @@
 class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Front_Action
 {
     /**
-     * Webhooks (callback from Billwerk+)
+     * Webhooks (callback from Frisbii)
      */
     public function indexAction()
     {
@@ -89,7 +90,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
 
                         break;
                     default:
-                        $response = array('message' => 'The '.$data['event_type'].' event has been ignored by Magento.');
+                        $response = array('message' => 'The ' . $data['event_type'] . ' event has been ignored by Magento.');
                         $log['response'] = $response;
 
                         break;
@@ -130,7 +131,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     }
 
     /**
-     * Capture from Billwerk+
+     * Capture from Frisbii
      *
      * @param array $data
      * @return array
@@ -139,24 +140,24 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     {
         $orderId = $data['invoice'];
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-        Mage::helper('reepay')->log('webhook settled : '.$orderId);
+        Mage::helper('reepay')->log('webhook settled : ' . $orderId);
 
         try {
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
             $reepayTransactionData = Mage::helper('reepay/invoice')->getTransaction($apiKey, $orderId, $data['transaction']);
 
             if (!empty($reepayTransactionData['id']) && $reepayTransactionData['type'] == "settle") {
-                
+
                 // check the transaction has been created
                 $magentoTransaction = Mage::getModel('sales/order_payment_transaction')->getCollection()
                     ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
-                    ->addAttributeToFilter('txn_id', array('eq' => $reepayTransactionData['id'] ));
+                    ->addAttributeToFilter('txn_id', array('eq' => $reepayTransactionData['id']));
                 if (count($magentoTransaction) > 0) {
-                    Mage::helper('reepay')->log("Magento have created the transaction '".$reepayTransactionData['id']."' already.");
+                    Mage::helper('reepay')->log("Magento have created the transaction '" . $reepayTransactionData['id'] . "' already.");
 
                     return array(
                         'invoice' => $orderId,
-                        'message' => "Magento have created the transaction '".$reepayTransactionData['id']."' already.",
+                        'message' => "Magento have created the transaction '" . $reepayTransactionData['id'] . "' already.",
                     );
                 }
 
@@ -165,10 +166,10 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 $transactionID = Mage::helper('reepay')->addCaptureTransactionToOrder($order, $reepayTransactionData);
 
                 $_autoCapture = Mage::helper('reepay')->getConfig('auto_capture', $order->getStoreId());
-                if( $order->getPayment()->getMethodInstance()->isAutoCapture() ){
+                if ($order->getPayment()->getMethodInstance()->isAutoCapture()) {
                     $_autoCapture = true;
                 }
-                if($_autoCapture){
+                if ($_autoCapture) {
 
                     $charge = Mage::helper('reepay/charge')->get($apiKey, $orderId);
 
@@ -190,7 +191,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                     $reepayOrderStatus->save();
                     Mage::helper('reepay')->log('webhook settled : save Model:reepay/status');
 
-                    if($order->canInvoice()) {
+                    if ($order->canInvoice()) {
                         $invoice = Mage::getModel('sales/service_order', $order)->prepareInvoice();
                         $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
                         $invoice->register();
@@ -198,45 +199,46 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                             ->addObject($invoice)
                             ->addObject($invoice->getOrder());
                         $transactionSave->save();
-                        Mage::helper('reepay')->log("webhook settled : auto create invoice: ".$order->getIncrementId());
+                        Mage::helper('reepay')->log("webhook settled : auto create invoice: " . $order->getIncrementId());
                     }
 
 
                     $sendEmailAfterPayment = Mage::helper('reepay')->getConfig('send_email_after_payment', $order->getStoreId());
                     if ($sendEmailAfterPayment) {
-                        if ($order->getEmailSent()) { } else {
+                        if ($order->getEmailSent()) {
+                        } else {
                             $order->setEmailSent(true);
                             $order->sendNewOrderEmail();
                             $order->save();
                             Mage::helper('reepay')->log('webhook settled : send_email_after_payment');
                         }
                     }
-                } 
+                }
 
                 return array(
                     'invoice' => $orderId,
-                    'message' => 'Settled order #'.$orderId." , transaction ID : ".$transactionID." , Settled amount : ".$settledAmount,
+                    'message' => 'Settled order #' . $orderId . " , transaction ID : " . $transactionID . " , Settled amount : " . $settledAmount,
                 );
             } else {
-                Mage::helper('reepay')->log('Cannot get transaction data from Billwerk+ : transaction ID = '.$data['transaction']);
+                Mage::helper('reepay')->log('Cannot get transaction data from Frisbii : transaction ID = ' . $data['transaction']);
 
                 return array(
                     'invoice' => $orderId,
-                    'message' => 'Cannot get transaction data from Billwerk+ : transaction ID = '.$data['transaction'],
+                    'message' => 'Cannot get transaction data from Frisbii : transaction ID = ' . $data['transaction'],
                 );
             }
         } catch (Mage_Core_Exception $e) {
-            Mage::helper('reepay')->log('webhook settled exception : '.$e->getMessage(), Zend_Log::ERR);
+            Mage::helper('reepay')->log('webhook settled exception : ' . $e->getMessage(), Zend_Log::ERR);
 
             return array(
                 'invoice' => $orderId,
-                'message' => 'webhook settled exception : '.$e->getMessage(),
+                'message' => 'webhook settled exception : ' . $e->getMessage(),
             );
         }
     }
 
     /**
-     * Refund from Billwerk+
+     * Refund from Frisbii
      *
      * @param array $data
      * @return array
@@ -245,8 +247,8 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     {
         $orderId = $data['invoice'];
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-        Mage::helper('reepay')->log('webhook refund : '.$orderId);
-        
+        Mage::helper('reepay')->log('webhook refund : ' . $orderId);
+
         try {
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
             $refundData = Mage::helper('reepay/invoice')->getTransaction($apiKey, $orderId, $data['transaction']);
@@ -255,13 +257,13 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 // check the transaction has been created
                 $magentoTransaction = Mage::getModel('sales/order_payment_transaction')->getCollection()
                     ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
-                    ->addAttributeToFilter('txn_id', array('eq' => $refundData['id'] ));
+                    ->addAttributeToFilter('txn_id', array('eq' => $refundData['id']));
                 if (count($magentoTransaction) > 0) {
-                    Mage::helper('reepay')->log("Magento have created the transaction '".$refundData['id']."' already.");
+                    Mage::helper('reepay')->log("Magento have created the transaction '" . $refundData['id'] . "' already.");
 
                     return array(
                         'invoice' => $orderId,
-                        'message' => "Magento have created the transaction '".$refundData['id']."' already.",
+                        'message' => "Magento have created the transaction '" . $refundData['id'] . "' already.",
                     );
                 }
 
@@ -274,34 +276,34 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 $refundAmountFormat = Mage::helper('core')->currencyByStore($refundAmount, $orderStore, true, false);
                 $order->getStatusHistoryCollection(true);
                 $_order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-                Mage::helper('reepay')->log('order status : '.$_order->getStatus());
-                $order->addStatusHistoryComment('Billwerk+ : Refunded amount of '.$refundAmountFormat.' by the webhook. Transaction ID: "'.$refundData['id'].'". ',$_order->getStatus());
+                Mage::helper('reepay')->log('order status : ' . $_order->getStatus());
+                $order->addStatusHistoryComment('Frisbii : Refunded amount of ' . $refundAmountFormat . ' by the webhook. Transaction ID: "' . $refundData['id'] . '". ', $_order->getStatus());
                 $order->save();
 
                 return array(
                     'invoice' => $orderId,
-                    'message' => 'Refunded order #'.$orderId." , transaction ID : ".$transactionID." , amount : ".$refundAmount,
+                    'message' => 'Refunded order #' . $orderId . " , transaction ID : " . $transactionID . " , amount : " . $refundAmount,
                 );
             } else {
-                Mage::helper('reepay')->log('Cannot get refund transaction data from Billwerk+ : transaction ID = '.$data['transaction']);
+                Mage::helper('reepay')->log('Cannot get refund transaction data from Frisbii : transaction ID = ' . $data['transaction']);
 
                 return array(
                     'invoice' => $orderId,
-                    'message' => 'Cannot get refund transaction data from Billwerk+ : transaction ID = '.$data['transaction'],
+                    'message' => 'Cannot get refund transaction data from Frisbii : transaction ID = ' . $data['transaction'],
                 );
             }
         } catch (Mage_Core_Exception $e) {
-            Mage::helper('reepay')->log('webhook refund exception : '.$e->getMessage(), Zend_Log::ERR);
+            Mage::helper('reepay')->log('webhook refund exception : ' . $e->getMessage(), Zend_Log::ERR);
 
             return array(
                 'invoice' => $orderId,
-                'message' => 'webhook refund exception : '.$e->getMessage(),
+                'message' => 'webhook refund exception : ' . $e->getMessage(),
             );
         }
     }
 
     /**
-     * Cancel from Billwerk+
+     * Cancel from Frisbii
      *
      * @param string $orderId (order increment ID)
      * @return array
@@ -309,36 +311,36 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     protected function cancel($orderId)
     {
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-        Mage::helper('reepay')->log('webhook cancel : '.$orderId);
+        Mage::helper('reepay')->log('webhook cancel : ' . $orderId);
 
         if ($order->canCancel()) {
             try {
                 $order->cancel();
                 $order->getStatusHistoryCollection(true);
-                $order->addStatusHistoryComment('Billwerk+ : order have been cancelled by the webhook');
+                $order->addStatusHistoryComment('Frisbii : order have been cancelled by the webhook');
                 $order->save();
 
                 $_payment = $order->getPayment();
                 Mage::helper('reepay')->setReepayPaymentState($_payment, 'cancelled');
                 $order->save();
 
-                Mage::helper('reepay')->log('canceled order #'.$orderId);
+                Mage::helper('reepay')->log('canceled order #' . $orderId);
                 return array(
                     'invoice' => $orderId,
-                    'message' => 'canceled order #'.$orderId,
+                    'message' => 'canceled order #' . $orderId,
                 );
             } catch (Exception $e) {
-                Mage::helper('reepay')->log('webhook cancel exception : '.$e->getMessage(), Zend_Log::ERR);
+                Mage::helper('reepay')->log('webhook cancel exception : ' . $e->getMessage(), Zend_Log::ERR);
                 return array(
                     'invoice' => $orderId,
-                    'message' => 'Cannot cancel order #'.$orderId.' : '.$e->getMessage(),
+                    'message' => 'Cannot cancel order #' . $orderId . ' : ' . $e->getMessage(),
                 );
             }
         } else {
-            Mage::helper('reepay')->log('Cannot cancel order #'.$orderId);
+            Mage::helper('reepay')->log('Cannot cancel order #' . $orderId);
             return array(
                 'invoice' => $orderId,
-                'message' => 'Cannot cancel order #'.$orderId,
+                'message' => 'Cannot cancel order #' . $orderId,
             );
         }
     }
@@ -353,7 +355,7 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
     {
         $orderId = $data['invoice'];
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-        Mage::helper('reepay')->log('webhook authorize : '.$orderId);
+        Mage::helper('reepay')->log('webhook authorize : ' . $orderId);
 
         try {
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
@@ -374,17 +376,17 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
             // check the transaction has been created
             $magentoTransaction = Mage::getModel('sales/order_payment_transaction')->getCollection()
                 ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
-                ->addAttributeToFilter('txn_id', array('eq' => $reepayTransactionData['id'] ));
+                ->addAttributeToFilter('txn_id', array('eq' => $reepayTransactionData['id']));
             if (count($magentoTransaction) > 0) {
-                Mage::helper('reepay')->log("Magento have created the transaction '".$reepayTransactionData['id']."' already.");
+                Mage::helper('reepay')->log("Magento have created the transaction '" . $reepayTransactionData['id'] . "' already.");
 
                 return array(
                     'invoice' => $orderId,
-                    'message' => "Magento have created the transaction '".$reepayTransactionData['id']."' already.",
+                    'message' => "Magento have created the transaction '" . $reepayTransactionData['id'] . "' already.",
                 );
             }
 
-            
+
             $charge = Mage::helper('reepay/charge')->get($apiKey, $orderId);
 
             $data = array(
@@ -424,18 +426,18 @@ class Radarsofthouse_Reepay_WebhooksController extends Mage_Core_Controller_Fron
                 }
             }
 
-            Mage::helper('reepay')->log('order #'.$orderId.' has been authorized by the webhook');
+            Mage::helper('reepay')->log('order #' . $orderId . ' has been authorized by the webhook');
 
             return array(
                 'invoice' => $orderId,
-                'message' => 'order #'.$orderId.' has been authorized by the webhook',
+                'message' => 'order #' . $orderId . ' has been authorized by the webhook',
             );
         } catch (Exception $e) {
-            Mage::helper('reepay')->log('webhook authorize exception : '.$e->getMessage(), Zend_Log::ERR);
+            Mage::helper('reepay')->log('webhook authorize exception : ' . $e->getMessage(), Zend_Log::ERR);
             Mage::logException($e);
             return array(
                 'invoice' => $orderId,
-                'message' => 'webhook authorize error : '.$e->getMessage(),
+                'message' => 'webhook authorize error : ' . $e->getMessage(),
             );
         }
     }

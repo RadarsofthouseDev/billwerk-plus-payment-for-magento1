@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Billwerk+ payment extension for Magento
+ * Frisbii Pay extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -14,7 +15,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
     const DISPLAY_EMBEDDED = 1;
     const DISPLAY_OVERLAY = 2;
     const DISPLAY_WINDOW = 3;
-    
+
     /**
      * Payment page (reepay/standard/redirect)
      *
@@ -24,7 +25,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
     {
         $this->getResponse()->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0', true);
         $session = Mage::getSingleton('checkout/session');
-        
+
         if (empty($session->getLastRealOrderId())) {
 
             Mage::helper('reepay')->log('############## empty getLastRealOrderId ##############');
@@ -33,25 +34,25 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             return;
         }
 
-        Mage::helper('reepay')->log('reepay/standard/redirect : '.$session->getLastRealOrderId());
-        
+        Mage::helper('reepay')->log('reepay/standard/redirect : ' . $session->getLastRealOrderId());
+
         $session->setReepayOrderIncrementId($session->getLastRealOrderId());
-        
+
 
         $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
 
-        Mage::helper('reepay')->log('Display type : '.Mage::helper('reepay')->getConfig('display_type', $order->getStoreId()));
+        Mage::helper('reepay')->log('Display type : ' . Mage::helper('reepay')->getConfig('display_type', $order->getStoreId()));
 
         $this->loadLayout();
-        $this->getLayout()->getBlock('head')->setTitle($this->__('Billwerk+ payment'));
-        
+        $this->getLayout()->getBlock('head')->setTitle($this->__('Frisbii Pay'));
+
         unset($sessionId);
         // create new Reepay session
         $sessionId = Mage::helper('reepay')->createReepaySession($order);
 
         $session->setReepaySessionOrder($session->getLastRealOrderId());
         $session->setReepaySessionID($sessionId);
-        if ( in_array($order->getPayment()->getMethodInstance()->getCode(),array('reepay_viabill','reepay_vipps','reepay_resurs','reepay_applepay'))) {
+        if (in_array($order->getPayment()->getMethodInstance()->getCode(), array('reepay_viabill', 'reepay_vipps', 'reepay_resurs', 'reepay_applepay'))) {
             // force viabill into payment window always
             $this->getLayout()->getBlock('reepay_index')
                 ->setPaymentSessionId($sessionId)
@@ -88,13 +89,13 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
 
             return;
         }
-        
+
         $orderId = $params['invoice'];
         $id = "";
         if (!empty($params['id'])) {
             $id = $params['id'];
         }
-        
+
         $_isAjax = isset($params['_isAjax']) ? $params['_isAjax'] : '';
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 
@@ -112,7 +113,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         $session->setLastRealOrderId($order->getIncrementId());
         $session->setLastSuccessQuoteId($order->getQuoteId());
         $session->setLastQuoteId($order->getQuoteId());
-        
+
         if ($_isAjax == 1) {
             Mage::helper('reepay')->log('reepay/standard/accept : return ajax request');
             $result = array();
@@ -185,22 +186,22 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
         if ($cancelConfig && $order->canCancel()) {
 
             $orderTransactions = Mage::getModel('sales/order_payment_transaction')->getCollection()
-                    ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
-                    ->addAttributeToFilter('txn_type', array('in' => array("capture","authorization"))); 
-            if(count($orderTransactions) > 0){
+                ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
+                ->addAttributeToFilter('txn_type', array('in' => array("capture", "authorization")));
+            if (count($orderTransactions) > 0) {
                 Mage::helper('reepay')->log('SKIP cancelation : order is already authorized or captured');
-            }else{
+            } else {
                 try {
                     $order->cancel();
                     $order->getStatusHistoryCollection(true);
-                    $order->addStatusHistoryComment('Billwerk+ : order have been cancelled by payment page');
+                    $order->addStatusHistoryComment('Frisbii : order have been cancelled by payment page');
                     $order->save();
 
                     $_payment = $order->getPayment();
                     Mage::helper('reepay')->setReepayPaymentState($_payment, 'cancelled');
                     $order->save();
 
-                    Mage::helper('reepay')->log('Cancelled : '.$order->getIncrementId());
+                    Mage::helper('reepay')->log('Cancelled : ' . $order->getIncrementId());
 
                     $quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
                     if ($quote->getId()) {
@@ -214,9 +215,9 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
                     // delete reepay session
                     $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
                     $res = Mage::helper('reepay/session')->delete($apiKey, $id);
-                    Mage::helper('reepay')->log('delete reepay session : '.$id);
+                    Mage::helper('reepay')->log('delete reepay session : ' . $id);
                 } catch (Exception $e) {
-                    Mage::helper('reepay')->log('cancel by window payment (Exception) : '.$e->getMessage(), Zend_Log::ERR);
+                    Mage::helper('reepay')->log('cancel by window payment (Exception) : ' . $e->getMessage(), Zend_Log::ERR);
                 }
             }
         }
@@ -226,7 +227,7 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             $session->unsReepaySessionID();
             $session->unsReepaySessionOrder();
         }
-        
+
         if ($_isAjax == 1) {
             Mage::helper('reepay')->log('reepay/standard/cancel : return ajax request');
             $result = array(
@@ -235,9 +236,9 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
             );
             $this->getResponse()->setHeader('Content-type', 'application/json');
             $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
-        } elseif(!$cancelConfig){
+        } elseif (!$cancelConfig) {
             $this->_redirect('/', array('_secure' => true));
-        } else{
+        } else {
             Mage::helper('reepay')->log('reepay/standard/cancel : redirect to checkout/cart');
             $this->_redirect('checkout/cart', array('_secure' => true));
         }
@@ -250,14 +251,14 @@ class Radarsofthouse_Reepay_StandardController extends Mage_Core_Controller_Fron
     {
         $this->getResponse()->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0', true);
         Mage::helper('reepay')->log('reepay/standard/error');
-        
+
         $params = $this->getRequest()->getParams();
 
         $orderId = $params['invoice'];
         $id = $params['id'];
         $error = $params['error'];
-        
-        Mage::helper('reepay')->log('Error : '.$orderId.' : '.$id.' : '.$error);
+
+        Mage::helper('reepay')->log('Error : ' . $orderId . ' : ' . $id . ' : ' . $error);
         $result = array(
             'status' => 'success',
             'redirect_url' => Mage::getUrl('checkout/onepage/failure'),

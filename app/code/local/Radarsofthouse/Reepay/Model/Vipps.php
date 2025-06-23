@@ -1,6 +1,6 @@
 <?php
 /**
- * Billwerk+ payment extension for Magento
+ * Frisbii Pay extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse

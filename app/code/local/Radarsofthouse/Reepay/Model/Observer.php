@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Billwerk+ payment extension for Magento
+ * Frisbii Pay extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -22,7 +23,8 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
         $order = $observer->getEvent()->getPayment()->getOrder();
 
         $paymentMethod = $order->getPayment()->getMethodInstance()->getCode();
-        if ($paymentMethod == 'reepay' ||
+        if (
+            $paymentMethod == 'reepay' ||
             $paymentMethod == 'reepay_mobilepay' ||
             $paymentMethod == 'reepay_viabill' ||
             $paymentMethod == 'reepay_anyday' ||
@@ -46,30 +48,30 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
             $paymentMethod == 'reepay_sepa' ||
             $paymentMethod == 'reepay_bancontact'
         ) {
-            Mage::helper('reepay')->log('cancel order observer : '.$order->getIncrementId());
+            Mage::helper('reepay')->log('cancel order observer : ' . $order->getIncrementId());
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
 
             // refund for auto capture payment
-            if ($order->getPayment()->getMethodInstance()->isAutoCapture()){
+            if ($order->getPayment()->getMethodInstance()->isAutoCapture()) {
                 $captureTransactions = Mage::getModel('sales/order_payment_transaction')->getCollection()
                     ->addAttributeToFilter('order_id', array('eq' => $order->getId()))
                     ->addAttributeToFilter('txn_type', array('eq' => 'capture'));
-                if(count($captureTransactions) > 0){
-                    foreach($captureTransactions as $transaction){
+                if (count($captureTransactions) > 0) {
+                    foreach ($captureTransactions as $transaction) {
                         $transactionData = $transaction->getData();
-                        if( isset( $transactionData['additional_information']['raw_details_info']['amount'] ) ){
-                            Mage::helper('reepay')->log('Refund '. $paymentMethod .' : '.$order->getIncrementId());
-                            $amount = ($transactionData['additional_information']['raw_details_info']['amount'])*100;
+                        if (isset($transactionData['additional_information']['raw_details_info']['amount'])) {
+                            Mage::helper('reepay')->log('Refund ' . $paymentMethod . ' : ' . $order->getIncrementId());
+                            $amount = ($transactionData['additional_information']['raw_details_info']['amount']) * 100;
                             $options = array();
                             $options['invoice'] = $order->getIncrementId();
                             $options['key'] = 90;
-                            $options['amount'] = (int)($amount."");
+                            $options['amount'] = (int)($amount . "");
                             $options['ordertext'] = "refund";
                             $refund = Mage::helper('reepay/refund')->create($apiKey, $options);
                             if (!empty($refund)) {
-                                if( isset($refund["error"]) ){
-                                    Mage::helper('reepay')->log('Refund '. $paymentMethod .' payment error : '.$refund["error"]);
-                                    Mage::throwException('Refund '. $paymentMethod .' payment error : '.$refund["error"]);
+                                if (isset($refund["error"])) {
+                                    Mage::helper('reepay')->log('Refund ' . $paymentMethod . ' payment error : ' . $refund["error"]);
+                                    Mage::throwException('Refund ' . $paymentMethod . ' payment error : ' . $refund["error"]);
                                 }
                             }
                         }
@@ -99,9 +101,10 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
     {
         $orderId = $observer->getEvent()->getOrder()->getIncrementId();
         $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
-        Mage::helper('reepay')->log('Admin created order : '.$orderId);
+        Mage::helper('reepay')->log('Admin created order : ' . $orderId);
 
-        if ($order->getPayment()->getMethodInstance()->getCode() == 'reepay' ||
+        if (
+            $order->getPayment()->getMethodInstance()->getCode() == 'reepay' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_mobilepay' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_viabill' ||
             $order->getPayment()->getMethodInstance()->getCode() == 'reepay_anyday' ||
@@ -129,8 +132,8 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
                 $sessionId = Mage::helper('reepay')->createReepaySession($order);
 
                 if (empty($sessionId)) {
-                    Mage::log('Cannot create Billwerk+ payment session', null, 'reepay-observer.log');
-                    Mage::throwException('Cannot create Billwerk+ payment session');
+                    Mage::log('Cannot create Frisbii Pay session', null, 'reepay-observer.log');
+                    Mage::throwException('Cannot create Frisbii Pay session');
 
                     return;
                 }
@@ -138,7 +141,7 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
                 $mailTemplate = Mage::getModel('core/email_template');
                 $vars = array(
                     'increment_id' => $order->getIncrementId(),
-                    'payment_url' => 'https://checkout.reepay.com/#/'.$sessionId,
+                    'payment_url' => 'https://checkout.reepay.com/#/' . $sessionId,
                 );
                 $mailTemplate->setDesignConfig(array(
                     'area' => 'frontend',
@@ -151,12 +154,12 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
                     $order->getBillingAddress()->getFirstname() . ' ' . $order->getBillingAddress()->getLastname(),
                     $vars,
                     $order->getStoreId()
-                        );
-                        
+                );
+
                 Mage::log('onCheckoutSubmitAllAfter', null, 'reepay-observer.log');
             } catch (Exception $e) {
-                Mage::log('onCheckoutSubmitAllAfter() exception: '.$e->getMessage(), null, 'reepay-observer.log');
-                Mage::throwException('Error: '.$e->getMessage());
+                Mage::log('onCheckoutSubmitAllAfter() exception: ' . $e->getMessage(), null, 'reepay-observer.log');
+                Mage::throwException('Error: ' . $e->getMessage());
             }
         }
     }
@@ -173,7 +176,7 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
     {
         $adminSession = Mage::getSingleton('adminhtml/session');
         $adminSession->setLatestCapturedInvoice($observer->getInvoice());
-        Mage::helper('reepay')->log('ADMIN setLatestCapturedInvoice observer : order '.$observer->getInvoice()->getOrderId());
+        Mage::helper('reepay')->log('ADMIN setLatestCapturedInvoice observer : order ' . $observer->getInvoice()->getOrderId());
     }
 
     /**
@@ -184,10 +187,9 @@ class Radarsofthouse_Reepay_Model_Observer extends Varien_Event_Observer
      */
     public function disableBlockCache(Varien_Event_Observer $observer)
     {
-        $blockClass = get_class($observer->getBlock()); 
+        $blockClass = get_class($observer->getBlock());
         if (strpos($blockClass, 'Radarsofthouse_Reepay') !== false) {
             $observer->getBlock()->setCacheLifetime(null);
         }
     }
-
 }

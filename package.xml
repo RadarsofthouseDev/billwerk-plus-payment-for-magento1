@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package>
     <name>reepay_payment</name>
-    <version>1.0.58</version>
+    <version>1.0.59</version>
     <stability>stable</stability>
     <license>gnu-gpl</license>
     <channel>community</channel>
     <extends/>
-    <summary>Billwerk+ payment</summary>
-    <description>Billwerk+ payment</description>
-    <notes>Billwerk+ payment V.1.0.58</notes>
+    <summary>Frisbii payment</summary>
+    <description>Frisbii payment</description>
+    <notes>Frisbii payment V.1.0.59</notes>
     <authors><author><name>Radarsofthouse</name><user>radarsofthouse</user><email>info@radarsofthouse.dk</email></author></authors>
     <date>2024-01-12</date>
     <time>06:54:12</time>

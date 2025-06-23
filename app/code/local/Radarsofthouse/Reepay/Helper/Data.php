@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Billwerk+ payment extension for Magento
+ * Frisbii Pay extension for Magento
  *
  * @author      Radarsofthouse Team <info@radarsofthouse.dk>
  * @category    Radarsofthouse
@@ -23,7 +24,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         if ($store === null) {
             $store = Mage::app()->getStore()->getId();
         }
-        
+
         switch ($key) {
             case 'version':
                 return Mage::getStoreConfig('payment/reepay/version', $store);
@@ -97,7 +98,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             return $status;
         }
     }
-    
+
     /**
      * Get current version of the extension
      *
@@ -107,7 +108,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return (string) Mage::getConfig()->getNode()->modules->Radarsofthouse_Reepay->version;
     }
-    
+
     /**
      *  Set Reepay payment state function
      *
@@ -134,7 +135,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $_additionalInfo['raw_details_info']['state'] = $state;
         $payment->setAdditionalInformation(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $_additionalInfo['raw_details_info']);
-        
+
         $payment->save();
 
         $order = $payment->getOrder();
@@ -176,7 +177,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
 
         $customerEmail = $order->getCustomerEmail();
-        $customerHandle = Mage::helper('reepay/customer')->search($apiKey,$customerEmail);
+        $customerHandle = Mage::helper('reepay/customer')->search($apiKey, $customerEmail);
         $customer = $this->getCustomerData($order);
         $billingAddress = $this->getOrderBillingAddress($order);
         $shippingAddress = $this->getOrderShippingAddress($order);
@@ -185,9 +186,9 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             'currency' => $order->getOrderCurrencyCode(),
             'billing_address' => $billingAddress,
         );
-        if($this->getConfig('send_order_line', $order->getStoreId()) == 1){
+        if ($this->getConfig('send_order_line', $order->getStoreId()) == 1) {
             $orderData['order_lines'] = $this->getOrderLines($order);
-        }else{
+        } else {
             $grandTotal = $order->getGrandTotal() * 100;
             $orderData['amount'] = (int)$grandTotal;
         }
@@ -199,7 +200,8 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $paymentMethods = $this->getPaymentMethods($order);
 
         $settle = false;
-        if ( $this->getConfig('auto_capture', $order->getStoreId()) == 1 ||
+        if (
+            $this->getConfig('auto_capture', $order->getStoreId()) == 1 ||
             $order->getPayment()->getMethodInstance()->isAutoCapture()
         ) {
             $settle = true;
@@ -235,15 +237,15 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         );
 
         $options = array();
-        
+
         if (!empty($localMapping[Mage::app()->getLocale()->getLocaleCode()])) {
             $options['locale'] = $localMapping[Mage::app()->getLocale()->getLocaleCode()];
         }
 
-        $options['accept_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl().'reepay/standard/accept/';
-        $options['cancel_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl().'reepay/standard/cancel/';
+        $options['accept_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl() . 'reepay/standard/accept/';
+        $options['cancel_url'] = Mage::app()->getStore($order->getStoreId())->getBaseUrl() . 'reepay/standard/cancel/';
 
-        if($customerHandle !== false){
+        if ($customerHandle !== false) {
             $res = Mage::helper('reepay/session')->chargeCreateWithExistCustomer(
                 $apiKey,
                 $customerHandle,
@@ -253,7 +255,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 $options
             );
             $this->log('reepay/session : chargeCreateWithExistCustomer response');
-        }else{
+        } else {
             $res = Mage::helper('reepay/session')->chargeCreateWithNewCustomer(
                 $apiKey,
                 $customer,
@@ -357,11 +359,11 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-    * Prepare order_lines for payment gateway
-    *
-    * @param Mage_Sales_Model_Order $order
-    * @return array $orderLines
-    */
+     * Prepare order_lines for payment gateway
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @return array $orderLines
+     */
     public function getOrderLines($order)
     {
         $orderTotalDue = $order->getTotalDue() * 100;
@@ -376,12 +378,12 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $amount = round($amount);
 
             $qty = $orderitem->getQtyOrdered();
-            
+
             $line = array();
             $line['ordertext'] = $orderitem->getProduct()->getName();
             $line['amount'] = $this->toInt($amount);
             $line['quantity'] = $this->toInt($qty);
-            $line['vat'] = $orderitem->getTaxPercent()/100;
+            $line['vat'] = $orderitem->getTaxPercent() / 100;
             $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
 
@@ -408,7 +410,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $line['quantity'] = 1;
             $line['amount'] = $this->toInt($shippingAmount);
             if ($order->getShippingTaxAmount() > 0) {
-                $line['vat'] = $order->getShippingTaxAmount()/$order->getShippingAmount();
+                $line['vat'] = $order->getShippingTaxAmount() / $order->getShippingAmount();
                 $line['amount_incl_vat'] = "true";
             } else {
                 $line['vat'] = 0;
@@ -423,7 +425,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
         $discountAmount = ($order->getDiscountAmount() * 100);
         if ($discountAmount != 0) {
             $line = array();
-            $line['ordertext'] = !empty($order->getDiscountDescription()) ? $this->__('Discount: %s',$order->getDiscountDescription()) : $this->__('Discount');
+            $line['ordertext'] = !empty($order->getDiscountDescription()) ? $this->__('Discount: %s', $order->getDiscountDescription()) : $this->__('Discount');
             $line['amount'] = $this->toInt($discountAmount);
             $line['quantity'] = 1;
             $line['vat'] = 0;
@@ -443,7 +445,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $line['amount_incl_vat'] = "true";
             $orderLines[] = $line;
         }
-        
+
 
         return $orderLines;
     }
@@ -453,8 +455,9 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return int
      */
-    public function toInt($number){
-        return (int)($number."");
+    public function toInt($number)
+    {
+        return (int)($number . "");
     }
 
     /**
@@ -554,32 +557,32 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $_source = $paymentData['source'];
             unset($paymentData['source']);
 
-            if( isset($_source['type']) ){
+            if (isset($_source['type'])) {
                 $paymentData['source_type'] = $_source['type'];
             }
-            if( isset($_source['fingerprint']) ){
+            if (isset($_source['fingerprint'])) {
                 $paymentData['source_fingerprint'] = $_source['fingerprint'];
             }
-            if( isset($_source['provider']) ){
+            if (isset($_source['provider'])) {
                 $paymentData['source_provider'] = $_source['provider'];
             }
-            if( isset($_source['card_type']) ){
+            if (isset($_source['card_type'])) {
                 $paymentData['source_card_type'] = $_source['card_type'];
             }
-            if( isset($_source['exp_date']) ){
+            if (isset($_source['exp_date'])) {
                 $paymentData['source_exp_date'] = $_source['exp_date'];
             }
-            if( isset($_source['masked_card']) ){
+            if (isset($_source['masked_card'])) {
                 $paymentData['source_masked_card'] = $_source['masked_card'];
             }
-            if( isset($_source['auth_transaction']) ){
+            if (isset($_source['auth_transaction'])) {
                 $paymentData['source_auth_transaction'] = $_source['auth_transaction'];
             }
         }
 
         return $paymentData;
     }
-    
+
     /**
      * Create payment transaction
      *
@@ -624,20 +627,20 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
 
             $orderStore = Mage::getModel('core/store')->load($order->getStoreId());
             $grandTotal = Mage::helper('core')->currencyByStore($order->getGrandTotal(), $orderStore, true, false);
-            
+
             $order_status_after_payment = $this->getConfig('order_status_after_payment', $order->getStoreId());
             $this->log('order_status_after_payment : ' . $order_status_after_payment);
             $order->setState(
                 Mage_Sales_Model_Order::STATE_PROCESSING,
                 $order_status_after_payment,
-                __('Billwerk+ : The authorized amount is %s.', $grandTotal),
+                __('Frisbii : The authorized amount is %s.', $grandTotal),
                 false
             );
             $order->save();
- 
+
             return  $transaction->getTransactionId();
         } catch (Exception $e) {
-            $this->log('ERROR : addTransactionToOrder() => '.$e->getMessage());
+            $this->log('ERROR : addTransactionToOrder() => ' . $e->getMessage());
         }
     }
 
@@ -713,9 +716,9 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $transactionData = $this->prepareCaptureTransactionData($transactionData);
 
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
-            $charge = Mage::helper('reepay/charge')->get($apiKey,$order->getIncrementId());
+            $charge = Mage::helper('reepay/charge')->get($apiKey, $order->getIncrementId());
             $paymentData = $this->preparePaymentData($charge);
-            
+
 
             $payment = $order->getPayment();
             $payment->setTransactionId($transactionData['id']);
@@ -724,7 +727,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
                 Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS,
                 (array) $transactionData
             );
-            
+
             $card_transaction_ref_transaction = isset($transactionData['card_transaction_ref_transaction']) ? $transactionData['card_transaction_ref_transaction'] : '';
             $payment->setParentTransactionId($card_transaction_ref_transaction);
             $payment->save();
@@ -747,7 +750,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $order->setState(
                 Mage_Sales_Model_Order::STATE_PROCESSING,
                 $order_status_after_payment,
-                'Billwerk+ : Captured amount of ' . $settledAmountFormat . ' by the webhook. Transaction ID: "' . $transactionData['id'] . '".',
+                'Frisbii : Captured amount of ' . $settledAmountFormat . ' by the webhook. Transaction ID: "' . $transactionData['id'] . '".',
                 false
             );
             $order->save();
@@ -794,7 +797,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $transactionData = $this->prepareRefundTransactionData($transactionData);
 
             $apiKey = Mage::helper('reepay/apikey')->getPrivateKey($order->getStoreId());
-            $charge = Mage::helper('reepay/charge')->get($apiKey,$order->getIncrementId());
+            $charge = Mage::helper('reepay/charge')->get($apiKey, $order->getIncrementId());
             $paymentData = $this->preparePaymentData($charge);
 
             $payment = $order->getPayment();
@@ -817,7 +820,7 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
             $transaction->setTxnId($transactionData['id']);
             $transaction->setIsClosed(0);
             $transaction->save();
- 
+
             return  $transaction->getTransactionId();
         } catch (Exception $e) {
             Mage::helper('reepay')->log('ERROR : addTransactionToOrder()');
@@ -833,6 +836,6 @@ class Radarsofthouse_Reepay_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function convertAmount($amount)
     {
-        return number_format((float)($amount/100), 2, '.', '');
+        return number_format((float)($amount / 100), 2, '.', '');
     }
 }

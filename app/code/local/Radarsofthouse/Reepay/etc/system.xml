@@ -4,7 +4,7 @@
 		<payment>
 			<groups>
 				<reepay translate="label" module="reepay">
-					<label>Billwerk+ payment</label>
+					<label>Frisbii Pay</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>1</sort_order>
 					<show_in_default>1</show_in_default>
@@ -53,7 +53,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
-							<comment><![CDATA[you can find at <a href="https://admin.billwerk.plus" target="_blank">https://admin.billwerk.plus</a> under "Developers" >> "API Credentials".]]></comment>
+							<comment><![CDATA[you can find at <a href="https://app.frisbii.com" target="_blank">https://app.frisbii.com</a> under "Configurations" >> "Integration and tools" >> "API Credentials".]]></comment>
 						</private_key>
 						<private_key_test translate="label">
 							<label>Private API Key For Test</label>
@@ -62,7 +62,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
-							<comment><![CDATA[you can find at <a href="https://admin.billwerk.plus" target="_blank">https://admin.billwerk.plus</a> under "Developers" >> "API Credentials".]]></comment>
+							<comment><![CDATA[you can find at <a href="https://app.frisbii.com" target="_blank">https://app.frisbii.com</a> under "Configurations" >> "Integration and tools" >> "API Credentials".]]></comment>
 						</private_key_test>
 						<api_key_type translate="label">
 							<label>API Key Type</label>
@@ -75,7 +75,7 @@
 							<comment>To switch account between test account and live account.</comment>
 						</api_key_type>
 						<webhook translate="label">
-							<label>Update webhook URL in Billwerk+</label>
+							<label>Update webhook URL in Frisbii</label>
 							<frontend_type>button</frontend_type>
 							<frontend_model>reepay/adminhtml_system_config_form_button</frontend_model>
 							<sort_order>9</sort_order>
@@ -195,7 +195,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
-							<comment>To enable Billwerk+ log. Please make sure Magento log have been enabled.</comment>
+							<comment>To enable Frisbii log. Please make sure Magento log have been enabled.</comment>
 						</log>
 						<sort_order translate="label">
 							<label>Sort order</label>
@@ -208,7 +208,7 @@
 					</fields>
 				</reepay>
 				<reepay_viabill translate="label" module="reepay">
-					<label>Billwerk+: Viabill</label>
+					<label>Frisbii: Viabill</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -279,7 +279,7 @@
 					</fields>
 				</reepay_viabill>
                 <reepay_anyday translate="label" module="reepay">
-					<label>Billwerk+: Anyday</label>
+					<label>Frisbii: Anyday</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -350,7 +350,7 @@
 					</fields>
 				</reepay_anyday>
 				<reepay_mobilepay translate="label" module="reepay">
-					<label>Billwerk+: Mobile Pay</label>
+					<label>Frisbii: Mobile Pay</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -421,7 +421,7 @@
 					</fields>
 				</reepay_mobilepay>
                 <reepay_paypal translate="label" module="reepay">
-					<label>Billwerk+: Paypal</label>
+					<label>Frisbii: Paypal</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -492,7 +492,7 @@
 					</fields>
 				</reepay_paypal>
                 <reepay_klarnapaynow translate="label" module="reepay">
-					<label>Billwerk+: Klarna Pay Now</label>
+					<label>Frisbii: Klarna Pay Now</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -563,7 +563,7 @@
 					</fields>
 				</reepay_klarnapaynow>
                 <reepay_klarnapaylater translate="label" module="reepay">
-					<label>Billwerk+: Klarna Pay Later</label>
+					<label>Frisbii: Klarna Pay Later</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -634,7 +634,7 @@
 					</fields>
 				</reepay_klarnapaylater>
 				<reepay_klarnasliceit translate="label" module="reepay">
-					<label>Billwerk+: Klarna Slice It</label>
+					<label>Frisbii: Klarna Slice It</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -705,7 +705,7 @@
 					</fields>
 				</reepay_klarnasliceit>
                 <reepay_klarnadirectbanktransfer translate="label" module="reepay">
-					<label>Billwerk+: Klarna Direct Bank Transfer</label>
+					<label>Frisbii: Klarna Direct Bank Transfer</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -776,7 +776,7 @@
 					</fields>
 				</reepay_klarnadirectbanktransfer>
                 <reepay_klarnadirectdebit translate="label" module="reepay">
-					<label>Billwerk+: Klarna Direct Debit</label>
+					<label>Frisbii: Klarna Direct Debit</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -847,7 +847,7 @@
 					</fields>
 				</reepay_klarnadirectdebit>
                 <reepay_applepay translate="label" module="reepay">
-					<label>Billwerk+: Apple Pay</label>
+					<label>Frisbii: Apple Pay</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -918,7 +918,7 @@
 					</fields>
 				</reepay_applepay>
                 <reepay_swish translate="label" module="reepay">
-					<label>Billwerk+: Swish</label>
+					<label>Frisbii: Swish</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -989,7 +989,7 @@
 					</fields>
 				</reepay_swish>
                 <reepay_resurs translate="label" module="reepay">
-					<label>Billwerk+: Resurs Bank</label>
+					<label>Frisbii: Resurs Bank</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1060,7 +1060,7 @@
 					</fields>
 				</reepay_resurs>
 				<reepay_vipps translate="label" module="reepay">
-					<label>Billwerk+: Vipps</label>
+					<label>Frisbii: Vipps</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1131,7 +1131,7 @@
 					</fields>
 				</reepay_vipps>
                 <reepay_forbrugsforeningen translate="label" module="reepay">
-					<label>Billwerk+: Forbrugsforeningen</label>
+					<label>Frisbii: Forbrugsforeningen</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1202,7 +1202,7 @@
 					</fields>
 				</reepay_forbrugsforeningen>
                 <reepay_googlepay translate="label" module="reepay">
-					<label>Billwerk+: Google Pay</label>
+					<label>Frisbii: Google Pay</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1273,7 +1273,7 @@
 					</fields>
 				</reepay_googlepay>
                 <reepay_ideal translate="label" module="reepay">
-					<label>Billwerk+: iDEAL</label>
+					<label>Frisbii: iDEAL</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1344,7 +1344,7 @@
 					</fields>
 				</reepay_ideal>
                 <reepay_blik translate="label" module="reepay">
-					<label>Billwerk+: BLIK One Click</label>
+					<label>Frisbii: BLIK One Click</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1415,7 +1415,7 @@
 					</fields>
 				</reepay_blik>
                 <reepay_p24 translate="label" module="reepay">
-					<label>Billwerk+: Przelewy24 (P24)</label>
+					<label>Frisbii: Przelewy24 (P24)</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1486,7 +1486,7 @@
 					</fields>
 				</reepay_p24>
                 <reepay_verkkopankki translate="label" module="reepay">
-					<label>Billwerk+: Verkkopankki</label>
+					<label>Frisbii: Verkkopankki</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1557,7 +1557,7 @@
 					</fields>
 				</reepay_verkkopankki>
                 <reepay_giropay translate="label" module="reepay">
-					<label>Billwerk+: giropay</label>
+					<label>Frisbii: giropay</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1628,7 +1628,7 @@
 					</fields>
 				</reepay_giropay>
                 <reepay_sepa translate="label" module="reepay">
-					<label>Billwerk+: SEPA Direct Debit</label>
+					<label>Frisbii: SEPA Direct Debit</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -1699,7 +1699,7 @@
 					</fields>
 				</reepay_sepa>
                 <reepay_bancontact translate="label" module="reepay">
-					<label>Billwerk+: Bancontact</label>
+					<label>Frisbii: Bancontact</label>
 					<frontend_type>text</frontend_type>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>

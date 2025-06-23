@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Radarsofthouse_Reepay>
-			<version>1.0.58</version>
+			<version>1.0.59</version>
 		</Radarsofthouse_Reepay>
 	</modules>
 	<global>
@@ -33,7 +33,7 @@
 		<template>
 			<email>
 				<reepay_payment translate="label">
-					<label>Billwerk+ payment</label>
+					<label>Frisbii Pay</label>
 					<file>reepay_payment.html</file>
 					<type>html</type>
 				</reepay_payment>
@@ -145,7 +145,7 @@
 			<reepay>
 				<model>reepay/standard</model>
 				<active>0</active>
-				<title>Billwerk+ payment</title>
+				<title>Frisbii Pay</title>
 				<instructions>The best payments in Europe.</instructions>
 				<private_key_test/>
 				<private_key/>
@@ -167,8 +167,8 @@
 			<reepay_viabill>
 				<model>reepay/viabill</model>
 				<active>0</active>
-				<title>Billwerk+ viabill</title>
-				<instructions>Viabill payment from Billwerk+</instructions>
+				<title>Frisbii viabill</title>
+				<instructions>Viabill payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -177,8 +177,8 @@
             <reepay_anyday>
 				<model>reepay/anyday</model>
 				<active>0</active>
-				<title>Billwerk+ Anyday</title>
-				<instructions>Anyday payment from Billwerk+</instructions>
+				<title>Frisbii Anyday</title>
+				<instructions>Anyday payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -187,8 +187,8 @@
 			<reepay_mobilepay>
 				<model>reepay/mobilepay</model>
 				<active>0</active>
-				<title>Billwerk+ Mobile Pay</title>
-				<instructions>Mobile Pay payment from Billwerk+</instructions>
+				<title>Frisbii Mobile Pay</title>
+				<instructions>Mobile Pay payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -197,8 +197,8 @@
             <reepay_paypal>
 				<model>reepay/paypal</model>
 				<active>0</active>
-				<title>Billwerk+ Paypal</title>
-				<instructions>Paypal payment from Billwerk+</instructions>
+				<title>Frisbii Paypal</title>
+				<instructions>Paypal payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -207,8 +207,8 @@
             <reepay_klarnapaynow>
 				<model>reepay/klarnapaynow</model>
 				<active>0</active>
-				<title>Billwerk+ Klarna Pay Now</title>
-				<instructions>Klarna Pay Now payment from Billwerk+</instructions>
+				<title>Frisbii Klarna Pay Now</title>
+				<instructions>Klarna Pay Now payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -217,8 +217,8 @@
             <reepay_klarnapaylater>
 				<model>reepay/klarnapaylater</model>
 				<active>0</active>
-				<title>Billwerk+ Klarna Pay Later</title>
-				<instructions>Klarna Pay Later payment from Billwerk+</instructions>
+				<title>Frisbii Klarna Pay Later</title>
+				<instructions>Klarna Pay Later payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -227,8 +227,8 @@
 			<reepay_klarnasliceit>
 				<model>reepay/klarnasliceit</model>
 				<active>0</active>
-				<title>Billwerk+ Klarna Slice It</title>
-				<instructions>Klarna Slice It payment from Billwerk+</instructions>
+				<title>Frisbii Klarna Slice It</title>
+				<instructions>Klarna Slice It payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -237,8 +237,8 @@
             <reepay_klarnadirectbanktransfer>
 				<model>reepay/klarnadirectbanktransfer</model>
 				<active>0</active>
-				<title>Billwerk+ Klarna Direct Bank Transfer</title>
-				<instructions>Klarna Direct Bank Transfer payment from Billwerk+</instructions>
+				<title>Frisbii Klarna Direct Bank Transfer</title>
+				<instructions>Klarna Direct Bank Transfer payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -247,8 +247,8 @@
             <reepay_klarnadirectdebit>
 				<model>reepay/klarnadirectdebit</model>
 				<active>0</active>
-				<title>Billwerk+ Klarna Direct Debit</title>
-				<instructions>Klarna Direct Debit payment from Billwerk+</instructions>
+				<title>Frisbii Klarna Direct Debit</title>
+				<instructions>Klarna Direct Debit payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -257,8 +257,8 @@
             <reepay_applepay>
 				<model>reepay/applepay</model>
 				<active>0</active>
-				<title>Billwerk+ Apple Pay</title>
-				<instructions>Apple Pay payment from Billwerk+</instructions>
+				<title>Frisbii Apple Pay</title>
+				<instructions>Apple Pay payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -267,8 +267,8 @@
             <reepay_swish>
 				<model>reepay/swish</model>
 				<active>0</active>
-				<title>Billwerk+ Swish</title>
-				<instructions>Swish payment from Billwerk+</instructions>
+				<title>Frisbii Swish</title>
+				<instructions>Swish payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -277,8 +277,8 @@
             <reepay_resurs>
 				<model>reepay/resurs</model>
 				<active>0</active>
-				<title>Billwerk+ Resurs Bank</title>
-				<instructions>Resurs Bank payment from Billwerk+</instructions>
+				<title>Frisbii Resurs Bank</title>
+				<instructions>Resurs Bank payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -287,8 +287,8 @@
 			<reepay_vipps>
 				<model>reepay/vipps</model>
 				<active>0</active>
-				<title>Billwerk+ Vipps</title>
-				<instructions>Vipps payment from Billwerk+</instructions>
+				<title>Frisbii Vipps</title>
+				<instructions>Vipps payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -297,8 +297,8 @@
             <reepay_forbrugsforeningen>
 				<model>reepay/forbrugsforeningen</model>
 				<active>0</active>
-				<title>Billwerk+ Forbrugsforeningen</title>
-				<instructions>Forbrugsforeningen payment from Billwerk+</instructions>
+				<title>Frisbii Forbrugsforeningen</title>
+				<instructions>Forbrugsforeningen payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -307,8 +307,8 @@
             <reepay_googlepay>
 				<model>reepay/googlepay</model>
 				<active>0</active>
-				<title>Billwerk+ Google Pay</title>
-				<instructions>Google Pay payment from Billwerk+</instructions>
+				<title>Frisbii Google Pay</title>
+				<instructions>Google Pay payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -317,8 +317,8 @@
             <reepay_ideal>
 				<model>reepay/ideal</model>
 				<active>0</active>
-				<title>Billwerk+ iDEAL</title>
-				<instructions>iDEAL payment from Billwerk+</instructions>
+				<title>Frisbii iDEAL</title>
+				<instructions>iDEAL payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -327,8 +327,8 @@
             <reepay_blik>
 				<model>reepay/blik</model>
 				<active>0</active>
-				<title>Billwerk+ BLIK One Click</title>
-				<instructions>BLIK One Click payment from Billwerk+</instructions>
+				<title>Frisbii BLIK One Click</title>
+				<instructions>BLIK One Click payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -337,8 +337,8 @@
             <reepay_p24>
 				<model>reepay/p24</model>
 				<active>0</active>
-				<title>Billwerk+ Przelewy24 (P24)</title>
-				<instructions>Przelewy24 (P24) payment from Billwerk+</instructions>
+				<title>Frisbii Przelewy24 (P24)</title>
+				<instructions>Przelewy24 (P24) payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -347,8 +347,8 @@
             <reepay_verkkopankki>
 				<model>reepay/verkkopankki</model>
 				<active>0</active>
-				<title>Billwerk+ Verkkopankki</title>
-				<instructions>Verkkopankki payment from Billwerk+</instructions>
+				<title>Frisbii Verkkopankki</title>
+				<instructions>Verkkopankki payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -357,8 +357,8 @@
             <reepay_giropay>
 				<model>reepay/giropay</model>
 				<active>0</active>
-				<title>Billwerk+ giropay</title>
-				<instructions>giropay payment from Billwerk+</instructions>
+				<title>Frisbii giropay</title>
+				<instructions>giropay payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -367,8 +367,8 @@
             <reepay_sepa>
 				<model>reepay/sepa</model>
 				<active>0</active>
-				<title>Billwerk+ SEPA Direct Debit</title>
-				<instructions>SEPA Direct Debit payment from Billwerk+</instructions>
+				<title>Frisbii SEPA Direct Debit</title>
+				<instructions>SEPA Direct Debit payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>
@@ -377,8 +377,8 @@
             <reepay_bancontact>
 				<model>reepay/bancontact</model>
 				<active>0</active>
-				<title>Billwerk+ Bancontact</title>
-				<instructions>Bancontact payment from Billwerk+</instructions>
+				<title>Frisbii Bancontact</title>
+				<instructions>Bancontact payment from Frisbii</instructions>
 				<show_icon>0</show_icon>
 				<allowspecific>0</allowspecific>
 				<specificcountry>0</specificcountry>

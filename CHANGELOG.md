@@ -1,5 +1,8 @@
 
 # Changelog
+## Version 1.0.59 on 23 June 2025
+- Rebranded Billwerk+ to Frisbii
+
 ## Version 1.0.58 on 12 January 2024
 - Added an automatic invoice creation function for auto-capture mode and auto-capture payment.
 
